@@ -24,6 +24,7 @@ export const ROUTE_PARAMS = {
 	streamPenalty: 1.5,
 	wetPenalty: 2.5,
 	steepPenalty: 4,
+	moorPenalty: 5,
 	// Trockene Talränder an großen Flüssen: Leitlinie und Nachschubweg
 	valleyBonus: 0.8,
 	valleyDistance: 3000,
@@ -38,7 +39,7 @@ function tobler(tanSlope) {
 /** Stunden je Meter für jede Zelle. */
 export function costSurface(
 	grid,
-	{ slope, tpi, distWater, distRiver },
+	{ slope, tpi, distWater, distRiver, moor },
 	p = ROUTE_PARAMS,
 ) {
 	const n = grid.cols * grid.rows
@@ -51,6 +52,8 @@ export function costSurface(
 		else if (distWater[i] < onWater) c *= p.streamPenalty
 		// Aue/Bruch: tief, flach, nah am Wasser
 		if (tpi[i] < -2 && slope[i] < 1 && distWater[i] < 400) c *= p.wetPenalty
+		// Moore sind kaum passierbar (vgl. die Bohlenwege bei Tacitus)
+		if (moor) c *= 1 + p.moorPenalty * moor[i]
 		if (slope[i] > 15) c *= p.steepPenalty
 		else if (
 			distRiver[i] >= onWater &&
@@ -121,7 +124,14 @@ const STEPS = [
 ]
 
 /** Dijkstra von einer Zelle aus, bis alle Ziele erreicht sind. */
-export function dijkstra(grid, cost, start, targets) {
+export function dijkstra(
+	grid,
+	cost,
+	start,
+	targets,
+	elev = null,
+	climb = 1 / 600,
+) {
 	const { cols, rows, cellMeters } = grid
 	const n = cols * rows
 	const dist = new Float64Array(n).fill(Number.POSITIVE_INFINITY)
@@ -144,7 +154,9 @@ export function dijkstra(grid, cost, start, targets) {
 			if (nx < 0 || ny < 0 || nx >= cols || ny >= rows) continue
 			const nb = ny * cols + nx
 			if (done[nb]) continue
-			const d = dist[c] + ((cost[c] + cost[nb]) / 2) * len * cellMeters
+			// Naismith: eine Stunde zusätzlich je 600 m Anstieg
+			const up = elev ? Math.max(0, elev[nb] - elev[c]) * climb : 0
+			const d = dist[c] + ((cost[c] + cost[nb]) / 2) * len * cellMeters + up
 			if (d < dist[nb]) {
 				dist[nb] = d
 				prev[nb] = c
@@ -167,14 +179,17 @@ export function campNodes(grid, camps, mergeRadius = ROUTE_PARAMS.mergeRadius) {
 		const near = nodes.find(
 			(n) => haversine(n.lon, n.lat, camp.lon, camp.lat) < mergeRadius,
 		)
-		if (near) near.names.push(camp.name)
-		else
+		if (near) {
+			near.names.push(camp.name)
+			near.ids.push(camp.id)
+		} else
 			nodes.push({
 				cell,
 				outside: cell < 0,
 				lon: camp.lon,
 				lat: camp.lat,
 				names: [camp.name],
+				ids: [camp.id],
 			})
 	}
 	return nodes
@@ -188,6 +203,15 @@ export function campPairs(nodes, p = ROUTE_PARAMS) {
 		const candidates = nodes
 			.map((b, j) => ({ j, d: haversine(a.lon, a.lat, b.lon, b.lat) }))
 			.filter(({ j, d }) => j !== i && d >= p.minPair && d <= p.maxPair)
+			// Zwischen Lagern der Schiffskette fährt man, statt zu marschieren
+			.filter(({ j }) => a.ship == null || nodes[j].ship == null)
+			// Ein Lager abseits der Kette hängt nur am nächstgelegenen Hafen
+			.filter(({ j }) => {
+				const ship = a.ship != null ? i : nodes[j].ship != null ? j : null
+				if (ship == null) return true
+				const land = ship === i ? j : i
+				return nearestShip(nodes, land) === ship
+			})
 			.sort((x, y) => x.d - y.d)
 			.slice(0, p.neighbors)
 		for (const { j, d } of candidates) {
@@ -200,8 +224,33 @@ export function campPairs(nodes, p = ROUTE_PARAMS) {
 			pairs.set(key, { a: x, b: y, crow: d })
 		}
 	})
+	// Anlegestelle: jedes Lager abseits der Kette zu Fuß zum nächsten Hafen,
+	// auch unter dem Mindestabstand (Beckinghausen–Oberaden: 2,6 km)
+	nodes.forEach((n, k) => {
+		if (n.outside || n.ship != null) return
+		const port = nearestShip(nodes, k)
+		if (port == null) return
+		const d = haversine(n.lon, n.lat, nodes[port].lon, nodes[port].lat)
+		if (d > 25000 || d < 500) return
+		const key = `${Math.min(port, k)}-${Math.max(port, k)}`
+		if (!pairs.has(key)) pairs.set(key, { a: port, b: k, crow: d })
+	})
 	if (p.connect) connectTree(nodes, pairs)
 	return [...pairs.values()]
+}
+
+function nearestShip(nodes, k) {
+	let best = null
+	let bestD = Number.POSITIVE_INFINITY
+	nodes.forEach((n, i) => {
+		if (n.ship == null) return
+		const d = haversine(n.lon, n.lat, nodes[k].lon, nodes[k].lat)
+		if (d < bestD) {
+			bestD = d
+			best = i
+		}
+	})
+	return best
 }
 
 /** Kruskal über alle Lager im Raster: fehlende Verbindungen ergänzen. */
@@ -216,6 +265,9 @@ function connectTree(nodes, pairs) {
 	for (const { a, b } of pairs.values()) {
 		if (parent.has(a) && parent.has(b)) union(a, b)
 	}
+	// Schiffsstrecken verbinden ihre Lager bereits
+	const ship = inside.filter((i) => nodes[i].ship != null)
+	for (let k = 1; k < ship.length; k++) union(ship[k - 1], ship[k])
 	const edges = []
 	for (let x = 0; x < inside.length; x++) {
 		for (let y = x + 1; y < inside.length; y++) {
@@ -231,6 +283,7 @@ function connectTree(nodes, pairs) {
 	edges.sort((u, v) => u.d - v.d)
 	for (const { a, b, d } of edges) {
 		if (find(a) === find(b)) continue
+		if (nodes[a].ship != null && nodes[b].ship != null) continue
 		union(a, b)
 		pairs.set(`${Math.min(a, b)}-${Math.max(a, b)}`, {
 			a: Math.min(a, b),
@@ -269,12 +322,56 @@ function tracePath(prev, from, to) {
 	return c === from ? path.reverse() : null
 }
 
+// Höchstens 15 % Umweg über einen Fundort
+const WAYPOINT_DETOUR = 1.15
+
+/**
+ * Augusteische Fundorte (Münzschätze, Militaria) nahe der Luftlinie als
+ * Zwischenstation prüfen: Lohnt sich der Weg darüber (höchstens 15 % mehr
+ * Strecke und Gehzeit), führt die Route hindurch. Die Funde zeigen, wo
+ * Truppen zogen.
+ */
+function viaWaypoint(grid, cost, elev, a, b, pair, hours, wps) {
+	let best = null
+	for (const w of wps) {
+		const dA = haversine(a.lon, a.lat, w.lon, w.lat)
+		const dB = haversine(w.lon, w.lat, b.lon, b.lat)
+		if (dA < 3000 || dB < 3000) continue
+		if (dA + dB > pair.crow * WAYPOINT_DETOUR) continue
+		const leg1 = dijkstra(grid, cost, a.cell, [w.cell], elev)
+		const leg2 = dijkstra(grid, cost, w.cell, [pair.target], elev)
+		const total = leg1.dist[w.cell] + leg2.dist[pair.target]
+		if (!(total <= hours * WAYPOINT_DETOUR)) continue
+		if (best && best.hours <= total) continue
+		const c1 = tracePath(leg1.prev, a.cell, w.cell)
+		const c2 = tracePath(leg2.prev, w.cell, pair.target)
+		if (!c1 || !c2) continue
+		best = { cells: [...c1, ...c2.slice(1)], hours: total, name: w.name }
+	}
+	return best
+}
+
 /**
  * Routen zwischen den Knoten. Für Ziele außerhalb zählt vom Rand an die
  * Luftlinie mal 1,1 als Restweg.
  */
-export function computeRoutes(grid, cost, camps, dayMarch, p = ROUTE_PARAMS) {
+export function computeRoutes(
+	grid,
+	cost,
+	camps,
+	dayMarch,
+	p = ROUTE_PARAMS,
+	{ distRiver, elev = null, waypoints = [] } = {},
+) {
 	const nodes = campNodes(grid, camps, p.mergeRadius)
+	const wps = waypoints
+		.map((w) => ({ ...w, cell: cellAt(grid, w.lon, w.lat) }))
+		.filter((w) => w.cell >= 0)
+	// Position in der Schiffskette (z. B. Lippe von Vetera bis Anreppen)
+	for (const node of nodes) {
+		const k = (p.shipChain ?? []).findIndex((id) => node.ids.includes(id))
+		node.ship = k >= 0 && !node.outside ? k : null
+	}
 	const pairs = campPairs(nodes, p)
 	const bySource = new Map()
 	for (const pair of pairs) {
@@ -290,11 +387,19 @@ export function computeRoutes(grid, cost, camps, dayMarch, p = ROUTE_PARAMS) {
 			cost,
 			nodes[a].cell,
 			list.map((pair) => pair.target),
+			elev,
 		)
 		for (const pair of list) {
 			const b = nodes[pair.b]
-			const cells = tracePath(prev, nodes[a].cell, pair.target)
+			let cells = tracePath(prev, nodes[a].cell, pair.target)
 			if (!cells || cells.length < 2) continue
+			let hours = dist[pair.target]
+			// Über einen augusteischen Fundort, wenn der Umweg klein bleibt
+			const via = viaWaypoint(grid, cost, elev, nodes[a], b, pair, hours, wps)
+			if (via) {
+				cells = via.cells
+				hours = via.hours
+			}
 			// Weglänge über Grund entlang der Zellmitten
 			const along = [0]
 			for (let k = 1; k < cells.length; k++) {
@@ -321,10 +426,56 @@ export function computeRoutes(grid, cost, camps, dayMarch, p = ROUTE_PARAMS) {
 				inside,
 				length,
 				crow: pair.crow,
-				hours: dist[pair.target],
+				hours,
+				via: via?.name,
 				days: length / dayMarch,
 			})
 		}
+	}
+	if (distRiver) routes.push(...shipRoutes(grid, nodes, distRiver, p))
+	return routes
+}
+
+/**
+ * Schiffsstrecken zwischen aufeinanderfolgenden Lagern der Kette: Weg
+ * entlang des Flusses (Zellen am großen Fluss kosten wenig, Land viel).
+ */
+function shipRoutes(grid, nodes, distRiver, p) {
+	const chain = nodes
+		.map((n, i) => ({ n, i }))
+		.filter(({ n }) => n.ship != null)
+		.sort((a, b) => a.n.ship - b.n.ship)
+	const cost = new Float32Array(grid.cols * grid.rows)
+	for (let i = 0; i < cost.length; i++) {
+		cost[i] = distRiver[i] < grid.cellMeters * 1.5 ? 1 : 40
+	}
+	const routes = []
+	for (let k = 1; k < chain.length; k++) {
+		const a = chain[k - 1].n
+		const b = chain[k].n
+		const { prev } = dijkstra(grid, cost, a.cell, [b.cell])
+		const cells = tracePath(prev, a.cell, b.cell)
+		if (!cells) continue
+		let length = 0
+		for (let c = 1; c < cells.length; c++) {
+			const dx = (cells[c] % grid.cols) - (cells[c - 1] % grid.cols)
+			const dy =
+				Math.floor(cells[c] / grid.cols) - Math.floor(cells[c - 1] / grid.cols)
+			length += Math.hypot(dx, dy) * grid.cellMeters
+		}
+		const note = b.ids.map((id) => p.shipNotes?.[id]).find(Boolean)
+		routes.push({
+			mode: "Schiff",
+			note,
+			from: a.names.join(", "),
+			to: b.names.join(", "),
+			cells,
+			along: [0, length],
+			inside: length,
+			length,
+			crow: haversine(a.lon, a.lat, b.lon, b.lat),
+			days: 0,
+		})
 	}
 	return routes
 }
@@ -334,6 +485,8 @@ export function routeStages(grid, routes, score, dayMarch, p = ROUTE_PARAMS) {
 	const stages = []
 	const k = Math.round(p.stageSearch / grid.cellMeters)
 	routes.forEach((route, r) => {
+		// Auf dem Schiff braucht es keine Marschlager
+		if (route.mode === "Schiff") return
 		const n = Math.max(0, Math.round(route.length / dayMarch) - 1)
 		for (let s = 1; s <= n; s++) {
 			const target = (route.length * s) / (n + 1)
@@ -389,6 +542,9 @@ export function routesGeoJSON(grid, routes) {
 				to: route.to,
 				km: Math.round(route.length / 100) / 10,
 				partial: route.partial,
+				via: route.via ?? "",
+				mode: route.mode ?? "Fuß",
+				note: route.note ?? "",
 				crowKm: Math.round(route.crow / 100) / 10,
 				days: Math.round(route.days * 10) / 10,
 			},

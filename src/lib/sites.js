@@ -45,3 +45,14 @@ export function campsFor(ringSource) {
 
 // Routen verbinden alle Militärlager, unabhängig von der Ring-Auswahl
 export const routeCamps = () => campsFor("camps")
+
+// Augusteische Fundorte als mögliche Zwischenstationen der Routen
+export const routeWaypoints = () =>
+	SITES.features
+		.filter((f) => f.properties.waypoint)
+		.map((f) => ({
+			id: f.properties.id,
+			name: f.properties.name,
+			lon: f.geometry.coordinates[0],
+			lat: f.geometry.coordinates[1],
+		}))

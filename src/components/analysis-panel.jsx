@@ -138,7 +138,8 @@ export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
 				onChange={(ringSigma) => setParams({ ringSigma })}
 			/>
 			<LabeledSlider
-				label="Bekannte Lager ausblenden bis"
+				label="Umkreis bekannter Lager nicht vorschlagen"
+				hint="Dort ist das Lager schon bekannt. Das Potenzial sinkt zum Lager hin auf null, damit es nicht selbst als Kandidat erscheint."
 				value={params.hideKnownRadius}
 				min={0}
 				max={6000}
@@ -161,6 +162,49 @@ export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
 					onChange={(v) => setWeight(f.key, v)}
 				/>
 			))}
+
+			<LabeledSlider
+				label="Bonus gerade Strukturen im Laserscan"
+				hint="Experimentell. Nur in den Laserscan-Fenstern. An bestätigten Lagern fand das Verfahren nicht mehr Ecken als an Zufallsorten, deshalb standardmäßig aus."
+				value={params.linesBonus}
+				min={0}
+				max={0.4}
+				step={0.05}
+				format={(v) => `+${Math.round(v * 100)} %`}
+				onChange={(linesBonus) => setParams({ linesBonus })}
+			/>
+
+			<SectionTitle>Abzüge</SectionTitle>
+			<LabeledSlider
+				label="Moore laut Bodenkarte"
+				hint="Hoch- und Niedermoore aus der BK50 NRW und der GUM50 Niedersachsen (ursprüngliche Moorverbreitung). Auf Moor ließ sich kein Lager mit Graben bauen."
+				value={params.moorPenalty}
+				min={0}
+				max={1}
+				step={0.05}
+				format={(v) => `−${Math.round(v * 100)} %`}
+				onChange={(moorPenalty) => setParams({ moorPenalty })}
+			/>
+			<LabeledSlider
+				label="Nasse Niederungen (Feuchteindex)"
+				hint="Topographischer Feuchteindex aus dem Gelände: Flächen, auf denen Wasser zusammenläuft und steht."
+				value={params.wetPenalty}
+				min={0}
+				max={1}
+				step={0.05}
+				format={(v) => `−${Math.round(v * 100)} %`}
+				onChange={(wetPenalty) => setParams({ wetPenalty })}
+			/>
+			<LabeledSlider
+				label="Heutiger Wald (OSM)"
+				hint="Wie dicht der Wald um Christi Geburt war, ist unbekannt. Heutiger Wald ist meist jünger, schützt aber Bodendenkmäler. Deshalb standardmäßig aus."
+				value={params.forestPenalty}
+				min={0}
+				max={1}
+				step={0.05}
+				format={(v) => `−${Math.round(v * 100)} %`}
+				onChange={(forestPenalty) => setParams({ forestPenalty })}
+			/>
 
 			<SectionTitle>Gelände und Wasser</SectionTitle>
 			<ToggleButtonGroup

@@ -196,7 +196,18 @@ function addAnalysisLayers(map) {
 		type: "line",
 		source: "routes",
 		layout: { "line-cap": "round", "line-join": "round" },
-		paint: { "line-color": "#ffca28", "line-width": 3 },
+		paint: {
+			// Fußwege gelb, Schiffsstrecken auf der Lippe hellblau gestrichelt
+			"line-color": ["match", ["get", "mode"], "Schiff", "#4fc3f7", "#ffca28"],
+			"line-width": 3,
+			"line-dasharray": [
+				"match",
+				["get", "mode"],
+				"Schiff",
+				["literal", [2, 1.2]],
+				["literal", [1, 0]],
+			],
+		},
 	})
 	map.addLayer({
 		id: "routes-label",
@@ -206,11 +217,16 @@ function addAnalysisLayers(map) {
 			"symbol-placement": "line",
 			"symbol-spacing": 500,
 			"text-field": [
-				"concat",
-				["to-string", ["get", "km"]],
-				" km · ",
-				["to-string", ["get", "days"]],
-				" Tagesmärsche",
+				"case",
+				["==", ["get", "mode"], "Schiff"],
+				["concat", "Schiff · ", ["to-string", ["get", "km"]], " km"],
+				[
+					"concat",
+					["to-string", ["get", "km"]],
+					" km · ",
+					["to-string", ["get", "days"]],
+					" Tagesmärsche",
+				],
 			],
 			"text-font": FONT,
 			"text-size": 11,
@@ -242,6 +258,19 @@ function addAnalysisLayers(map) {
 			"text-allow-overlap": true,
 		},
 		paint: { "text-color": "#3e2723" },
+	})
+
+	// Erkannte gerade Strukturen im Laserscan (experimentell)
+	map.addSource("lines", { type: "geojson", data: EMPTY })
+	map.addLayer({
+		id: "lines",
+		type: "line",
+		source: "lines",
+		layout: { visibility: "none", "line-cap": "round" },
+		paint: {
+			"line-color": ["case", ["get", "corner"], "#ff1744", "#ffea00"],
+			"line-width": ["case", ["get", "corner"], 3, 2],
+		},
 	})
 
 	map.addSource("candidates", { type: "geojson", data: EMPTY })
@@ -296,6 +325,55 @@ function addAnalysisLayers(map) {
 		},
 		paint: { "text-color": "#212121", ...HALO },
 	})
+}
+
+/** Eigene Karte als Quelle und Layer, unter der Potenzialkarte. */
+function addCustomLayer(map, id, l) {
+	if (l.kind === "raster") {
+		map.addSource(id, {
+			type: "raster",
+			tiles: l.tiles,
+			tileSize: l.tileSize ?? 256,
+			maxzoom: l.maxzoom ?? 19,
+			attribution: l.attribution ?? l.name,
+		})
+		map.addLayer({ id, type: "raster", source: id }, "heatmap")
+	} else if (l.kind === "image") {
+		map.addSource(id, { type: "image", url: l.url, coordinates: l.corners })
+		map.addLayer(
+			{ id, type: "raster", source: id, paint: { "raster-fade-duration": 0 } },
+			"heatmap",
+		)
+	} else if (l.kind === "vector") {
+		map.addSource(id, { type: "geojson", data: l.data })
+		const color = l.color ?? "#00e5ff"
+		map.addLayer({
+			id: `${id}-fill`,
+			type: "fill",
+			source: id,
+			filter: ["==", ["geometry-type"], "Polygon"],
+			paint: { "fill-color": color, "fill-opacity": 0.3 },
+		})
+		map.addLayer({
+			id: `${id}-line`,
+			type: "line",
+			source: id,
+			filter: ["in", ["geometry-type"], ["literal", ["LineString", "Polygon"]]],
+			paint: { "line-color": color, "line-width": 2.5 },
+		})
+		map.addLayer({
+			id: `${id}-point`,
+			type: "circle",
+			source: id,
+			filter: ["==", ["geometry-type"], "Point"],
+			paint: {
+				"circle-color": color,
+				"circle-radius": 6,
+				"circle-stroke-color": "#000",
+				"circle-stroke-width": 1,
+			},
+		})
+	}
 }
 
 // React StrictMode entfernt die erste Karte, bevor der State nachzieht
@@ -494,6 +572,86 @@ export default function MapView({ onMapReady }) {
 			}
 		}
 	}, [overlays, map])
+
+	// Eigene Karten: Quellen und Layer anlegen, entfernen, schalten
+	const customLayers = useMapStore((s) => s.customLayers)
+	useEffect(() => {
+		if (!alive(map)) return
+		const wanted = new Set(customLayers.map((l) => `custom-${l.id}`))
+		for (const layer of map.getStyle().layers) {
+			const base = layer.id.replace(/-(fill|line|point)$/, "")
+			if (base.startsWith("custom-") && !wanted.has(base))
+				map.removeLayer(layer.id)
+		}
+		for (const id of Object.keys(map.getStyle().sources)) {
+			if (id.startsWith("custom-") && !wanted.has(id)) map.removeSource(id)
+		}
+		for (const l of customLayers) {
+			const id = `custom-${l.id}`
+			if (!map.getSource(id)) addCustomLayer(map, id, l)
+			const visibility = l.visible ? "visible" : "none"
+			for (const suffix of ["", "-fill", "-line", "-point"]) {
+				const lid = id + suffix
+				if (!map.getLayer(lid)) continue
+				map.setLayoutProperty(lid, "visibility", visibility)
+				const type = map.getLayer(lid).type
+				const prop = {
+					raster: "raster-opacity",
+					fill: "fill-opacity",
+					line: "line-opacity",
+					circle: "circle-opacity",
+				}[type]
+				map.setPaintProperty(
+					lid,
+					prop,
+					type === "fill" ? l.opacity * 0.35 : l.opacity,
+				)
+			}
+		}
+	}, [customLayers, map])
+
+	// Laserscan-Fenster erst beim Einschalten laden (je Bild rund 400 KB)
+	const lineaments = useMapStore((s) => s.lineaments)
+	const lrm = overlays.lrm
+	const lines = overlays.lines
+	useEffect(() => {
+		if (!alive(map) || !lineaments) return
+		const windows = lineaments.windows.filter((w) => w.imageCorners)
+		if (lrm.visible) {
+			for (const w of windows) {
+				const id = `lrm-${w.id}`
+				if (!map.getSource(id)) {
+					map.addSource(id, {
+						type: "image",
+						url: `${process.env.NEXT_PUBLIC_BASE_PATH}/precomputed/lrm/${w.id}.jpg`,
+						coordinates: w.imageCorners,
+					})
+					map.addLayer(
+						{
+							id,
+							type: "raster",
+							source: id,
+							paint: { "raster-fade-duration": 0 },
+						},
+						"heatmap",
+					)
+				}
+			}
+		}
+		for (const w of windows) {
+			const id = `lrm-${w.id}`
+			if (!map.getLayer(id)) continue
+			map.setLayoutProperty(id, "visibility", lrm.visible ? "visible" : "none")
+			map.setPaintProperty(id, "raster-opacity", lrm.opacity)
+		}
+		map.getSource("lines").setData(lineaments.segments)
+		map.setLayoutProperty(
+			"lines",
+			"visibility",
+			lines.visible ? "visible" : "none",
+		)
+		map.setPaintProperty("lines", "line-opacity", lines.opacity)
+	}, [lineaments, lrm, lines, map])
 
 	useEffect(() => {
 		if (!alive(map)) return

@@ -155,3 +155,45 @@ describe("Marschrouten", () => {
 		expect(stages.length).toBe(Math.max(0, Math.round(r.length / 19000) - 1))
 	})
 })
+
+describe("Gerade Strukturen im Laserscan", () => {
+	test("findet die vier Seiten und Ecken eines Grabengevierts", async () => {
+		const { detectLineaments } = await import("./lineaments")
+		const px = 2
+		const w = 500
+		const h = 500
+		const dem = new Float32Array(w * h)
+		const masked = new Uint8Array(w * h)
+		let seed = 1
+		const rand = () => {
+			seed = (seed * 16807) % 2147483647
+			return seed / 2147483647
+		}
+		for (let y = 0; y < h; y++) {
+			for (let x = 0; x < w; x++) {
+				// Hang plus Rauschen
+				let z = 100 + x * px * 0.02 + (rand() - 0.5) * 0.06
+				// Graben 6 m breit, 0,5 m tief, Geviert 400 × 400 m ab (100, 100) px
+				const gx = x >= 100 && x <= 300
+				const gy = y >= 100 && y <= 300
+				const nearV = gy && (Math.abs(x - 100) <= 1 || Math.abs(x - 300) <= 1)
+				const nearH = gx && (Math.abs(y - 100) <= 1 || Math.abs(y - 300) <= 1)
+				if (nearV || nearH) z -= 0.5
+				// moderner Weg diagonal, als OSM-Linie maskiert
+				const road = Math.abs(x - y * 0.5 - 330)
+				if (road <= 2) z += 0.4
+				// OSM-Puffer wie im echten Lauf: 7 Pixel um die Mittellinie
+				if (road <= 7) masked[y * w + x] = 1
+				dem[y * w + x] = z
+			}
+		}
+		const { segments, corners } = detectLineaments(dem, w, h, px, masked)
+		const long = segments.filter((s) => s.length >= 300)
+		expect(long.length).toBeGreaterThanOrEqual(4)
+		expect(corners.length).toBeGreaterThanOrEqual(4)
+		// keine Linie entlang des maskierten Wegs (Normale ~153°)
+		expect(
+			segments.some((s) => Math.abs(s.angle - 153.4) < 3 && s.length > 200),
+		).toBe(false)
+	})
+})

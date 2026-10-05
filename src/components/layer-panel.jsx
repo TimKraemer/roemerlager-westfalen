@@ -15,6 +15,7 @@ import {
 import { BASE_LAYERS, OVERLAYS } from "@/lib/layers"
 import { SITE_TYPES } from "@/lib/sites"
 import { useMapStore } from "@/store/use-map-store"
+import CustomLayers from "./custom-layers"
 
 export function SectionTitle({ children }) {
 	return (
@@ -48,6 +49,8 @@ export default function LayerPanel() {
 
 	return (
 		<Box>
+			<CustomLayers />
+
 			<SectionTitle>Grundkarte</SectionTitle>
 			<RadioGroup
 				value={baseLayer}

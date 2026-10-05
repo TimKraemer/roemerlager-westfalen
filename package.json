@@ -21,6 +21,8 @@
 		"@mui/icons-material": "^9",
 		"@mui/material": "^9",
 		"@mui/material-nextjs": "^9",
+		"@tmcw/togeojson": "^7.1.2",
+		"geotiff": "^3.0.5",
 		"maplibre-gl": "^6",
 		"next": "^16",
 		"pbf": "^5.1.2",
@@ -30,6 +32,7 @@
 	},
 	"devDependencies": {
 		"@biomejs/biome": "^2.4",
-		"fast-png": "^8.0.0"
+		"fast-png": "^8.0.0",
+		"jpeg-js": "^0.4.4"
 	}
 }

@@ -29,7 +29,7 @@ const DOP_NI = {
 	wms: "https://opendata.lgln.niedersachsen.de/doorman/noauth/dop_wms",
 	layers: "ni_dop20",
 	attribution: LGLN,
-	minzoom: 10,
+	minzoom: 8,
 }
 const DOP_NRW = {
 	tiles: [
@@ -96,6 +96,23 @@ export const OVERLAYS = [
 		layers: "nw_dgm-schummerung_pan",
 		attribution: GEOBASIS_NRW,
 		opacity: 0.85,
+	},
+	{
+		id: "lrm",
+		kind: "lrm",
+		group: "Gelände",
+		label: "Laserscan-Ansicht an Kandidaten und Lagern",
+		note: "Local Relief Model aus dem DGM1 NRW (2 m): Gräben dunkel, Wälle hell. Fenster von 2,4 km an Kandidaten, Etappenhalten und allen bestätigten Lagern in NRW.",
+		attribution: GEOBASIS_NRW,
+		opacity: 0.85,
+	},
+	{
+		id: "lines",
+		kind: "lines",
+		group: "Gelände",
+		label: "Erkannte gerade Strukturen (experimentell)",
+		note: "Automatisch gefundene gerade Gräben und Wälle, rot mit rechtwinkliger Ecke. An bestätigten Lagern nicht häufiger als anderswo, daher nur als Hinweis.",
+		opacity: 0.9,
 	},
 	{
 		id: "schummerung-nrw-col",
@@ -282,6 +299,8 @@ export function styleLayersOf(layer) {
 		]
 	}
 	if (layer.kind === "water") return [{ id: layer.id, opacity: "line-opacity" }]
+	// Fenster-Bilder und Linien legt die Karte selbst an (map-view.jsx)
+	if (layer.kind === "lrm" || layer.kind === "lines") return []
 	return partsOf(layer).map((_, i) => ({
 		id: `${layer.id}-${i}`,
 		opacity: "raster-opacity",
@@ -290,6 +309,9 @@ export function styleLayersOf(layer) {
 
 /** Quellen und Layer für den MapLibre-Style. */
 export function styleFor(layer) {
+	if (layer.kind === "lrm" || layer.kind === "lines") {
+		return { sources: {}, layers: [] }
+	}
 	if (layer.kind === "relief") {
 		return {
 			sources: {

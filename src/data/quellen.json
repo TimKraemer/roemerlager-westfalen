@@ -217,6 +217,35 @@
 				"label": "Natürliches Gewässernetz: Barnes u. a. 2014, Priority-Flood",
 				"url": "https://doi.org/10.1016/j.cageo.2013.04.024",
 				"note": "Verfahren für das Gewässernetz aus dem Höhenmodell"
+			},
+			{
+				"label": "Beven & Kirkby 1979: Topographischer Feuchteindex",
+				"url": "https://doi.org/10.1080/02626667909491834",
+				"note": "Abzug für nasse Niederungen"
+			},
+			{
+				"label": "BK50 NRW, Ebene Bodentyp: Hoch- und Niedermoore",
+				"url": "https://www.wms.nrw.de/gd/bk050?SERVICE=WMS&REQUEST=GetCapabilities",
+				"note": "Abzug für Moore, zusammen mit der GUM50 Niedersachsen"
+			}
+		]
+	},
+	{
+		"title": "Laserscan und gerade Strukturen",
+		"intro": "Gegenprobe vom 05.10.2026: an 16 bestätigten Lagern in NRW im Mittel 27,8 gerade Abschnitte und 0,4 rechtwinklige Ecken je 2,4-km-Fenster, an 10 Zufallsorten 27,3 Abschnitte und 1,2 Ecken. Die automatische Erkennung unterscheidet Lager also nicht von normalem Gelände, weil die meisten Lager eingeebnet oder überbaut sind. Sie fließt deshalb nicht in die Potenzialkarte ein, die Laserscan-Ansicht dient der Prüfung mit dem Auge.",
+		"items": [
+			{
+				"label": "Hesse 2010: LiDAR-derived Local Relief Models",
+				"url": "https://doi.org/10.1002/arp.374",
+				"note": "Verfahren der Laserscan-Ansicht"
+			},
+			{
+				"label": "DGM1 NRW als Web Coverage Service (1 m)",
+				"url": "https://www.wcs.nrw.de/geobasis/wcs_nw_dgm?SERVICE=WCS&REQUEST=GetCapabilities"
+			},
+			{
+				"label": "Duda & Hart 1972: Hough-Transformation für Linien",
+				"url": "https://doi.org/10.1145/361237.361242"
 			}
 		]
 	},

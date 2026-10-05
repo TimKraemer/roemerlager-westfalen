@@ -84,6 +84,34 @@ export const CRITERIA_SOURCES = {
 			url: "https://de.wikipedia.org/wiki/Schatzfund_von_Gehrden",
 		},
 	],
+	moor: [
+		{
+			label: "GD NRW: Bodenkarte BK50, Bodentyp (Hoch- und Niedermoor)",
+			url: "https://www.wms.nrw.de/gd/bk050?SERVICE=WMS&REQUEST=GetCapabilities",
+		},
+		{
+			label: "LBEG: GUM50, ursprüngliche Moorverbreitung in Niedersachsen",
+			url: "https://nibis.lbeg.de/cardomap3/",
+		},
+		{
+			label: "Tacitus, Annalen 1,61–63: Bohlenwege (pontes longi) durch Moore",
+			url: "https://www.thelatinlibrary.com/tacitus/tac.ann1.shtml",
+		},
+	],
+	wet: [
+		{
+			label: "Beven & Kirkby 1979: Topographischer Feuchteindex (TWI)",
+			url: "https://doi.org/10.1080/02626667909491834",
+		},
+		{
+			label: "Kaye 2013: SAGA Wetness Index als Standortfaktor für Marschlager",
+			url: "https://zenodo.org/records/839026",
+		},
+		{
+			label: "Vegetius 1,22: kein Feld, das von Wildbächen überschwemmt wird",
+			url: "https://www.thelatinlibrary.com/vegetius1.html",
+		},
+	],
 	corridor: [
 		{
 			label:
@@ -168,6 +196,19 @@ export function explain(data, params) {
 				: "Im Ausschnitt liegt keine berechnete Marschroute.",
 		},
 		{
+			key: "moor",
+			verdict: data.moor > 0.3 ? "schwach" : data.moor > 0 ? "mittel" : "gut",
+			text:
+				data.moor > 0
+					? `${Math.round(data.moor * 100)} % der Zelle sind laut Bodenkarte Moor. Das senkt das Potenzial um bis zu ${Math.round(params.moorPenalty * 100)} %, Marschwege meiden Moore.`
+					: "Laut Bodenkarte kein Moor.",
+		},
+		{
+			key: "wet",
+			verdict: data.wet > 0.5 ? "schwach" : data.wet > 0.2 ? "mittel" : "gut",
+			text: `Feuchteindex ergibt ${Math.round(data.wet * 100)} % Nässe. Hohe Werte zeigen Flächen, auf denen Wasser zusammenläuft und steht, früher oft Moor oder Bruch. Das senkt das Potenzial um bis zu ${Math.round(params.wetPenalty * 100)} %.`,
+		},
+		{
 			key: "corridor",
 			verdict: verdict(f.corridor),
 			text: `${meters(data.distRiver)} bis zum nächsten größeren Fluss. Die bekannten Lager reihen sich an Lippe und Weser, die Flüsse dienten als Leitlinie und Nachschubweg.`,
@@ -234,10 +275,18 @@ export function explainSimple(data) {
 	for (const hint of nearbyHints(data.lon, data.lat)) pro.push(hint)
 	if (f.water < 0.35)
 		contra.push("Das nächste Gewässer ist recht weit entfernt.")
+	if (data.moor > 0.3)
+		contra.push(
+			"Lag laut Bodenkarte im Moor. Dort ließ sich kein Lager mit Wall und Graben bauen.",
+		)
+	if (data.wet > 0.5)
+		contra.push(
+			"Feuchte Niederung, in der sich Wasser sammelt. Früher vermutlich Bruch oder Moor, für ein Lager ungeeignet.",
+		)
 	if (data.tpi < -2)
 		contra.push("Liegt eher in einer Senke, das mieden die Römer.")
 	if (data.slope > 8) contra.push("Das Gelände ist für ein Lager recht steil.")
-	return { pro, contra: contra.slice(0, 1) }
+	return { pro, contra: contra.slice(0, 2) }
 }
 
 /** Verdachtsflächen und römische Funde im Umkreis von 6 km. */

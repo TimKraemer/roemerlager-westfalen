@@ -1,4 +1,23 @@
 import { create } from "zustand"
+
+// Eigene Kartendienste bleiben im Browser gespeichert (nicht die Dateien)
+const STORAGE_KEY = "roemerlager:eigene-dienste"
+function loadServices() {
+	try {
+		return JSON.parse(localStorage.getItem(STORAGE_KEY) ?? "[]")
+	} catch {
+		return []
+	}
+}
+function saveServices(layers) {
+	try {
+		const services = layers.filter((l) => l.kind === "raster" && !l.session)
+		localStorage.setItem(STORAGE_KEY, JSON.stringify(services))
+	} catch {
+		// privates Fenster o. ä.
+	}
+}
+
 import { BASE_LAYERS, OVERLAYS } from "@/lib/layers"
 import { DEFAULT_PARAMS } from "@/lib/potential/model"
 import { SITE_TYPES } from "@/lib/sites"
@@ -39,6 +58,10 @@ export const useMapStore = create((set) => ({
 	routes: null,
 	// Überregionales Netz: Routen, Etappenhalte, große Flüsse (vorberechnet)
 	network: null,
+	// Laserscan-Fenster und erkannte gerade Strukturen (vorberechnet)
+	lineaments: null,
+	// Eigene Karten: Dienste, GeoTIFF, Bild mit World-File, GeoJSON/KML/GPX
+	customLayers: typeof window === "undefined" ? [] : loadServices(),
 	selectedSite: null,
 	inspect: null,
 
@@ -68,6 +91,30 @@ export const useMapStore = create((set) => ({
 	setDerivedWaterways: (derivedWaterways) => set({ derivedWaterways }),
 	setRoutes: (routes) => set({ routes }),
 	setNetwork: (network) => set({ network }),
+	setLineaments: (lineaments) => set({ lineaments }),
+	addCustomLayer: (layer) =>
+		set((s) => {
+			const customLayers = [
+				...s.customLayers,
+				{ visible: true, opacity: 0.9, ...layer, id: `${Date.now()}` },
+			]
+			saveServices(customLayers)
+			return { customLayers }
+		}),
+	updateCustomLayer: (id, patch) =>
+		set((s) => {
+			const customLayers = s.customLayers.map((l) =>
+				l.id === id ? { ...l, ...patch } : l,
+			)
+			saveServices(customLayers)
+			return { customLayers }
+		}),
+	removeCustomLayer: (id) =>
+		set((s) => {
+			const customLayers = s.customLayers.filter((l) => l.id !== id)
+			saveServices(customLayers)
+			return { customLayers }
+		}),
 	setSelectedSite: (selectedSite) => set({ selectedSite }),
 	setInspect: (inspect) => set({ inspect }),
 }))

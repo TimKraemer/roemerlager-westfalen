@@ -165,7 +165,10 @@ function inspectTitle(data, place) {
 	if (data.kind === "candidate")
 		return `Vermuteter Lagerplatz${data.rank ? ` ${data.rank}` : ""}${where}`
 	if (data.kind === "stage") return `Möglicher Etappenhalt${where}`
-	if (data.kind === "route") return "Möglicher Marschweg"
+	if (data.kind === "route")
+		return data.route?.mode === "Schiff"
+			? "Schiffsstrecke"
+			: "Möglicher Marschweg"
 	return `Stelle${where}`
 }
 
@@ -211,6 +214,35 @@ function SimpleReasons({ data }) {
 	)
 }
 
+/** Beschreibung eines Fuß- oder Schiffswegs. */
+function RouteText({ route }) {
+	if (route.mode === "Schiff") {
+		return (
+			<Typography variant="body2">
+				Schiffsstrecke auf der Lippe von {route.from} nach {route.to},{" "}
+				{route.km} km flussaufwärts. Die Lager an der Lippe wurden über den
+				Fluss versorgt, Truppen und Nachschub fuhren mit dem Schiff. Der Weg
+				folgt dem natürlichen Flusslauf aus dem Geländemodell.
+				{route.note && ` ${route.note}`}
+			</Typography>
+		)
+	}
+	return (
+		<Typography variant="body2">
+			Ein möglicher Fußweg von {route.from} nach {route.to}
+			{route.via ? ` über ${route.via}` : ""}: {route.km} km, etwa {route.days}{" "}
+			Tagesmärsche. Berechnet als der Weg, der zu Fuß am wenigsten Zeit kostet.
+			Kämme werden über Pässe umgangen (Anstieg kostet Zeit), trockene Talränder
+			großer Flüsse bevorzugt, Moore, nasse Niederungen und Flussquerungen
+			gemieden.
+			{route.via &&
+				` Der Weg führt über den augusteischen Fundort ${route.via}, weil der Umweg klein bleibt und die Funde zeigen, wo Truppen zogen.`}
+			{route.partial && " Das Ziel liegt außerhalb des Kartenausschnitts."}{" "}
+			Belegt ist der Weg nicht.
+		</Typography>
+	)
+}
+
 /** Etappenhalt oder Route außerhalb des vorberechneten Kreises. */
 function OutsideCard({ data }) {
 	const setInspect = useMapStore((s) => s.setInspect)
@@ -237,13 +269,7 @@ function OutsideCard({ data }) {
 					hätte hier nach einem Tagesmarsch sein Lager gebaut.
 				</Typography>
 			) : (
-				<Typography variant="body2">
-					Ein möglicher Weg von {data.route.from} nach {data.route.to}:{" "}
-					{data.route.km} km, etwa {data.route.days} Tagesmärsche. Berechnet als
-					der Weg mit der geringsten Gehzeit, Flusstäler bevorzugt, steile
-					Hänge, Niederungen und Flussquerungen gemieden. Belegt ist der Weg
-					nicht.
-				</Typography>
+				<RouteText route={data.route} />
 			)}
 			<Typography
 				variant="overline"
@@ -295,7 +321,9 @@ function InspectCard({ data }) {
 	const place = placeLabel(places, data.lon, data.lat)
 	const items = explain(data, params)
 	const near = nearestSites(data.lon, data.lat, 3)
-	const label = (key) => FACTORS.find((f) => f.key === key)?.label
+	const label = (key) =>
+		FACTORS.find((f) => f.key === key)?.label ??
+		{ moor: "Kein Moor", wet: "Keine nasse Niederung" }[key]
 	return (
 		<Paper elevation={4} sx={cardSx}>
 			<CardHeader
@@ -309,15 +337,9 @@ function InspectCard({ data }) {
 			</CardHeader>
 
 			{data.kind === "route" && (
-				<Typography variant="body2" sx={{ mb: 1 }}>
-					Ein möglicher Weg von {data.route.from} nach {data.route.to}:{" "}
-					{data.route.km} km, etwa {data.route.days} Tagesmärsche. Berechnet als
-					der Weg, der zu Fuß am wenigsten Zeit kostet, mit Umwegen um steile
-					Hänge, nasse Niederungen und Flussquerungen.
-					{data.route.partial &&
-						" Das Ziel liegt außerhalb des Kartenausschnitts."}{" "}
-					Belegt ist der Weg nicht.
-				</Typography>
+				<Box sx={{ mb: 1 }}>
+					<RouteText route={data.route} />
+				</Box>
 			)}
 			{data.kind !== "route" && <SimpleReasons data={data} />}
 			<Button
@@ -445,6 +467,13 @@ function InspectCard({ data }) {
 							onClick={() => setOverlay("hist-dop", { visible: true })}
 						>
 							Luftbild 1950er
+						</Button>
+						<Button
+							size="small"
+							variant="outlined"
+							onClick={() => setOverlay("lrm", { visible: true })}
+						>
+							Laserscan-Ansicht
 						</Button>
 					</Stack>
 				</Box>

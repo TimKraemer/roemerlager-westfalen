@@ -1,9 +1,13 @@
 import { metersPerPixel, pixelToLonLat } from "../geo"
+import { moorCover } from "../moor"
 import { loadElevationSampler } from "../terrain"
-import { fetchWaterways } from "../water"
+import { fetchWaterways, forestCover } from "../water"
 import { flowAccumulation, streamLines } from "./drainage"
+import { linesFactor } from "./lineaments"
 import {
+	cellCenter,
 	combine,
+	computeFineSlope,
 	computeSlope,
 	computeTpi,
 	createGrid,
@@ -86,6 +90,36 @@ function buildDrainageRaster(grid, sampler) {
 	}
 }
 
+/**
+ * Topographischer Feuchteindex je Zelle (Beven & Kirkby 1979):
+ * TWI = ln(a / tan β), a = Einzugsfläche je Meter Konturlänge. Hohe Werte
+ * zeigen Flächen, auf denen Wasser zusammenläuft und steht: Brüche,
+ * Niedermoore, nasse Auen. Daraus ein Nässe-Anteil 0–1.
+ */
+function wetness(grid, raster, slope) {
+	const { flow, width, height, meters } = raster
+	const n = grid.cols * grid.rows
+	const wet = new Float32Array(n)
+	const twi = new Float32Array(n)
+	for (let r = 0; r < grid.rows; r++) {
+		for (let c = 0; c < grid.cols; c++) {
+			const x = grid.x0 + (c + 0.5) * grid.cellPx
+			const y = grid.y0 + (r + 0.5) * grid.cellPx
+			const rc = Math.min(width - 1, Math.floor((x - raster.x0) / raster.step))
+			const rr = Math.min(height - 1, Math.floor((y - raster.y0) / raster.step))
+			const a = (flow.acc[rr * width + rc] * 1e6) / meters
+			const tanb = Math.max(
+				0.002,
+				Math.tan((slope[r * grid.cols + c] * Math.PI) / 180),
+			)
+			const i = r * grid.cols + c
+			twi[i] = Math.log(a / tanb)
+			wet[i] = 1 / (1 + Math.exp(-(twi[i] - 13) / 1.2))
+		}
+	}
+	return { wet, twi }
+}
+
 /** Gewässerabstände je Zelle aus dem Abflussraster. */
 function demWater(state, params) {
 	const { grid, raster } = state
@@ -159,7 +193,7 @@ async function waterFor(state, params, isStale) {
 export async function prepare(
 	bbox,
 	params,
-	{ onProgress = () => {}, isStale = () => false } = {},
+	{ onProgress = () => {}, isStale = () => false, includeNiMoor = false } = {},
 ) {
 	const zoom = demZoomFor(bbox)
 	const grid = createGrid(bbox, params.cellMeters, zoom)
@@ -177,18 +211,24 @@ export async function prepare(
 	onProgress("Gelände auswerten", 0)
 	const elev = sampleElevation(grid, sampler)
 	onProgress("Gewässernetz ableiten", 0)
-	return {
+	const state = {
 		onProgress,
 		grid,
 		elev,
 		slope: computeSlope(grid, elev),
+		// Für Routen: steilste Neigung je Zelle, damit Kämme Hindernisse bleiben
+		slopeMax: computeFineSlope(grid, sampler),
 		raster: buildDrainageRaster(grid, sampler),
 		osm: null,
 		waterKey: null,
 		routeKey: null,
 		tpi: null,
 		tpiRadius: null,
+		moor: null,
+		includeNiMoor,
 	}
+	Object.assign(state, wetness(grid, state.raster, state.slope))
+	return state
 }
 
 /**
@@ -198,7 +238,16 @@ export async function prepare(
  */
 export async function evaluate(
 	state,
-	{ params, camps, routeCamps, routeLines, routeParams, candidateThreshold },
+	{
+		params,
+		camps,
+		routeCamps,
+		routeLines,
+		routeParams,
+		waypoints,
+		lineaments,
+		candidateThreshold,
+	},
 	{ isStale = () => false, full = false } = {},
 ) {
 	const { grid, elev, slope } = state
@@ -220,6 +269,15 @@ export async function evaluate(
 	}
 	const { distWater, distRiver } = state
 
+	// Moore aus den Bodenkarten: für Routen und Potenzial
+	if (!state.moor) {
+		state.onProgress("Moore aus den Bodenkarten laden", 0)
+		state.moor = await moorCover(grid, {
+			includeNi: state.includeNiMoor,
+		}).catch(() => new Float32Array(grid.cols * grid.rows))
+		if (isStale()) return null
+	}
+
 	// Routen hängen am Gelände, an den Gewässern und an den Lagern. Liegen
 	// Linien aus dem überregionalen Netz vor (routeLines), zählen nur diese.
 	const routeKey = routeLines
@@ -238,15 +296,20 @@ export async function evaluate(
 	} else if (routesChanged) {
 		state.onProgress("Marschrouten berechnen", 1)
 		const cost = costSurface(grid, {
-			slope,
+			moor: state.moor,
+			slope: state.slopeMax ?? slope,
 			tpi: state.tpi,
 			distWater,
 			distRiver,
 		})
-		const routes = computeRoutes(grid, cost, routeCamps, params.ringMean, {
-			...ROUTE_PARAMS,
-			...routeParams,
-		})
+		const routes = computeRoutes(
+			grid,
+			cost,
+			routeCamps,
+			params.ringMean,
+			{ ...ROUTE_PARAMS, ...routeParams },
+			{ distRiver, elev, waypoints },
+		)
 		const mask = new Uint8Array(grid.cols * grid.rows)
 		for (const route of routes) for (const c of route.cells) mask[c] = 1
 		state.routes = routes
@@ -273,6 +336,27 @@ export async function evaluate(
 		},
 		params,
 	)
+	// Abzüge: nasse Niederungen und frühere Moore (TWI), auf Wunsch heutiger Wald
+	if (params.forestPenalty > 0 && !state.forest) {
+		state.onProgress("Wald aus tiles.erleben.app laden", 0)
+		state.forest = await forestCover(grid)
+		if (isStale()) return null
+	}
+	for (let i = 0; i < score.length; i++) {
+		score[i] *= 1 - params.moorPenalty * state.moor[i]
+		score[i] *= 1 - params.wetPenalty * state.wet[i]
+		if (params.forestPenalty > 0)
+			score[i] *= 1 - params.forestPenalty * state.forest[i]
+	}
+
+	// Bonus für gerade Strukturen im Laserscan, nur in untersuchten Fenstern
+	const lines = linesFactor(grid, lineaments, cellCenter)
+	if (params.linesBonus > 0) {
+		for (let i = 0; i < score.length; i++) {
+			if (lines[i] > 0)
+				score[i] = Math.min(1, score[i] * (1 + params.linesBonus * lines[i]))
+		}
+	}
 	const candidates = findCandidates(grid, score, {
 		threshold: candidateThreshold,
 	})
@@ -288,6 +372,10 @@ export async function evaluate(
 			distRiver,
 			distCamp,
 			distRoute: state.distRoute,
+			lines,
+			wet: state.wet,
+			moor: state.moor,
+			forest: state.forest ?? new Float32Array(score.length),
 		},
 		// Große Linien nur nach Neuberechnung mitschicken
 		streams: waterChanged || full ? state.streams : undefined,

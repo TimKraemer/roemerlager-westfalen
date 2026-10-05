@@ -758,7 +758,8 @@
 						"label": "Wikipedia: Schatzfund von Gehrden",
 						"url": "https://de.wikipedia.org/wiki/Schatzfund_von_Gehrden"
 					}
-				]
+				],
+				"waypoint": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -783,7 +784,8 @@
 						"label": "Wikipedia: Schatzfund von Gehrden",
 						"url": "https://de.wikipedia.org/wiki/Schatzfund_von_Gehrden"
 					}
-				]
+				],
+				"waypoint": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -808,7 +810,8 @@
 						"label": "Steinborn u. a. 2006: Dokumentation römischer Fundmünzen (PDF)",
 						"url": "https://www.roemerfreunde-weser.info/dokumentation-r%C3%B6mischer-fundm%C3%BCnzen-aus-der-region-weserbergland.pdf"
 					}
-				]
+				],
+				"waypoint": true
 			},
 			"geometry": {
 				"type": "Point",

@@ -57,6 +57,15 @@ export const DEFAULT_PARAMS = {
 	tpiRadius: 1500,
 	hideKnownRadius: 2500,
 	routeSigma: 1500,
+	// Aufschlag für gerade Strukturen im Laserscan (0,15 = bis zu +15 %).
+	// Standard 0: die Gegenprobe an bestätigten Lagern zeigte keinen Vorteil.
+	linesBonus: 0,
+	// Abzug für Moore laut Bodenkarte (BK50 NRW, GUM50 NI), 0,7 = −70 %
+	moorPenalty: 0.7,
+	// Abzug für nasse Niederungen nach dem Feuchteindex, 0,4 = bis −40 %
+	wetPenalty: 0.4,
+	// Abzug für heutigen Wald; römerzeitlicher Wald ist unbekannt, daher aus
+	forestPenalty: 0,
 	weights: { ring: 3, water: 2, height: 2, slope: 1, route: 2, corridor: 1 },
 }
 
@@ -135,6 +144,43 @@ export function sampleElevation(grid, sampler) {
 		if (!Number.isFinite(elev[i])) elev[i] = mean
 	}
 	return elev
+}
+
+/**
+ * Steilste Neigung innerhalb jeder Zelle (Grad), aus einem feineren
+ * Abtastgitter des Höhenmodells. Grobe Zellen glätten schmale Kämme wie den
+ * Teutoburger Wald sonst zu sanften Hängen, Routen gingen dann quer drüber.
+ */
+export function computeFineSlope(grid, sampler, metersPerSample = 60) {
+	const { cols, rows, cellPx, cellMeters } = grid
+	const n = Math.max(2, Math.round(cellMeters / metersPerSample))
+	const step = cellPx / n
+	const stepMeters = cellMeters / n
+	const out = new Float32Array(cols * rows)
+	const z = new Float64Array((n + 1) * (n + 1))
+	for (let r = 0; r < rows; r++) {
+		for (let c = 0; c < cols; c++) {
+			const x0 = grid.x0 + c * cellPx
+			const y0 = grid.y0 + r * cellPx
+			for (let j = 0; j <= n; j++)
+				for (let i = 0; i <= n; i++)
+					z[j * (n + 1) + i] = sampler(x0 + i * step, y0 + j * step)
+			let max = 0
+			for (let j = 0; j < n; j++) {
+				for (let i = 0; i < n; i++) {
+					const a = z[j * (n + 1) + i]
+					const dx = (z[j * (n + 1) + i + 1] - a) / stepMeters
+					const dy = (z[(j + 1) * (n + 1) + i] - a) / stepMeters
+					const g = Math.hypot(dx, dy)
+					if (g > max) max = g
+				}
+			}
+			out[r * cols + c] = Number.isFinite(max)
+				? (Math.atan(max) * 180) / Math.PI
+				: 0
+		}
+	}
+	return out
 }
 
 /** Neigung in Grad aus zentralen Differenzen über den Zellabstand. */

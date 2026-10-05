@@ -30,5 +30,24 @@ export const NETWORK = {
 	cellMeters: 500,
 	riverKm2: 300,
 	file: "precomputed/westfalen-netz",
-	routeParams: { connect: true, neighbors: 3, maxPair: 75000 },
+	routeParams: {
+		connect: true,
+		neighbors: 3,
+		maxPair: 75000,
+		// Oberaden 2,6 km neben Beckinghausen bleibt ein eigener Knoten
+		mergeRadius: 2000,
+		// Lippe: von Vetera per Schiff bis Beckinghausen, Anreppen vermutet
+		shipChain: [
+			"vetera",
+			"holsterhausen",
+			"haltern-hauptlager",
+			"olfen",
+			"beckinghausen",
+			"anreppen",
+		],
+		shipNotes: {
+			anreppen:
+				"Die Weiterfahrt auf der oberen Lippe bis Anreppen ist vermutet, das Lager gilt als Versorgungsplatz am Fluss.",
+		},
+	},
 }

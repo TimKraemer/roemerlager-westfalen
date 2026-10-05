@@ -15,6 +15,8 @@ import { VectorTile } from "@mapbox/vector-tile"
 import { decode } from "fast-png"
 import { PbfReader } from "pbf"
 import { lonLatToPixel, pixelToLonLat } from "../src/lib/geo.js"
+import { setMoorDecoder } from "../src/lib/moor.js"
+import { rankedCandidates } from "../src/lib/potential/candidates.js"
 import {
 	cellAt,
 	cellCenter,
@@ -23,9 +25,15 @@ import {
 import { pack } from "../src/lib/potential/packed.js"
 import { evaluate, prepare, waterLines } from "../src/lib/potential/pipeline.js"
 import { NETWORK, REGIONS } from "../src/lib/regions.js"
-import { campsFor, routeCamps } from "../src/lib/sites.js"
+import {
+	campsFor,
+	routeCamps,
+	routeWaypoints,
+	SITES,
+} from "../src/lib/sites.js"
 import { setImageDecoder } from "../src/lib/terrain.js"
 import { VECTOR_TILES } from "../src/lib/water.js"
+import { analyzeWindows } from "./lineaments.mjs"
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), "..")
 const CANDIDATE_THRESHOLD = 0.5
@@ -42,6 +50,21 @@ setImageDecoder(async (blob) => {
 		rgba[j + 3] = 255
 	}
 	return rgba
+})
+
+setMoorDecoder(async (blob) => {
+	const png = decode(new Uint8Array(await blob.arrayBuffer()))
+	const n = png.width * png.height
+	const data = new Uint8Array(n * 4)
+	const ch = png.channels
+	for (let i = 0; i < n; i++) {
+		data[i * 4] = png.data[i * ch]
+		data[i * 4 + 1] = png.data[i * ch + (ch > 2 ? 1 : 0)]
+		data[i * 4 + 2] = png.data[i * ch + (ch > 2 ? 2 : 0)]
+		data[i * 4 + 3] =
+			ch === 4 ? png.data[i * 4 + 3] : ch === 2 ? png.data[i * 2 + 1] : 255
+	}
+	return { data, width: png.width, height: png.height }
 })
 
 /** Ortsnamen (Städte, Dörfer, Ortsteile) aus den Vektorkacheln. */
@@ -98,13 +121,17 @@ async function computeNetwork() {
 		process.stdout.write(
 			`\r${NETWORK.label}: ${stage} ${Math.round(value * 100)} %   `,
 		)
-	const state = await prepare(NETWORK.bbox, params, { onProgress: log })
+	const state = await prepare(NETWORK.bbox, params, {
+		onProgress: log,
+		includeNiMoor: true,
+	})
 	const result = await evaluate(
 		state,
 		{
 			params,
 			camps: campsFor("marching"),
 			routeCamps: routeCamps(),
+			waypoints: routeWaypoints(),
 			routeParams: NETWORK.routeParams,
 			candidateThreshold: CANDIDATE_THRESHOLD,
 		},
@@ -163,19 +190,77 @@ for (const region of REGIONS) {
 		process.stdout.write(
 			`\r${region.label}: ${stage} ${Math.round(value * 100)} %   `,
 		)
-	const state = await prepare(region.bbox, params, { onProgress: log })
+	const state = await prepare(region.bbox, params, {
+		onProgress: log,
+		includeNiMoor: true,
+	})
 	const result = await evaluate(
 		state,
 		{
 			params,
 			camps: campsFor("marching"),
 			routeCamps: routeCamps(),
+			waypoints: routeWaypoints(),
 			routeLines,
 			candidateThreshold: CANDIDATE_THRESHOLD,
 		},
 		{ full: true },
 	)
 	network.stages = refineStages(network.stages, result)
+
+	// Laserscan-Fenster: bestätigte Lager (Prüffälle), Kandidaten mit hoher
+	// Wahrscheinlichkeit und Etappenhalte im Kreis. Nur NRW hat DGM1-Daten.
+	log("Laserscan-Fenster")
+	const points = [
+		...SITES.features
+			.filter(
+				(f) =>
+					f.properties.inModel &&
+					f.properties.status === "bestätigt" &&
+					["marschlager", "legionslager", "kastell"].includes(
+						f.properties.type,
+					),
+			)
+			.map((f) => ({
+				id: f.properties.id,
+				kind: "bestätigt",
+				label: f.properties.name,
+				lon: f.geometry.coordinates[0],
+				lat: f.geometry.coordinates[1],
+			})),
+		...rankedCandidates({ ...result, region: region.id })
+			.filter((c) => c.rank && c.score >= 0.7)
+			.slice(0, 10)
+			.map((c) => ({
+				id: `kandidat-${c.rank}`,
+				kind: "Kandidat",
+				label: `Kandidat ${c.rank}`,
+				lon: c.lon,
+				lat: c.lat,
+			})),
+		...network.stages
+			.filter((st) => st.refined)
+			.map((st, i) => ({
+				id: `etappe-${i + 1}`,
+				kind: "Etappenhalt",
+				label: `Etappenhalt ${st.from} – ${st.to}`,
+				lon: st.lon,
+				lat: st.lat,
+			})),
+	]
+	const lrmDir = join(ROOT, "public", "precomputed", "lrm")
+	mkdirSync(lrmDir, { recursive: true })
+	const lineaments = await analyzeWindows(points, undefined, (id, jpg) =>
+		writeFileSync(join(lrmDir, `${id}.jpg`), jpg),
+	)
+	writeFileSync(
+		join(ROOT, "public", "precomputed", "lineaments.json"),
+		JSON.stringify({ ...lineaments, generatedAt: new Date().toISOString() }),
+	)
+	const looked = lineaments.windows.filter((w) => w.status === "untersucht")
+	console.log(
+		`\nLaserscan: ${looked.length} von ${points.length} Fenstern untersucht`,
+	)
 	log("Ortsnamen laden")
 	const places = await loadPlaces(region.bbox)
 	const { meta, buffer } = pack({

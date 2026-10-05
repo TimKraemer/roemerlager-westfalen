@@ -2,7 +2,7 @@
 
 import { useCallback, useEffect, useRef } from "react"
 import { DEFAULT_REGION, NETWORK } from "@/lib/regions"
-import { campsFor, routeCamps } from "@/lib/sites"
+import { campsFor, routeCamps, routeWaypoints } from "@/lib/sites"
 import { useMapStore } from "@/store/use-map-store"
 import { cellAt, FACTORS } from "./model"
 import { unpack } from "./packed"
@@ -17,8 +17,10 @@ function message(type, extra = {}) {
 		params,
 		camps: campsFor(ringSource),
 		routeCamps: routeCamps(),
+		waypoints: routeWaypoints(),
 		// Mit vorhandenem Netz zählen dessen Routen für den Routen-Faktor
 		routeLines: network?.routes.features.map((f) => f.geometry.coordinates),
+		lineaments: useMapStore.getState().lineaments,
 		candidateThreshold: heatmap.threshold,
 		...extra,
 	}
@@ -89,6 +91,13 @@ export function usePotential(getMap) {
 			.then((r) => (r.ok ? r.json() : null))
 			.then((network) => {
 				if (!cancelled && network) useMapStore.getState().setNetwork(network)
+			})
+			.catch(() => {})
+		fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/precomputed/lineaments.json`)
+			.then((r) => (r.ok ? r.json() : null))
+			.then((lineaments) => {
+				if (!cancelled && lineaments)
+					useMapStore.getState().setLineaments(lineaments)
 			})
 			.catch(() => {})
 		loadPrecomputed(DEFAULT_REGION).then((result) => {
@@ -181,6 +190,10 @@ export function inspectAt(lon, lat, extra = {}) {
 		distRiver: result.raw.distRiver[i],
 		distCamp: result.raw.distCamp[i],
 		distRoute: result.raw.distRoute?.[i] ?? Number.POSITIVE_INFINITY,
+		wet: result.raw.wet?.[i] ?? 0,
+		moor: result.raw.moor?.[i] ?? 0,
+		forest: result.raw.forest?.[i] ?? 0,
+		lines: result.raw.lines?.[i] ?? 0,
 		waterSource: result.waterSource,
 		...extra,
 	}
