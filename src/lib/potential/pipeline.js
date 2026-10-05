@@ -17,6 +17,7 @@ import {
 import {
 	computeRoutes,
 	costSurface,
+	ROUTE_PARAMS,
 	routeStages,
 	routesGeoJSON,
 } from "./routes"
@@ -197,7 +198,7 @@ export async function prepare(
  */
 export async function evaluate(
 	state,
-	{ params, camps, routeCamps, candidateThreshold },
+	{ params, camps, routeCamps, routeLines, routeParams, candidateThreshold },
 	{ isStale = () => false, full = false } = {},
 ) {
 	const { grid, elev, slope } = state
@@ -219,15 +220,22 @@ export async function evaluate(
 	}
 	const { distWater, distRiver } = state
 
-	// Routen hängen am Gelände, an den Gewässern und an den Lagern
-	const routeKey = [
-		waterKey,
-		params.tpiRadius,
-		params.ringMean,
-		routeCamps.map((c) => c.id).join(),
-	].join("|")
+	// Routen hängen am Gelände, an den Gewässern und an den Lagern. Liegen
+	// Linien aus dem überregionalen Netz vor (routeLines), zählen nur diese.
+	const routeKey = routeLines
+		? `netz|${routeLines.length}`
+		: [
+				waterKey,
+				params.tpiRadius,
+				params.ringMean,
+				routeCamps.map((c) => c.id).join(),
+			].join("|")
 	const routesChanged = state.routeKey !== routeKey
-	if (routesChanged) {
+	if (routesChanged && routeLines) {
+		state.routes = []
+		state.distRoute = distanceToLines(grid, routeLines)
+		state.routeKey = routeKey
+	} else if (routesChanged) {
 		state.onProgress("Marschrouten berechnen", 1)
 		const cost = costSurface(grid, {
 			slope,
@@ -235,7 +243,10 @@ export async function evaluate(
 			distWater,
 			distRiver,
 		})
-		const routes = computeRoutes(grid, cost, routeCamps, params.ringMean)
+		const routes = computeRoutes(grid, cost, routeCamps, params.ringMean, {
+			...ROUTE_PARAMS,
+			...routeParams,
+		})
 		const mask = new Uint8Array(grid.cols * grid.rows)
 		for (const route of routes) for (const c of route.cells) mask[c] = 1
 		state.routes = routes
@@ -282,9 +293,29 @@ export async function evaluate(
 		streams: waterChanged || full ? state.streams : undefined,
 		routes:
 			routesChanged || full ? routesGeoJSON(grid, state.routes) : undefined,
-		stages: routeStages(grid, state.routes, score, params.ringMean),
+		stages: routeStages(grid, state.routes, score, params.ringMean, {
+			...ROUTE_PARAMS,
+			...routeParams,
+		}),
 		waterSource: params.waterSource,
 		candidates,
 		ms: Math.round(performance.now() - t0),
 	}
+}
+
+/** Gewässerlinien mit eigener Schwelle, z. B. nur große Flüsse fürs Netz. */
+export function waterLines(state, minKm2, riverKm2) {
+	const { raster } = state
+	const { flow, width } = raster
+	const toLonLat = (i) => {
+		const c = i % width
+		const r = (i - c) / width
+		const [lon, lat] = pixelToLonLat(
+			raster.x0 + (c + 0.5) * raster.step,
+			raster.y0 + (r + 0.5) * raster.step,
+			state.grid.zoom,
+		)
+		return [Number(lon.toFixed(4)), Number(lat.toFixed(4))]
+	}
+	return streamLines(flow, minKm2, riverKm2, toLonLat, width, 1.5)
 }

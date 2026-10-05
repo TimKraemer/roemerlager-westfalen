@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef } from "react"
-import { DEFAULT_REGION } from "@/lib/regions"
+import { DEFAULT_REGION, NETWORK } from "@/lib/regions"
 import { campsFor, routeCamps } from "@/lib/sites"
 import { useMapStore } from "@/store/use-map-store"
 import { cellAt, FACTORS } from "./model"
@@ -11,12 +11,14 @@ import { unpack } from "./packed"
 export const MAX_AREA_KM = 90
 
 function message(type, extra = {}) {
-	const { params, ringSource, heatmap } = useMapStore.getState()
+	const { params, ringSource, heatmap, network } = useMapStore.getState()
 	return {
 		type,
 		params,
 		camps: campsFor(ringSource),
 		routeCamps: routeCamps(),
+		// Mit vorhandenem Netz zählen dessen Routen für den Routen-Faktor
+		routeLines: network?.routes.features.map((f) => f.geometry.coordinates),
 		candidateThreshold: heatmap.threshold,
 		...extra,
 	}
@@ -80,9 +82,15 @@ export function usePotential(getMap) {
 		return () => worker.terminate()
 	}, [])
 
-	// Vorberechnetes Ergebnis der Standardregion sofort anzeigen
+	// Vorberechnetes Ergebnis der Standardregion und das Netz sofort anzeigen
 	useEffect(() => {
 		let cancelled = false
+		fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/${NETWORK.file}.json`)
+			.then((r) => (r.ok ? r.json() : null))
+			.then((network) => {
+				if (!cancelled && network) useMapStore.getState().setNetwork(network)
+			})
+			.catch(() => {})
 		loadPrecomputed(DEFAULT_REGION).then((result) => {
 			const store = useMapStore.getState()
 			if (cancelled || !result || store.result) return

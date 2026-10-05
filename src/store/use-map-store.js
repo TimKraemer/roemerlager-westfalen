@@ -13,7 +13,7 @@ export const useMapStore = create((set) => ({
 	),
 	siteTypes: Object.fromEntries(SITE_TYPES.map((t) => [t.id, true])),
 	showRings: true,
-	showWaterways: false,
+	showWaterways: true,
 	showRoutes: true,
 	// Seitenleiste mit Einstellungen und Quellen, anfangs eingeklappt
 	panelOpen: false,
@@ -37,6 +37,8 @@ export const useMapStore = create((set) => ({
 	derivedWaterways: null,
 	// Mögliche Marschrouten zwischen bekannten Lagern (GeoJSON)
 	routes: null,
+	// Überregionales Netz: Routen, Etappenhalte, große Flüsse (vorberechnet)
+	network: null,
 	selectedSite: null,
 	inspect: null,
 
@@ -65,6 +67,7 @@ export const useMapStore = create((set) => ({
 	setWaterways: (waterways) => set({ waterways }),
 	setDerivedWaterways: (derivedWaterways) => set({ derivedWaterways }),
 	setRoutes: (routes) => set({ routes }),
+	setNetwork: (network) => set({ network }),
 	setSelectedSite: (selectedSite) => set({ selectedSite }),
 	setInspect: (inspect) => set({ inspect }),
 }))

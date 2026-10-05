@@ -16,12 +16,17 @@ export const ROUTE_PARAMS = {
 	mergeRadius: 3000, // Lager näher als das zählen als ein Knoten
 	minPair: 8000,
 	maxPair: 75000,
-	neighbors: 2, // Verbindungen je Lager zu den nächsten Nachbarn
+	neighbors: 3, // Verbindungen je Lager zu den nächsten Nachbarn
+	// Spannbaum ergänzen, damit jedes Lager im Raster am Netz hängt
+	connect: false,
 	stageSearch: 3000, // Suchradius um einen Etappenpunkt
 	riverPenalty: 4,
 	streamPenalty: 1.5,
 	wetPenalty: 2.5,
 	steepPenalty: 4,
+	// Trockene Talränder an großen Flüssen: Leitlinie und Nachschubweg
+	valleyBonus: 0.8,
+	valleyDistance: 3000,
 }
 
 function tobler(tanSlope) {
@@ -47,6 +52,12 @@ export function costSurface(
 		// Aue/Bruch: tief, flach, nah am Wasser
 		if (tpi[i] < -2 && slope[i] < 1 && distWater[i] < 400) c *= p.wetPenalty
 		if (slope[i] > 15) c *= p.steepPenalty
+		else if (
+			distRiver[i] >= onWater &&
+			distRiver[i] < p.valleyDistance &&
+			tpi[i] >= -2
+		)
+			c *= p.valleyBonus
 		cost[i] = c
 	}
 	return cost
@@ -189,7 +200,44 @@ export function campPairs(nodes, p = ROUTE_PARAMS) {
 			pairs.set(key, { a: x, b: y, crow: d })
 		}
 	})
+	if (p.connect) connectTree(nodes, pairs)
 	return [...pairs.values()]
+}
+
+/** Kruskal über alle Lager im Raster: fehlende Verbindungen ergänzen. */
+function connectTree(nodes, pairs) {
+	const inside = [...nodes.keys()].filter((i) => !nodes[i].outside)
+	const parent = new Map(inside.map((i) => [i, i]))
+	const find = (i) => {
+		while (parent.get(i) !== i) i = parent.get(i)
+		return i
+	}
+	const union = (a, b) => parent.set(find(a), find(b))
+	for (const { a, b } of pairs.values()) {
+		if (parent.has(a) && parent.has(b)) union(a, b)
+	}
+	const edges = []
+	for (let x = 0; x < inside.length; x++) {
+		for (let y = x + 1; y < inside.length; y++) {
+			const a = nodes[inside[x]]
+			const b = nodes[inside[y]]
+			edges.push({
+				a: inside[x],
+				b: inside[y],
+				d: haversine(a.lon, a.lat, b.lon, b.lat),
+			})
+		}
+	}
+	edges.sort((u, v) => u.d - v.d)
+	for (const { a, b, d } of edges) {
+		if (find(a) === find(b)) continue
+		union(a, b)
+		pairs.set(`${Math.min(a, b)}-${Math.max(a, b)}`, {
+			a: Math.min(a, b),
+			b: Math.max(a, b),
+			crow: d,
+		})
+	}
 }
 
 /** Letzte Zelle im Raster auf der Luftlinie von a nach b. */

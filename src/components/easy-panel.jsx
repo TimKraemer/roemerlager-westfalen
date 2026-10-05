@@ -89,6 +89,18 @@ function Legend() {
 				"Möglicher Marschweg zwischen zwei Lagern",
 			)}
 			{item(
+				<Box
+					sx={{
+						width: 22,
+						height: 4,
+						bgcolor: "#1565c0",
+						borderRadius: 1,
+						outline: "1px solid #fff",
+					}}
+				/>,
+				"Natürlicher Flusslauf (aus dem Gelände, ohne Kanäle)",
+			)}
+			{item(
 				<Box sx={{ width: 22, borderTop: "2px dashed #6a1b9a" }} />,
 				"Ein Tagesmarsch (rund 20 km) um ein Marschlager",
 			)}
@@ -133,10 +145,10 @@ export default function EasyPanel({ onFlyTo }) {
 			<Stack direction="row" sx={{ alignItems: "flex-start" }}>
 				<Box sx={{ flex: 1 }}>
 					<Typography variant="h6" sx={{ lineHeight: 1.2 }}>
-						Wo lagerten die Römer?
+						Mögliche Marschlager-Positionen
 					</Typography>
 					<Typography variant="caption" color="text.secondary">
-						{DEFAULT_REGION.label}, um Christi Geburt
+						Errechnete Werte für den {DEFAULT_REGION.label}
 					</Typography>
 				</Box>
 				<IconButton
@@ -211,16 +223,6 @@ export default function EasyPanel({ onFlyTo }) {
 						</List>
 					)}
 
-					<Typography
-						variant="caption"
-						color="text.secondary"
-						component="p"
-						sx={{ mt: 1.5 }}
-					>
-						Das ist eine Modellrechnung, keine Fundstelle. Wer nach
-						Bodendenkmälern graben oder mit einer Metallsonde suchen will,
-						braucht eine Genehmigung der Denkmalbehörde.
-					</Typography>
 					<Typography
 						variant="caption"
 						color="text.secondary"

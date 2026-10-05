@@ -15,10 +15,14 @@ import { VectorTile } from "@mapbox/vector-tile"
 import { decode } from "fast-png"
 import { PbfReader } from "pbf"
 import { lonLatToPixel, pixelToLonLat } from "../src/lib/geo.js"
-import { DEFAULT_PARAMS } from "../src/lib/potential/model.js"
+import {
+	cellAt,
+	cellCenter,
+	DEFAULT_PARAMS,
+} from "../src/lib/potential/model.js"
 import { pack } from "../src/lib/potential/packed.js"
-import { evaluate, prepare } from "../src/lib/potential/pipeline.js"
-import { REGIONS } from "../src/lib/regions.js"
+import { evaluate, prepare, waterLines } from "../src/lib/potential/pipeline.js"
+import { NETWORK, REGIONS } from "../src/lib/regions.js"
 import { campsFor, routeCamps } from "../src/lib/sites.js"
 import { setImageDecoder } from "../src/lib/terrain.js"
 import { VECTOR_TILES } from "../src/lib/water.js"
@@ -86,6 +90,72 @@ async function loadPlaces(bbox) {
 	return [...places.values()]
 }
 
+/** Überregionales Netz: Routen, grobe Etappenhalte, große Flüsse. */
+async function computeNetwork() {
+	const t0 = Date.now()
+	const params = { ...DEFAULT_PARAMS, cellMeters: NETWORK.cellMeters }
+	const log = (stage, value = 0) =>
+		process.stdout.write(
+			`\r${NETWORK.label}: ${stage} ${Math.round(value * 100)} %   `,
+		)
+	const state = await prepare(NETWORK.bbox, params, { onProgress: log })
+	const result = await evaluate(
+		state,
+		{
+			params,
+			camps: campsFor("marching"),
+			routeCamps: routeCamps(),
+			routeParams: NETWORK.routeParams,
+			candidateThreshold: CANDIDATE_THRESHOLD,
+		},
+		{ full: true },
+	)
+	const rivers = waterLines(state, NETWORK.riverKm2, 2000)
+	console.log(
+		`\n${NETWORK.label}: ${result.routes.features.length} Routen, ` +
+			`${result.stages.length} Etappen, ${rivers.features.length} Flussabschnitte, ` +
+			`${Math.round((Date.now() - t0) / 1000)} s`,
+	)
+	return { routes: result.routes, stages: result.stages, rivers }
+}
+
+/** Etappenhalte im Kreis auf die beste Zelle des feinen Rasters setzen. */
+function refineStages(stages, regional) {
+	const { grid, score } = regional
+	const k = Math.round(3000 / grid.cellMeters)
+	return stages.map((stage) => {
+		const center = cellAt(grid, stage.lon, stage.lat)
+		if (center < 0) return stage
+		const cx = center % grid.cols
+		const cy = Math.floor(center / grid.cols)
+		let best = center
+		for (let dy = -k; dy <= k; dy++) {
+			for (let dx = -k; dx <= k; dx++) {
+				const x = cx + dx
+				const y = cy + dy
+				if (
+					dx * dx + dy * dy > k * k ||
+					x < 0 ||
+					y < 0 ||
+					x >= grid.cols ||
+					y >= grid.rows
+				)
+					continue
+				if (score[y * grid.cols + x] > score[best]) best = y * grid.cols + x
+			}
+		}
+		const [lon, lat] = cellCenter(
+			grid,
+			best % grid.cols,
+			Math.floor(best / grid.cols),
+		)
+		return { ...stage, lon, lat, score: score[best], refined: true }
+	})
+}
+
+const network = await computeNetwork()
+const routeLines = network.routes.features.map((f) => f.geometry.coordinates)
+
 for (const region of REGIONS) {
 	const t0 = Date.now()
 	const params = DEFAULT_PARAMS
@@ -100,14 +170,18 @@ for (const region of REGIONS) {
 			params,
 			camps: campsFor("marching"),
 			routeCamps: routeCamps(),
+			routeLines,
 			candidateThreshold: CANDIDATE_THRESHOLD,
 		},
 		{ full: true },
 	)
+	network.stages = refineStages(network.stages, result)
 	log("Ortsnamen laden")
 	const places = await loadPlaces(region.bbox)
 	const { meta, buffer } = pack({
 		...result,
+		routes: null,
+		stages: [],
 		region: region.id,
 		params,
 		ringSource: "marching",
@@ -120,9 +194,15 @@ for (const region of REGIONS) {
 	writeFileSync(`${base}.bin`, buffer)
 	console.log(
 		`\n${region.label}: ${result.grid.cols} × ${result.grid.rows} Zellen, ` +
-			`${result.candidates.length} Kandidaten, ${result.routes.features.length} Routen, ` +
-			`${result.stages.length} Etappen, ${places.length} Orte, ` +
+			`${result.candidates.length} Kandidaten, ${places.length} Orte, ` +
 			`${Math.round(JSON.stringify(meta).length / 1024)} KB JSON + ${Math.round(buffer.length / 1024)} KB Raster, ` +
 			`${Math.round((Date.now() - t0) / 1000)} s`,
 	)
 }
+
+const netFile = join(ROOT, "public", `${NETWORK.file}.json`)
+writeFileSync(
+	netFile,
+	JSON.stringify({ ...network, generatedAt: new Date().toISOString() }),
+)
+console.log(`Netz: ${Math.round(JSON.stringify(network).length / 1024)} KB`)

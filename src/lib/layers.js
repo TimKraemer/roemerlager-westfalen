@@ -105,7 +105,7 @@ export const OVERLAYS = [
 		wms: "https://www.wms.nrw.de/geobasis/wms_nw_dgm-schummerung",
 		layers: "nw_dgm-schummerung_col",
 		attribution: GEOBASIS_NRW,
-		opacity: 0.6,
+		opacity: 0.5,
 		visible: true,
 	},
 	{

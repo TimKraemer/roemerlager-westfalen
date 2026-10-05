@@ -82,23 +82,36 @@ function addAnalysisLayers(map) {
 		paint: { "raster-resampling": "nearest", "raster-fade-duration": 0 },
 	})
 
+	// Natürliche Flussläufe mit heller Kontur, gut sichtbar auf dem Luftbild
+	const riverWidth = (river, stream) => [
+		"interpolate",
+		["linear"],
+		["zoom"],
+		7,
+		["match", ["get", "kind"], "river", river[0], stream[0]],
+		13,
+		["match", ["get", "kind"], "river", river[1], stream[1]],
+	]
 	map.addSource("waterways", { type: "geojson", data: EMPTY })
+	map.addLayer({
+		id: "waterways-casing",
+		type: "line",
+		source: "waterways",
+		layout: { visibility: "none", "line-cap": "round", "line-join": "round" },
+		paint: {
+			"line-color": "#fff",
+			"line-opacity": 0.8,
+			"line-width": riverWidth([4, 8], [1.5, 3.5]),
+		},
+	})
 	map.addLayer({
 		id: "waterways",
 		type: "line",
 		source: "waterways",
-		layout: { visibility: "none" },
+		layout: { visibility: "none", "line-cap": "round", "line-join": "round" },
 		paint: {
-			"line-color": "#29b6f6",
-			"line-width": [
-				"interpolate",
-				["linear"],
-				["zoom"],
-				8,
-				["match", ["get", "kind"], "river", 1.5, 0.5],
-				13,
-				["match", ["get", "kind"], "river", 4, 1.8],
-			],
+			"line-color": "#1565c0",
+			"line-width": riverWidth([2.5, 5.5], [0.8, 2]),
 		},
 	})
 
@@ -339,8 +352,9 @@ function handleClick(map, e) {
 	const stage = pick("stages")
 	if (stage) {
 		const [lon, lat] = stage.geometry.coordinates
+		const extra = { kind: "stage", stage: { ...stage.properties } }
 		store.setInspect(
-			inspectAt(lon, lat, { kind: "stage", stage: { ...stage.properties } }),
+			inspectAt(lon, lat, extra) ?? { ...extra, lon, lat, outside: true },
 		)
 		return
 	}
@@ -373,8 +387,9 @@ function handleClick(map, e) {
 	const route = pick("routes")
 	if (route) {
 		const { lng, lat } = e.lngLat
+		const extra = { kind: "route", route: { ...route.properties } }
 		store.setInspect(
-			inspectAt(lng, lat, { kind: "route", route: { ...route.properties } }),
+			inspectAt(lng, lat, extra) ?? { ...extra, lon: lng, lat, outside: true },
 		)
 		return
 	}
@@ -402,7 +417,10 @@ export default function MapView({ onMapReady }) {
 	const heatmap = useMapStore((s) => s.heatmap)
 	const result = useMapStore((s) => s.result)
 	const derivedWaterways = useMapStore((s) => s.derivedWaterways)
-	const routes = useMapStore((s) => s.routes)
+	const network = useMapStore((s) => s.network)
+	const localRoutes = useMapStore((s) => s.routes)
+	// Das Netz hat Vorrang, eigene Routen gibt es nur ohne Netz
+	const routes = network?.routes ?? localRoutes
 	const selectedSite = useMapStore((s) => s.selectedSite)
 
 	useEffect(() => {
@@ -505,18 +523,23 @@ export default function MapView({ onMapReady }) {
 	useEffect(() => {
 		if (!alive(map)) return
 		const dem = waterSource !== "osm"
-		map
-			.getSource("waterways")
-			.setData(dem && derivedWaterways ? derivedWaterways : EMPTY)
-		map.setLayoutProperty(
-			"waterways",
-			"visibility",
-			showWaterways && dem ? "visible" : "none",
-		)
+		// Natürliche Flussläufe: große Flüsse aus dem Netz, Bäche im Kreis
+		const features = [
+			...(network?.rivers.features ?? []),
+			...(dem && derivedWaterways ? derivedWaterways.features : []),
+		]
+		map.getSource("waterways").setData({ type: "FeatureCollection", features })
+		for (const id of ["waterways", "waterways-casing"]) {
+			map.setLayoutProperty(
+				id,
+				"visibility",
+				showWaterways ? "visible" : "none",
+			)
+		}
 		if (showWaterways && !dem) {
 			useMapStore.getState().setOverlay("osm-gewaesser", { visible: true })
 		}
-	}, [derivedWaterways, showWaterways, waterSource, map])
+	}, [derivedWaterways, network, showWaterways, waterSource, map])
 
 	useEffect(() => {
 		if (!alive(map)) return
@@ -569,7 +592,7 @@ export default function MapView({ onMapReady }) {
 		})
 		stages.setData({
 			type: "FeatureCollection",
-			features: (result.stages ?? []).map((s) => ({
+			features: (network?.stages ?? result.stages ?? []).map((s) => ({
 				type: "Feature",
 				properties: {
 					from: s.from,
@@ -583,7 +606,7 @@ export default function MapView({ onMapReady }) {
 				geometry: { type: "Point", coordinates: [s.lon, s.lat] },
 			})),
 		})
-	}, [result, heatmap, map])
+	}, [result, heatmap, network, map])
 
 	useEffect(() => {
 		if (!alive(map) || !selectedSite) return

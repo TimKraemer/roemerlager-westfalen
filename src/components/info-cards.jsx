@@ -50,6 +50,7 @@ export function InfoCards() {
 	const selectedSite = useMapStore((s) => s.selectedSite)
 	const inspect = useMapStore((s) => s.inspect)
 	if (selectedSite) return <SiteCard id={selectedSite} />
+	if (inspect?.outside) return <OutsideCard data={inspect} />
 	if (inspect) return <InspectCard data={inspect} />
 	return null
 }
@@ -207,6 +208,80 @@ function SimpleReasons({ data }) {
 				</Stack>
 			))}
 		</Box>
+	)
+}
+
+/** Etappenhalt oder Route außerhalb des vorberechneten Kreises. */
+function OutsideCard({ data }) {
+	const setInspect = useMapStore((s) => s.setInspect)
+	const setPanelOpen = useMapStore((s) => s.setPanelOpen)
+	const near = nearestSites(data.lon, data.lat, 3)
+	return (
+		<Paper elevation={4} sx={cardSx}>
+			<CardHeader
+				title={
+					data.kind === "stage"
+						? "Möglicher Etappenhalt"
+						: "Möglicher Marschweg"
+				}
+				onClose={() => setInspect(null)}
+			>
+				<Typography variant="caption" color="text.secondary">
+					{data.lat.toFixed(4)}° N, {data.lon.toFixed(4)}° O
+				</Typography>
+			</CardHeader>
+			{data.kind === "stage" ? (
+				<Typography variant="body2">
+					Etappe {data.stage.stage} von {data.stage.of} auf dem berechneten Weg{" "}
+					{data.stage.from} – {data.stage.to}, nach {data.stage.km} km. Ein Heer
+					hätte hier nach einem Tagesmarsch sein Lager gebaut.
+				</Typography>
+			) : (
+				<Typography variant="body2">
+					Ein möglicher Weg von {data.route.from} nach {data.route.to}:{" "}
+					{data.route.km} km, etwa {data.route.days} Tagesmärsche. Berechnet als
+					der Weg mit der geringsten Gehzeit, Flusstäler bevorzugt, steile
+					Hänge, Niederungen und Flussquerungen gemieden. Belegt ist der Weg
+					nicht.
+				</Typography>
+			)}
+			<Typography
+				variant="overline"
+				color="text.secondary"
+				component="div"
+				sx={{ mt: 1 }}
+			>
+				Nächste bekannte Lager
+			</Typography>
+			{near.map((n) => (
+				<Stack
+					key={n.name}
+					direction="row"
+					sx={{ justifyContent: "space-between" }}
+				>
+					<Typography variant="body2">{n.name}</Typography>
+					<Typography variant="body2" color="text.secondary">
+						{fmtM(n.d)}
+					</Typography>
+				</Stack>
+			))}
+			<Typography
+				variant="caption"
+				color="text.secondary"
+				component="p"
+				sx={{ mt: 1.5 }}
+			>
+				Außerhalb des vorberechneten Kreises. Messwerte gibt es, wenn der
+				Ausschnitt im Reiter „Analyse“ berechnet wird.
+			</Typography>
+			<Button
+				size="small"
+				onClick={() => setPanelOpen(true)}
+				sx={{ px: 0, textTransform: "none" }}
+			>
+				Analyse öffnen
+			</Button>
+		</Paper>
 	)
 }
 

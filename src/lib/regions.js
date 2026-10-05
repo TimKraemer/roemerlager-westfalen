@@ -17,3 +17,18 @@ export const REGIONS = [
 ]
 
 export const DEFAULT_REGION = REGIONS[0]
+
+/**
+ * Überregionales Marschwege-Netz: von Vetera am Rhein über die Lippelager
+ * bis Wilkenburg und Hedemünden, gröber gerechnet (500 m). Liefert Routen,
+ * Etappenhalte und die großen natürlichen Flussläufe.
+ */
+export const NETWORK = {
+	id: "westfalen-netz",
+	label: "Westfalen und Nachbarregionen",
+	bbox: [6.3, 51.25, 10.0, 52.75],
+	cellMeters: 500,
+	riverKm2: 300,
+	file: "precomputed/westfalen-netz",
+	routeParams: { connect: true, neighbors: 3, maxPair: 75000 },
+}
