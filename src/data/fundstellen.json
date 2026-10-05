@@ -1,0 +1,636 @@
+{
+	"type": "FeatureCollection",
+	"features": [
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "vetera",
+				"name": "Vetera I (Xanten-Fürstenberg)",
+				"type": "legionslager",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "56–60",
+				"dating": "13/12 v. Chr. – 70 n. Chr.",
+				"place": "Xanten, Kreis Wesel",
+				"description": "Ausgangsbasis der Feldzüge an der Lippe. Von hier führte der Weg lippeaufwärts nach Osten.",
+				"sources": [
+					{
+						"label": "Wikipedia: Vetera",
+						"url": "https://de.wikipedia.org/wiki/Vetera"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [6.4706, 51.6452]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "holsterhausen",
+				"name": "Dorsten-Holsterhausen",
+				"type": "marschlager",
+				"precision": "ungefähr, ±0,5–1 km",
+				"size_ha": "12–56",
+				"dating": "11 v. Chr. – 9 n. Chr.",
+				"place": "Dorsten, Kreis Recklinghausen",
+				"description": "Mehrere sich überlagernde Marschlager an der Lippe, darunter zwei Doppellegionslager mit 54–56 ha. Punkt liegt in der Mitte des Fundareals.",
+				"sources": [
+					{
+						"label": "Wikipedia: Marschlager Holsterhausen",
+						"url": "https://de.wikipedia.org/wiki/Marschlager_Holsterhausen"
+					},
+					{
+						"label": "Römerlager in Westfalen, Heft 2 (PDF)",
+						"url": "https://www.altertumskommission.lwl.org/media/filer_public/f1/f6/f1f6b8f9-6c43-4338-90a9-f6b51e812aae/rw_2_2014.pdf"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [6.9503, 51.6758]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "haltern-hauptlager",
+				"name": "Haltern, Hauptlager",
+				"type": "legionslager",
+				"precision": "Tor- oder Detailpunkt, etwa ±50 m",
+				"size_ha": "18,5–20,1",
+				"dating": "ca. 7 v. Chr. – 9 n. Chr.",
+				"place": "Haltern am See",
+				"description": "Größtes und am besten erforschtes Lager an der Lippe. Punkt am rekonstruierten Westtor, die Lagermitte liegt etwa 200 m östlich.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römerlager Haltern",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Haltern"
+					},
+					{
+						"label": "Römerlager in Westfalen, Heft 5 (PDF)",
+						"url": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
+					},
+					{
+						"label": "Tremmel, Westliche Umwehrung des Hauptlagers, AiW 2012",
+						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25988/19704"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [7.168, 51.7408]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "haltern-feldlager",
+				"name": "Haltern, Feldlager",
+				"type": "marschlager",
+				"precision": "Tor- oder Detailpunkt, etwa ±50 m",
+				"size_ha": "34,5",
+				"dating": "augusteisch, älter als das Hauptlager",
+				"place": "Haltern am See",
+				"description": "Großes Marschlager nördlich des Hauptlagers. Punkt am Nordtor.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römerlager Haltern",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Haltern"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [7.1676, 51.7451]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "haltern-2021",
+				"name": "Haltern, ältestes Marschlager (2021)",
+				"type": "marschlager",
+				"precision": "ungefähr, ±0,5–1 km",
+				"size_ha": "24,2",
+				"dating": "12/11 v. Chr. (Drusus)",
+				"place": "Haltern am See",
+				"description": "2021 über Bewuchsmerkmale und Magnetik nachgewiesen. Liegt nördlich des LWL-Römermuseums und überlappt das Hauptlager. Lage geschätzt.",
+				"sources": [
+					{
+						"label": "LWL-Pressemitteilung 06.10.2021",
+						"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=53541"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [7.171, 51.744]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "haltern-annaberg",
+				"name": "Haltern, Annaberg",
+				"type": "kastell",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "ca. 7",
+				"dating": "augusteisch",
+				"place": "Haltern am See",
+				"description": "Befestigung auf dem Annaberg über der Lippe. Funktion wird diskutiert.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römerlager Haltern",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Haltern"
+					},
+					{
+						"label": "LWL-Pressemitteilung Vortrag Annaberg 2024",
+						"url": "https://www.lwl.org/pressemitteilungen/mitteilung.php?urlID=59236"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [7.1544, 51.7293]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "haltern-ufer",
+				"name": "Haltern, Uferkastelle Hofestatt und Wiegel",
+				"type": "kastell",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "unter 2",
+				"dating": "augusteisch",
+				"place": "Haltern am See",
+				"description": "Anlegestellen mit Schiffshäusern an der Lippe.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römerlager Haltern",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Haltern"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [7.1728, 51.7389]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "haltern-borg",
+				"name": "Haltern, Ostlager „In der Borg“",
+				"type": "marschlager",
+				"precision": "ungefähr, ±0,5–1 km",
+				"size_ha": null,
+				"dating": "augusteisch",
+				"place": "Haltern am See",
+				"description": "Marschlager östlich des Hauptlagers. Punkt über den Straßennamen ermittelt.",
+				"sources": [
+					{
+						"label": "Tremmel, Prospektionen im Marschlager „In der Borg“, AiW 2011",
+						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25120/18826"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [7.189, 51.749]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "olfen",
+				"name": "Olfen-Sülsen",
+				"type": "kastell",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "5,4",
+				"dating": "11 v. Chr.",
+				"place": "Olfen, Kreis Coesfeld",
+				"description": "Versorgungs- oder Etappenlager aus der Zeit der Drususfeldzüge.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römerlager Olfen",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Olfen"
+					},
+					{
+						"label": "Tremmel, Olfen-Sülsen, AiW 2011 (Heft)",
+						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/issue/view/2515"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [7.3567, 51.6869]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "beckinghausen",
+				"name": "Lünen-Beckinghausen",
+				"type": "kastell",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "2,5",
+				"dating": "11 – 8/7 v. Chr.",
+				"place": "Lünen, Kreis Unna",
+				"description": "Uferkastell an der Lippe, vermutlich Hafen und Versorgung für Oberaden.",
+				"sources": [
+					{
+						"label": "Wikipedia: Uferkastell Beckinghausen",
+						"url": "https://de.wikipedia.org/wiki/Uferkastell_Beckinghausen"
+					},
+					{
+						"label": "Römerlager in Westfalen, Heft 3 (PDF)",
+						"url": "https://www.altertumskommission.lwl.org/media/filer_public/c3/3f/c33f9e97-a2b3-4908-8f84-c485c50b030a/rw_32_2011.pdf"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [7.5479, 51.6139]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "oberaden",
+				"name": "Bergkamen-Oberaden",
+				"type": "legionslager",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "56",
+				"dating": "11 – 8/7 v. Chr.",
+				"place": "Bergkamen, Kreis Unna",
+				"description": "Großes Legionslager der Drususzeit auf einer Anhöhe südlich der Lippe.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römerlager Oberaden",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Oberaden"
+					},
+					{
+						"label": "Römerlager in Westfalen, Heft 3 (PDF)",
+						"url": "https://www.altertumskommission.lwl.org/media/filer_public/c3/3f/c33f9e97-a2b3-4908-8f84-c485c50b030a/rw_32_2011.pdf"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [7.5844, 51.6125]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "kneblinghausen",
+				"name": "Rüthen-Kneblinghausen",
+				"type": "kastell",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "11 bzw. 8",
+				"dating": "unsicher (augusteisch oder spätes 1. Jh.)",
+				"place": "Rüthen, Kreis Soest",
+				"description": "Lager in 410 m Höhe auf der Haar. Funktion und Datierung sind offen.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römerlager Kneblinghausen",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Kneblinghausen"
+					},
+					{
+						"label": "Römerlager in Westfalen, Heft 1 (PDF)",
+						"url": "https://www.altertumskommission.lwl.org/media/filer_public/f1/1a/f11a8f4c-7152-44fd-8989-20395113ad02/rw_1_2014.pdf"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.5049, 51.4908]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "anreppen",
+				"name": "Delbrück-Anreppen",
+				"type": "kastell",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "23",
+				"dating": "4/5 – 9 n. Chr.",
+				"place": "Delbrück, Kreis Paderborn",
+				"description": "Versorgungs- und Winterlager an der oberen Lippe, östlichstes bekanntes Lippelager.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römerlager Anreppen",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Anreppen"
+					},
+					{
+						"label": "Römerlager in Westfalen, Heft 4 (PDF)",
+						"url": "https://www.altertumskommission.lwl.org/media/filer_public/cd/40/cd4074b6-60d5-4bf2-a90a-9d1b6812c556/rw_4_2014.pdf"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.5919, 51.7375]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "paderborn",
+				"name": "Paderborn, St. Johannisstift",
+				"type": "marschlager",
+				"precision": "ungefähr, ±0,5–1 km",
+				"size_ha": "ca. 30 (erschlossen)",
+				"dating": "um Christi Geburt (C14)",
+				"place": "Paderborn",
+				"description": "Feldbacköfen und Amphorenscherben deuten auf ein Marschlager. Die LWL-Mitteilung nennt dazu Tagesmärsche von rund 20 km.",
+				"sources": [
+					{
+						"label": "LWL-Pressemitteilung 23.06.2023",
+						"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=57212"
+					},
+					{
+						"label": "LWL-Pressemitteilung Paderborn",
+						"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=56091"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.741, 51.724]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "sennestadt",
+				"name": "Bielefeld-Sennestadt (Haus Neuland)",
+				"type": "marschlager",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "26",
+				"dating": "augusteisch (nach der Form)",
+				"place": "Bielefeld",
+				"description": "2018/19 im Laserscan entdeckt, der Wall ist teils noch obertägig erhalten.",
+				"sources": [
+					{
+						"label": "Wikipedia: Marschlager Bielefeld-Sennestadt",
+						"url": "https://de.wikipedia.org/wiki/Marschlager_Bielefeld-Sennestadt"
+					},
+					{
+						"label": "Tremmel/Schubert, AiW 2018",
+						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/view/76852"
+					},
+					{
+						"label": "LWL-Pressemitteilung 08.05.2019",
+						"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=47898"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.6341, 51.9529]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "sparrenberg",
+				"name": "Bielefeld, Sparrenberger Egge",
+				"type": "kastell",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "klein",
+				"dating": "augusteisch",
+				"place": "Bielefeld",
+				"description": "Kreisgraben eines nie fertiggestellten Wach- und Signalturms am Teutoburger Wald.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römische Kreisgrabenanlage auf der Sparrenberger Egge",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6mische_Kreisgrabenanlage_auf_der_Sparrenberger_Egge"
+					},
+					{
+						"label": "Römerlager in Westfalen, Heft 6 (PDF)",
+						"url": "https://www.altertumskommission.lwl.org/media/filer_public/be/5e/be5e344d-ce46-49a1-a09a-6dff26620a7e/rw_6_2011.pdf"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.5453, 52.0034]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "barkhausen",
+				"name": "Porta Westfalica-Barkhausen „Auf der Lake“",
+				"type": "marschlager",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "unbekannt (3 ha ergraben)",
+				"dating": "augusteisch, entdeckt 2008",
+				"place": "Porta Westfalica, Kreis Minden-Lübbecke",
+				"description": "Marschlager an der Weser nördlich der Porta. Von Tremmel ausgegraben und publiziert.",
+				"sources": [
+					{
+						"label": "Wikipedia: Marschlager Porta Westfalica",
+						"url": "https://de.wikipedia.org/wiki/Marschlager_Porta_Westfalica"
+					},
+					{
+						"label": "Tremmel, Marschlager Barkhausen, AiW 2010",
+						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25926/19643"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.9121, 52.2571]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "kalkriese",
+				"name": "Kalkriese (Oberesch)",
+				"type": "schlachtfeld",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": null,
+				"dating": "9 n. Chr. (alternativ 15/16 n. Chr.)",
+				"place": "Bramsche, Landkreis Osnabrück",
+				"description": "Fundplatz einer großen Schlacht, meist mit der Varusschlacht verbunden.",
+				"sources": [
+					{
+						"label": "Wikipedia: Fundregion Kalkriese",
+						"url": "https://de.wikipedia.org/wiki/Fundregion_Kalkriese"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.1294, 52.4081]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "wilkenburg",
+				"name": "Hannover-Wilkenburg",
+				"type": "marschlager",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "ca. 30 (bis 40)",
+				"dating": "ca. 1–6 n. Chr.",
+				"place": "Hemmingen, Region Hannover",
+				"description": "Marschlager an der Leine. Tremmel hält zwischen Barkhausen und Wilkenburg zwei bis drei weitere Lager für möglich.",
+				"sources": [
+					{
+						"label": "Wikipedia: Marschlager von Wilkenburg",
+						"url": "https://de.wikipedia.org/wiki/Marschlager_von_Wilkenburg"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [9.7537, 52.3081]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "hedemuenden",
+				"name": "Hann. Münden-Hedemünden",
+				"type": "kastell",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "3,2 (Plateau 20)",
+				"dating": "11–7 v. Chr.",
+				"place": "Hann. Münden, Landkreis Göttingen",
+				"description": "Befestigter Stützpunkt in Höhenlage über der Werra.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römerlager Hedemünden",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Hedem%C3%BCnden"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [9.74, 51.3956]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "bentumersiel",
+				"name": "Bentumersiel (Ems)",
+				"type": "verdacht",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": null,
+				"dating": "augusteisch/tiberisch",
+				"place": "Jemgum, Landkreis Leer",
+				"description": "Römische Funde an der Ems, möglicherweise ein Flotten- oder Versorgungsplatz. Ein Lager ist nicht belegt.",
+				"sources": [
+					{
+						"label": "Wikipedia: Fundplatz Bentumersiel",
+						"url": "https://de.wikipedia.org/wiki/Fundplatz_Bentumersiel"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [7.3912, 53.2466]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "waldgirmes",
+				"name": "Lahnau-Waldgirmes",
+				"type": "verdacht",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "ca. 7,7",
+				"dating": "ca. 4 v. – 9 n. Chr.",
+				"place": "Lahnau, Lahn-Dill-Kreis",
+				"description": "Zivile römische Stadtgründung mit Forum, kein Militärlager.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römisches Forum Lahnau-Waldgirmes",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6misches_Forum_Lahnau-Waldgirmes"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.5411, 50.5883]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "dorlar",
+				"name": "Lahnau-Dorlar",
+				"type": "marschlager",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "21",
+				"dating": "1. Jahrzehnt n. Chr.",
+				"place": "Lahnau, Lahn-Dill-Kreis",
+				"description": "Marschlager nahe Waldgirmes.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römerlager Lahnau-Dorlar",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Lahnau-Dorlar"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.5683, 50.585]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "roedgen",
+				"name": "Bad Nauheim-Rödgen",
+				"type": "kastell",
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "3,3",
+				"dating": "um 10 v. Chr.",
+				"place": "Bad Nauheim, Wetteraukreis",
+				"description": "Versorgungslager mit großen Speicherbauten.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römerlager Rödgen",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_R%C3%B6dgen"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.7665, 50.371]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "hoog-buurlo",
+				"name": "Hoog Buurlo (Veluwe, NL)",
+				"type": "marschlager",
+				"precision": "ungefähr, ±0,5–1 km",
+				"size_ha": "ca. 9",
+				"dating": "römisch, Datierung offen",
+				"place": "Apeldoorn, Gelderland",
+				"description": "Über ein Routenmodell mit Tagesmarsch-Abständen und Laserscan gefunden, 2025 ausgegraben. Methodisch das nächste Vorbild für diese Karte.",
+				"sources": [
+					{
+						"label": "Staatsbosbeheer 2025",
+						"url": "https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2025/05/ontdekking-romeins-legerkamp-nabij-hoog-buurlo"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [5.844, 52.176]
+			}
+		}
+	]
+}

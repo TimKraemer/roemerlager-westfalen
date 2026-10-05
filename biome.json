@@ -1,0 +1,24 @@
+{
+	"$schema": "https://biomejs.dev/schemas/2.5.15/schema.json",
+	"files": {
+		"includes": [
+			"**",
+			"!!.next",
+			"!!node_modules",
+			"!bun.lock",
+			"!public/maplibre",
+			"!!out"
+		],
+		"ignoreUnknown": true
+	},
+	"linter": {
+		"enabled": true,
+		"rules": {
+			"suspicious": { "noArrayIndexKey": "off" }
+		}
+	},
+	"formatter": { "enabled": true, "indentStyle": "tab" },
+	"javascript": {
+		"formatter": { "quoteStyle": "double", "semicolons": "asNeeded" }
+	}
+}

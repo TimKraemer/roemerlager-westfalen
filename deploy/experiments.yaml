@@ -1,0 +1,22 @@
+# experiments.erleben.app: statische Experimente neben erleben.app.
+# Server-Pfad: /opt/services/experiments.yaml (der dc-Wrapper nimmt jede
+# *.yaml in /opt/services mit). Der exakte VIRTUAL_HOST hat in nginx-proxy
+# Vorrang vor *.erleben.app der Next-App. Zertifikat: Wildcard erleben.app,
+# deshalb kein LETSENCRYPT_HOST.
+#
+# Einrichten und starten: deploy/setup-server.sh
+services:
+  experiments:
+    container_name: experiments
+    image: nginx:alpine
+    restart: unless-stopped
+    depends_on:
+      - nginx-proxy
+    environment:
+      - VIRTUAL_HOST=experiments.erleben.app
+      - VIRTUAL_PORT=80
+    volumes:
+      - /var/www/www-experiments:/usr/share/nginx/html:ro
+      - ./experiments-nginx.conf:/etc/nginx/conf.d/default.conf:ro
+    networks:
+      - public

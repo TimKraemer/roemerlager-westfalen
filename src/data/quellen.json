@@ -1,0 +1,164 @@
+[
+	{
+		"title": "Dr. Bettina Tremmel (LWL)",
+		"intro": "Aufsätze in „Archäologie in Westfalen-Lippe“ (frei als PDF bei der UB Heidelberg). Ein eigenes Kartenwerk von ihr ist online nicht veröffentlicht, die Lagepläne stecken in diesen Beiträgen.",
+		"items": [
+			{
+				"label": "Augusteische Marschlager in Porta Westfalica-Barkhausen, AiW 2010",
+				"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25926/19643",
+				"note": "Lagepläne der Grabung „Auf der Lake“"
+			},
+			{
+				"label": "Olfen-Sülsen. Ein neues Römerlager aus der Zeit der Drususfeldzüge, AiW 2011",
+				"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/issue/view/2515"
+			},
+			{
+				"label": "Prospektionen im Marschlager Haltern „In der Borg“, AiW 2011",
+				"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25120/18826"
+			},
+			{
+				"label": "Die westliche Umwehrung des Hauptlagers von Haltern, AiW 2012",
+				"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25988/19704"
+			},
+			{
+				"label": "Tremmel/Schubert: Marschlager in Bielefeld-Sennestadt, AiW 2018",
+				"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/view/76852",
+				"note": "Entdeckung im Laserscan"
+			},
+			{
+				"label": "AiW 2021 (Heft, Haltern ältestes Marschlager vermutlich darin)",
+				"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/issue/view/6850"
+			},
+			{
+				"label": "Wikipedia: Bettina Tremmel",
+				"url": "https://de.wikipedia.org/wiki/Bettina_Tremmel"
+			}
+		]
+	},
+	{
+		"title": "LWL-Pressemitteilungen",
+		"items": [
+			{
+				"label": "Paderborn: Marschlager am St. Johannisstift (23.06.2023)",
+				"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=57212",
+				"note": "Nennt Tagesmärsche von rund 20 km"
+			},
+			{
+				"label": "„Wann war Varus wo?“ (02.01.2023)",
+				"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=56161"
+			},
+			{
+				"label": "Ältestes Marschlager in Haltern (06.10.2021)",
+				"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=53541"
+			},
+			{
+				"label": "Marschlager Bielefeld-Sennestadt (08.05.2019)",
+				"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=47898"
+			},
+			{
+				"label": "Haltern, Osttor (24.06.2025)",
+				"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=61588"
+			}
+		]
+	},
+	{
+		"title": "Reihe „Römerlager in Westfalen“ (Altertumskommission)",
+		"intro": "Kurzführer mit Lageplänen, gut zum Georeferenzieren.",
+		"items": [
+			{
+				"label": "Übersicht der Reihe",
+				"url": "https://www.altertumskommission.lwl.org/de/publikationen/roemerlager-westfalen/"
+			},
+			{
+				"label": "Heft 1: Kneblinghausen",
+				"url": "https://www.altertumskommission.lwl.org/media/filer_public/f1/1a/f11a8f4c-7152-44fd-8989-20395113ad02/rw_1_2014.pdf"
+			},
+			{
+				"label": "Heft 2: Holsterhausen",
+				"url": "https://www.altertumskommission.lwl.org/media/filer_public/f1/f6/f1f6b8f9-6c43-4338-90a9-f6b51e812aae/rw_2_2014.pdf"
+			},
+			{
+				"label": "Heft 3: Oberaden und Beckinghausen",
+				"url": "https://www.altertumskommission.lwl.org/media/filer_public/c3/3f/c33f9e97-a2b3-4908-8f84-c485c50b030a/rw_32_2011.pdf"
+			},
+			{
+				"label": "Heft 4: Anreppen",
+				"url": "https://www.altertumskommission.lwl.org/media/filer_public/cd/40/cd4074b6-60d5-4bf2-a90a-9d1b6812c556/rw_4_2014.pdf"
+			},
+			{
+				"label": "Heft 5: Haltern",
+				"url": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
+			},
+			{
+				"label": "Heft 6: Sparrenberger Egge",
+				"url": "https://www.altertumskommission.lwl.org/media/filer_public/be/5e/be5e344d-ce46-49a1-a09a-6dff26620a7e/rw_6_2011.pdf"
+			}
+		]
+	},
+	{
+		"title": "Übersichtskarten",
+		"items": [
+			{
+				"label": "LWL Westfälische Geschichte: Germanenstämme und augusteische Römerlager (Höper 2004)",
+				"url": "https://www.lwl.org/westfaelische-geschichte/portal/Internet/finde/langDatensatz.php?urlID=525&url_tabelle=tab_medien"
+			},
+			{
+				"label": "Römer-Lippe-Route, Karten und Downloads",
+				"url": "https://www.roemerlipperoute.de/service/kostenfreie-downloads/"
+			},
+			{
+				"label": "KuLaDig (LVR), Suche „Römerlager“",
+				"url": "https://www.kuladig.de/api/public/Objekt?Suchtext=R%C3%B6merlager&Anzahl=200",
+				"note": "Offene API mit Koordinaten"
+			}
+		]
+	},
+	{
+		"title": "Standortwahl und Prognosemodelle",
+		"items": [
+			{
+				"label": "Kaye 2013: Roman marching camps in Britain, GIS und Gewässeranalyse",
+				"url": "https://www.bandaarcgeophysics.co.uk/arch/roman-marching-camps-uk.pdf",
+				"note": "374 Lager: 60 % mit Wasser bis 100 m, fast 90 % bis 300 m"
+			},
+			{
+				"label": "Hoog Buurlo (NL): Marschlager über Routenmodell und Laserscan gefunden",
+				"url": "https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2025/05/ontdekking-romeins-legerkamp-nabij-hoog-buurlo"
+			},
+			{
+				"label": "Jens Goeree: vier Marschlager auf der Veluwe",
+				"url": "https://c-limes.nl/2023/12/05/jens-goeree-in-de-stentor-over-zijn-ontdekking-van-vier-romeinse-marskampen-op-de-veluwe/"
+			},
+			{
+				"label": "Lewis 2021: Probabilistic least cost path",
+				"url": "https://link.springer.com/article/10.1007/s10816-021-09522-w"
+			},
+			{
+				"label": "R. H. Jones: Roman Camps in Britain (2012)",
+				"note": "Lagekriterien: Hanglage, Wasser, Anpassung an das Gelände"
+			},
+			{
+				"label": "Ps.-Hyginus, De munitionibus castrorum; Vegetius 1,22 und 3,8",
+				"note": "Antike Regeln: leichte Anhöhe, Wasser nah, nicht überragt, nicht überschwemmt"
+			}
+		]
+	},
+	{
+		"title": "Daten für eigene Auswertungen",
+		"items": [
+			{
+				"label": "DGM1 NRW als GeoTIFF (1 m, Open Data)",
+				"url": "https://www.opengeodata.nrw.de/produkte/geobasis/hm/dgm1_tiff/dgm1_tiff/",
+				"note": "Für ein Local Relief Model auf dem Rechner"
+			},
+			{
+				"label": "Mapterhorn Höhenkacheln (Terrarium, teils amtliche DGM)",
+				"url": "https://tiles.mapterhorn.com/tilejson.json"
+			},
+			{
+				"label": "INSPIRE Bodendenkmäler NRW als WFS",
+				"url": "https://www.wfs.nrw.de/wfs/wfs_nw_inspire-denkmal?SERVICE=WFS&REQUEST=GetCapabilities"
+			}
+		]
+	}
+]

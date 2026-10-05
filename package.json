@@ -1,0 +1,31 @@
+{
+	"name": "roemerlager-westfalen",
+	"version": "0.1.0",
+	"private": true,
+	"scripts": {
+		"dev": "next dev",
+		"postinstall": "bun scripts/copy-maplibre-worker.mjs",
+		"build": "next build",
+		"start": "next start",
+		"test": "bun test",
+		"lint": "biome check .",
+		"lint:fix": "biome check --write .",
+		"deploy": "bash deploy/deploy.sh"
+	},
+	"dependencies": {
+		"@emotion/cache": "^11.14.0",
+		"@emotion/react": "^11.14.0",
+		"@emotion/styled": "^11.14.1",
+		"@mui/icons-material": "^9",
+		"@mui/material": "^9",
+		"@mui/material-nextjs": "^9",
+		"maplibre-gl": "^6",
+		"next": "^16",
+		"react": "^19",
+		"react-dom": "^19",
+		"zustand": "^5"
+	},
+	"devDependencies": {
+		"@biomejs/biome": "^2.4"
+	}
+}

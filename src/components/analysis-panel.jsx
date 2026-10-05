@@ -1,0 +1,292 @@
+"use client"
+
+import {
+	Alert,
+	Box,
+	Button,
+	LinearProgress,
+	List,
+	ListItemButton,
+	ListItemText,
+	Slider,
+	Stack,
+	Switch,
+	ToggleButton,
+	ToggleButtonGroup,
+	Tooltip,
+	Typography,
+} from "@mui/material"
+import { FACTORS } from "@/lib/potential/model"
+import { MAX_AREA_KM } from "@/lib/potential/use-potential"
+import { RING_SOURCES } from "@/lib/sites"
+import { useMapStore } from "@/store/use-map-store"
+import { SectionTitle } from "./layer-panel"
+
+const km = (m) =>
+	`${(m / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} km`
+
+export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
+	const params = useMapStore((s) => s.params)
+	const setParams = useMapStore((s) => s.setParams)
+	const setWeight = useMapStore((s) => s.setWeight)
+	const ringSource = useMapStore((s) => s.ringSource)
+	const setRingSource = useMapStore((s) => s.setRingSource)
+	const heatmap = useMapStore((s) => s.heatmap)
+	const setHeatmap = useMapStore((s) => s.setHeatmap)
+	const analysis = useMapStore((s) => s.analysis)
+	const result = useMapStore((s) => s.result)
+
+	const running = analysis.status === "running"
+
+	return (
+		<Box>
+			<Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+				Bewertet den sichtbaren Kartenausschnitt (höchstens {MAX_AREA_KM} ×{" "}
+				{MAX_AREA_KM} km) nach den Lagekriterien für Marschlager. Am besten auf
+				eine Region um 40–80 km zoomen und dann starten.
+			</Typography>
+
+			<Stack direction="row" spacing={1} sx={{ mt: 2, alignItems: "center" }}>
+				<Button variant="contained" onClick={onAnalyze} disabled={running}>
+					{result ? "Ausschnitt neu berechnen" : "Ausschnitt berechnen"}
+				</Button>
+				{result && (
+					<Typography variant="caption" color="text.secondary">
+						{result.grid.cols} × {result.grid.rows} Zellen
+					</Typography>
+				)}
+			</Stack>
+			{running && (
+				<Box sx={{ mt: 1.5 }}>
+					<Typography variant="caption">{analysis.stage}</Typography>
+					<LinearProgress
+						variant={analysis.progress > 0 ? "determinate" : "indeterminate"}
+						value={analysis.progress * 100}
+					/>
+				</Box>
+			)}
+			{analysis.status === "error" && (
+				<Alert severity="error" sx={{ mt: 1.5 }}>
+					{analysis.error}
+				</Alert>
+			)}
+			{analysis.notice && (
+				<Alert severity="warning" sx={{ mt: 1.5 }}>
+					{analysis.notice}
+				</Alert>
+			)}
+
+			<SectionTitle>Darstellung</SectionTitle>
+			<Stack direction="row" sx={{ alignItems: "center" }}>
+				<Switch
+					size="small"
+					checked={heatmap.visible}
+					onChange={(e) => setHeatmap({ visible: e.target.checked })}
+				/>
+				<Typography variant="body2">Potenzialkarte anzeigen</Typography>
+			</Stack>
+			<LabeledSlider
+				label="Schwelle"
+				value={heatmap.threshold}
+				min={0.2}
+				max={0.9}
+				step={0.01}
+				format={(v) => v.toFixed(2)}
+				onChange={(threshold) => setHeatmap({ threshold })}
+			/>
+			<LabeledSlider
+				label="Deckkraft"
+				value={heatmap.opacity}
+				min={0.1}
+				max={1}
+				step={0.05}
+				format={(v) => `${Math.round(v * 100)} %`}
+				onChange={(opacity) => setHeatmap({ opacity })}
+			/>
+
+			<SectionTitle>Tagesmarsch</SectionTitle>
+			<ToggleButtonGroup
+				size="small"
+				exclusive
+				value={ringSource}
+				onChange={(_, v) => v && setRingSource(v)}
+				sx={{ mb: 1 }}
+			>
+				{RING_SOURCES.map((r) => (
+					<ToggleButton key={r.id} value={r.id} sx={{ textTransform: "none" }}>
+						{r.label}
+					</ToggleButton>
+				))}
+			</ToggleButtonGroup>
+			<LabeledSlider
+				label="Abstand"
+				value={params.ringMean}
+				min={12000}
+				max={28000}
+				step={500}
+				format={km}
+				onChange={(ringMean) => setParams({ ringMean })}
+			/>
+			<LabeledSlider
+				label="Streuung ±"
+				value={params.ringSigma}
+				min={1000}
+				max={6000}
+				step={250}
+				format={km}
+				onChange={(ringSigma) => setParams({ ringSigma })}
+			/>
+			<LabeledSlider
+				label="Bekannte Lager ausblenden bis"
+				value={params.hideKnownRadius}
+				min={0}
+				max={6000}
+				step={250}
+				format={km}
+				onChange={(hideKnownRadius) => setParams({ hideKnownRadius })}
+			/>
+
+			<SectionTitle>Gewichtung der Kriterien</SectionTitle>
+			{FACTORS.map((f) => (
+				<LabeledSlider
+					key={f.key}
+					label={f.label}
+					hint={f.hint}
+					value={params.weights[f.key]}
+					min={0}
+					max={5}
+					step={0.5}
+					format={(v) => v.toLocaleString("de-DE")}
+					onChange={(v) => setWeight(f.key, v)}
+				/>
+			))}
+
+			<SectionTitle>Gelände und Wasser</SectionTitle>
+			<ToggleButtonGroup
+				size="small"
+				exclusive
+				value={params.waterSource}
+				onChange={(_, v) => v && setParams({ waterSource: v })}
+				sx={{ mb: 1 }}
+			>
+				<ToggleButton value="dem" sx={{ textTransform: "none" }}>
+					Aus Höhenmodell
+				</ToggleButton>
+				<ToggleButton value="osm" sx={{ textTransform: "none" }}>
+					OpenStreetMap
+				</ToggleButton>
+			</ToggleButtonGroup>
+			<Typography
+				variant="caption"
+				color="text.secondary"
+				component="p"
+				sx={{ mt: 0, mb: 1 }}
+			>
+				{params.waterSource === "dem"
+					? "Gewässernetz aus den Talzügen berechnet, ohne Kanäle und Begradigungen. Unter „Ebenen“ einblendbar."
+					: "Heutige Bäche und Flüsse aus OSM. Die Overpass-Server sind oft langsam oder überlastet."}
+			</Typography>
+			{params.waterSource === "dem" && (
+				<>
+					<LabeledSlider
+						label="Bach ab Einzugsgebiet"
+						hint="Kleinere Werte ergeben ein dichteres Netz"
+						value={params.streamKm2}
+						min={0.5}
+						max={10}
+						step={0.5}
+						format={(v) => `${v.toLocaleString("de-DE")} km²`}
+						onChange={(streamKm2) => setParams({ streamKm2 })}
+					/>
+					<LabeledSlider
+						label="Fluss ab Einzugsgebiet"
+						hint="Für den Flusskorridor"
+						value={params.riverKm2}
+						min={25}
+						max={500}
+						step={25}
+						format={(v) => `${v} km²`}
+						onChange={(riverKm2) => setParams({ riverKm2 })}
+					/>
+				</>
+			)}
+			<LabeledSlider
+				label="Wasser ideal bis"
+				value={params.waterNear}
+				min={100}
+				max={1500}
+				step={50}
+				format={(v) => `${v} m`}
+				onChange={(waterNear) => setParams({ waterNear })}
+			/>
+			<LabeledSlider
+				label="Umgebung für Anhöhe"
+				hint="Radius, gegen den die Höhe einer Zelle verglichen wird"
+				value={params.tpiRadius}
+				min={500}
+				max={4000}
+				step={250}
+				format={km}
+				onChange={(tpiRadius) => setParams({ tpiRadius })}
+			/>
+			<LabeledSlider
+				label="Rastergröße (bei Neuberechnung)"
+				value={params.cellMeters}
+				min={100}
+				max={500}
+				step={50}
+				format={(v) => `${v} m`}
+				onChange={(cellMeters) => setParams({ cellMeters })}
+			/>
+
+			{result?.candidates.length > 0 && (
+				<>
+					<SectionTitle>Kandidaten ({result.candidates.length})</SectionTitle>
+					<List dense disablePadding>
+						{result.candidates.map((c, i) => (
+							<ListItemButton
+								key={c.index}
+								onClick={() => onFlyTo(c.lon, c.lat)}
+								sx={{ borderRadius: 1 }}
+							>
+								<ListItemText
+									primary={`${i + 1}. Wert ${c.score.toFixed(2)}`}
+									secondary={`${c.lat.toFixed(4)}° N, ${c.lon.toFixed(4)}° O`}
+								/>
+							</ListItemButton>
+						))}
+					</List>
+				</>
+			)}
+		</Box>
+	)
+}
+
+function LabeledSlider({ label, hint, value, format, onChange, ...props }) {
+	const text = (
+		<Stack direction="row" sx={{ justifyContent: "space-between" }}>
+			<Typography variant="body2">{label}</Typography>
+			<Typography variant="body2" color="text.secondary">
+				{format(value)}
+			</Typography>
+		</Stack>
+	)
+	return (
+		<Box sx={{ mb: 0.5 }}>
+			{hint ? (
+				<Tooltip title={hint} placement="top-start">
+					{text}
+				</Tooltip>
+			) : (
+				text
+			)}
+			<Slider
+				size="small"
+				value={value}
+				onChange={(_, v) => onChange(v)}
+				aria-label={label}
+				{...props}
+			/>
+		</Box>
+	)
+}
