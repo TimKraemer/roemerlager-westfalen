@@ -17,7 +17,9 @@
 						"label": "Wikipedia: Vetera",
 						"url": "https://de.wikipedia.org/wiki/Vetera"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -44,7 +46,9 @@
 						"label": "Römerlager in Westfalen, Heft 2 (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/f1/f6/f1f6b8f9-6c43-4338-90a9-f6b51e812aae/rw_2_2014.pdf"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -75,7 +79,9 @@
 						"label": "Tremmel, Westliche Umwehrung des Hauptlagers, AiW 2012",
 						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25988/19704"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -98,7 +104,9 @@
 						"label": "Wikipedia: Römerlager Haltern",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Haltern"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -121,7 +129,9 @@
 						"label": "LWL-Pressemitteilung 06.10.2021",
 						"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=53541"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -148,7 +158,9 @@
 						"label": "LWL-Pressemitteilung Vortrag Annaberg 2024",
 						"url": "https://www.lwl.org/pressemitteilungen/mitteilung.php?urlID=59236"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -171,7 +183,9 @@
 						"label": "Wikipedia: Römerlager Haltern",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Haltern"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -194,7 +208,9 @@
 						"label": "Tremmel, Prospektionen im Marschlager „In der Borg“, AiW 2011",
 						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25120/18826"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -221,7 +237,9 @@
 						"label": "Tremmel, Olfen-Sülsen, AiW 2011 (Heft)",
 						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/issue/view/2515"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -248,7 +266,9 @@
 						"label": "Römerlager in Westfalen, Heft 3 (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/c3/3f/c33f9e97-a2b3-4908-8f84-c485c50b030a/rw_32_2011.pdf"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -275,7 +295,9 @@
 						"label": "Römerlager in Westfalen, Heft 3 (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/c3/3f/c33f9e97-a2b3-4908-8f84-c485c50b030a/rw_32_2011.pdf"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -302,7 +324,9 @@
 						"label": "Römerlager in Westfalen, Heft 1 (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/f1/1a/f11a8f4c-7152-44fd-8989-20395113ad02/rw_1_2014.pdf"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -329,7 +353,9 @@
 						"label": "Römerlager in Westfalen, Heft 4 (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/cd/40/cd4074b6-60d5-4bf2-a90a-9d1b6812c556/rw_4_2014.pdf"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -340,13 +366,13 @@
 			"type": "Feature",
 			"properties": {
 				"id": "paderborn",
-				"name": "Paderborn, St. Johannisstift",
+				"name": "Paderborn, Riemeke-Lager (St. Johannisstift)",
 				"type": "marschlager",
 				"precision": "ungefähr, ±0,5–1 km",
 				"size_ha": "ca. 30 (erschlossen)",
 				"dating": "um Christi Geburt (C14)",
 				"place": "Paderborn",
-				"description": "Feldbacköfen und Amphorenscherben deuten auf ein Marschlager. Die LWL-Mitteilung nennt dazu Tagesmärsche von rund 20 km.",
+				"description": "Feldbacköfen und Amphorenscherben auf einer flachen Kuppe zwischen Pader und Riemeke, C14-datiert um Christi Geburt. Der LWL nennt es eine gut begründete Hypothese und verweist auf Tagesmärsche von rund 20 km.",
 				"sources": [
 					{
 						"label": "LWL-Pressemitteilung 23.06.2023",
@@ -356,7 +382,9 @@
 						"label": "LWL-Pressemitteilung Paderborn",
 						"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=56091"
 					}
-				]
+				],
+				"status": "Verdacht mit guten Indizien",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -387,7 +415,9 @@
 						"label": "LWL-Pressemitteilung 08.05.2019",
 						"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=47898"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -414,7 +444,9 @@
 						"label": "Römerlager in Westfalen, Heft 6 (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/be/5e/be5e344d-ce46-49a1-a09a-6dff26620a7e/rw_6_2011.pdf"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": false
 			},
 			"geometry": {
 				"type": "Point",
@@ -431,7 +463,7 @@
 				"size_ha": "unbekannt (3 ha ergraben)",
 				"dating": "augusteisch, entdeckt 2008",
 				"place": "Porta Westfalica, Kreis Minden-Lübbecke",
-				"description": "Marschlager an der Weser nördlich der Porta. Von Tremmel ausgegraben und publiziert.",
+				"description": "Marschlager an der Weser nördlich der Porta. Ergraben sind 3 ha mit rund 30 Feldbacköfen, aber noch kein Spitzgraben. Über 100 römische und keltische Münzen bilden zwei Horizonte, 12–9 v. Chr. und nach der Zeitenwende. Schon 1950 kam 150 m entfernt eine augusteische Goldmünze zutage.",
 				"sources": [
 					{
 						"label": "Wikipedia: Marschlager Porta Westfalica",
@@ -440,8 +472,14 @@
 					{
 						"label": "Tremmel, Marschlager Barkhausen, AiW 2010",
 						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25926/19643"
+					},
+					{
+						"label": "Tremmel 2012: Die Römer an der Weser. Das Marschlager von Porta Westfalica-Barkhausen, Mitt. Mindener Geschichtsverein 84, S. 25–33",
+						"url": "https://nwbib.de/HT018555379"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -458,13 +496,19 @@
 				"size_ha": null,
 				"dating": "9 n. Chr. (alternativ 15/16 n. Chr.)",
 				"place": "Bramsche, Landkreis Osnabrück",
-				"description": "Fundplatz einer großen Schlacht, meist mit der Varusschlacht verbunden.",
+				"description": "Fundplatz einer großen Schlacht, meist mit der Varusschlacht verbunden. Der Wall am Oberesch wird seit 2021 auch als mögliches römisches Marschlager gedeutet.",
 				"sources": [
 					{
 						"label": "Wikipedia: Fundregion Kalkriese",
 						"url": "https://de.wikipedia.org/wiki/Fundregion_Kalkriese"
+					},
+					{
+						"label": "Härtling u. a. 2025, Geoarchaeology",
+						"url": "https://doi.org/10.1002/gea.22031"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": false
 			},
 			"geometry": {
 				"type": "Point",
@@ -487,7 +531,9 @@
 						"label": "Wikipedia: Marschlager von Wilkenburg",
 						"url": "https://de.wikipedia.org/wiki/Marschlager_von_Wilkenburg"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -510,7 +556,9 @@
 						"label": "Wikipedia: Römerlager Hedemünden",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Hedem%C3%BCnden"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -533,7 +581,9 @@
 						"label": "Wikipedia: Fundplatz Bentumersiel",
 						"url": "https://de.wikipedia.org/wiki/Fundplatz_Bentumersiel"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": false
 			},
 			"geometry": {
 				"type": "Point",
@@ -556,7 +606,9 @@
 						"label": "Wikipedia: Römisches Forum Lahnau-Waldgirmes",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6misches_Forum_Lahnau-Waldgirmes"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": false
 			},
 			"geometry": {
 				"type": "Point",
@@ -579,7 +631,9 @@
 						"label": "Wikipedia: Römerlager Lahnau-Dorlar",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Lahnau-Dorlar"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -602,7 +656,9 @@
 						"label": "Wikipedia: Römerlager Rödgen",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_R%C3%B6dgen"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": true
 			},
 			"geometry": {
 				"type": "Point",
@@ -617,19 +673,396 @@
 				"type": "marschlager",
 				"precision": "ungefähr, ±0,5–1 km",
 				"size_ha": "ca. 9",
-				"dating": "römisch, Datierung offen",
+				"dating": "vermutlich 2. Jh. n. Chr., noch nicht gesichert",
 				"place": "Apeldoorn, Gelderland",
-				"description": "Über ein Routenmodell mit Tagesmarsch-Abständen und Laserscan gefunden, 2025 ausgegraben. Methodisch das nächste Vorbild für diese Karte.",
+				"description": "Über ein Routenmodell mit Tagesmarsch-Abständen und Laserscan gefunden, 2025 ausgegraben. Nach Staatsbosbeheer wohl aus dem 2. Jh., also nicht augusteisch. Methodisch das nächste Vorbild für diese Karte.",
 				"sources": [
 					{
 						"label": "Staatsbosbeheer 2025",
 						"url": "https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2025/05/ontdekking-romeins-legerkamp-nabij-hoog-buurlo"
 					}
-				]
+				],
+				"status": "bestätigt",
+				"inModel": false
 			},
 			"geometry": {
 				"type": "Point",
 				"coordinates": [5.844, 52.176]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "loehne",
+				"name": "Suchraum Zwischenlager Löhne",
+				"type": "verdacht",
+				"status": "Verdacht (Hypothese)",
+				"inModel": false,
+				"precision": "nur Ortsmittelpunkt, Fundstelle mehrere km entfernt möglich",
+				"size_ha": null,
+				"dating": "augusteisch (Hypothese)",
+				"place": "Löhne, Kreis Herford",
+				"description": "Auf halber Strecke Sennestadt–Barkhausen wird ein Zwischenlager vermutet, weil die Strecke zwei Tagesmärschen entspricht. Das Modell dieser Karte kommt unabhängig zum selben Ergebnis. Die zitierte Quelle (Kühlborn 2008) ist nicht im Original geprüft.",
+				"sources": [
+					{
+						"label": "Wikipedia: Marschlager Bielefeld-Sennestadt (zitiert Kühlborn 2008)",
+						"url": "https://de.wikipedia.org/wiki/Marschlager_Bielefeld-Sennestadt"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.68833, 52.18972]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "remeringhausen",
+				"name": "Remeringhausen",
+				"type": "verdacht",
+				"status": "Verdacht (unbelegt)",
+				"inModel": false,
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": null,
+				"dating": "unbekannt",
+				"place": "Stadthagen, Landkreis Schaumburg",
+				"description": "Einige Historiker vermuten hier einen römischen Spähposten über dem Hellweg (B 65). Archäologisch ist nichts belegt.",
+				"sources": [
+					{
+						"label": "Wikipedia: Rittergut Remeringhausen",
+						"url": "https://de.wikipedia.org/wiki/Rittergut_Remeringhausen"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [9.27028, 52.32861]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "gehrden",
+				"name": "Schatzfund von Gehrden",
+				"type": "fund",
+				"status": "bestätigt",
+				"inModel": false,
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": null,
+				"dating": "Schlussmünze 2/1 v. Chr.",
+				"place": "Gehrden, Region Hannover",
+				"description": "30 Denare mit derselben Schlussmünze wie in Wilkenburg. Mit weiteren Münzen bei Erichshof und am Burgberg gilt der Fund als Hinweis auf eine augusteische Ost-West-Marschroute.",
+				"sources": [
+					{
+						"label": "Wikipedia: Schatzfund von Gehrden",
+						"url": "https://de.wikipedia.org/wiki/Schatzfund_von_Gehrden"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [9.58552, 52.29674]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "ilten",
+				"name": "Römische Militaria Ilten",
+				"type": "fund",
+				"status": "bestätigt",
+				"inModel": false,
+				"precision": "nur Ortsmittelpunkt, Fundstelle mehrere km entfernt möglich",
+				"size_ha": null,
+				"dating": "augusteisch (Gaius-Lucius-Denar)",
+				"place": "Sehnde-Ilten, Region Hannover",
+				"description": "Militärausrüstung und ein Gaius-Lucius-Denar, etwa 20 km östlich von Gehrden.",
+				"sources": [
+					{
+						"label": "Wikipedia: Schatzfund von Gehrden",
+						"url": "https://de.wikipedia.org/wiki/Schatzfund_von_Gehrden"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [9.93639, 52.34583]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "stapelage",
+				"name": "Augusteische Münzfunde Stapelage",
+				"type": "fund",
+				"status": "bestätigt",
+				"inModel": false,
+				"precision": "nur Ortsmittelpunkt, Fundstelle mehrere km entfernt möglich",
+				"size_ha": null,
+				"dating": "28 v. – 1 n. Chr.",
+				"place": "Lage, Kreis Lippe",
+				"description": "Aureus, Gaius-Lucius-Denar und Nemausus-Dupondien (FMRD VI/6036, Zelle 2005). Zusammengestellt in einer Laiendokumentation.",
+				"sources": [
+					{
+						"label": "Steinborn u. a. 2006: Dokumentation römischer Fundmünzen (PDF)",
+						"url": "https://www.roemerfreunde-weser.info/dokumentation-r%C3%B6mischer-fundm%C3%BCnzen-aus-der-region-weserbergland.pdf"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.753487, 51.946077]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "costedt",
+				"name": "Spätrömische Münzen Costedt",
+				"type": "fund",
+				"status": "bestätigt",
+				"inModel": false,
+				"precision": "nur Ortsmittelpunkt, Fundstelle mehrere km entfernt möglich",
+				"size_ha": null,
+				"dating": "2. und 4. Jh. n. Chr.",
+				"place": "Porta Westfalica-Costedt",
+				"description": "Solidus des Constantius II, drei Denare und ein Sesterz aus einem Citizen-Science-Projekt. Kein augusteischer Bezug.",
+				"sources": [
+					{
+						"label": "Gesellschaft zur Förderung der Bodendenkmalpflege",
+						"url": "https://www.gefbdml.de/roemische-goldmuenze-bei-costedt-gefunden-ein-spaetantiker-solidus-aus-porta-westfalica/"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.87111, 52.22917]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "idistaviso-evesen",
+				"name": "Idistaviso-Hypothese Evesen",
+				"type": "schlachtfeld",
+				"status": "Hypothese",
+				"inModel": false,
+				"precision": "nur Ortsmittelpunkt, Fundstelle mehrere km entfernt möglich",
+				"size_ha": null,
+				"dating": "16 n. Chr.",
+				"place": "Bückeburg-Evesen, Landkreis Schaumburg",
+				"description": "Schlacht des Germanicus gegen Arminius. Mommsen (1904) und Dobbertin (1983) suchten sie hier am rechten Weserufer. Archäologisch nicht belegt.",
+				"sources": [
+					{
+						"label": "Wikipedia: Idistaviso",
+						"url": "https://de.wikipedia.org/wiki/Idistaviso"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.9965, 52.2806]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "angrivarierwall-leese",
+				"name": "Angrivarierwall-Hypothese Leese",
+				"type": "schlachtfeld",
+				"status": "Hypothese",
+				"inModel": false,
+				"precision": "nur Ortsmittelpunkt, Fundstelle mehrere km entfernt möglich",
+				"size_ha": null,
+				"dating": "16 n. Chr.",
+				"place": "Leese, Landkreis Nienburg",
+				"description": "Schuchhardt lokalisierte den Wall 1926 hier. Der Wall bei Leese gilt heute als mittelalterlich.",
+				"sources": [
+					{
+						"label": "Wikipedia: Angrivarierwall",
+						"url": "https://de.wikipedia.org/wiki/Angrivarierwall"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [9.11667, 52.5]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "moorweg-pr6",
+				"name": "Moorweg Pr VI im Aschener Moor",
+				"type": "fund",
+				"status": "bestätigt",
+				"inModel": false,
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": null,
+				"dating": "um 46 v. Chr. (Dendrochronologie)",
+				"place": "Diepholz",
+				"description": "Germanischer Bohlenweg, 520 m ausgegraben. Älter als die Feldzüge, zeigt aber die Bauweise der von Tacitus erwähnten Bohlenwege (pontes longi).",
+				"sources": [
+					{
+						"label": "Wikipedia: Moorweg im Aschener Moor Pr VI",
+						"url": "https://de.wikipedia.org/wiki/Moorweg_im_Aschener_Moor_Pr_VI"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.31982, 52.64447]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "kring",
+				"name": "Kring (Außenposten Hedemünden)",
+				"type": "kastell",
+				"status": "bestätigt",
+				"inModel": true,
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "0,4",
+				"dating": "um Christi Geburt",
+				"place": "Kaufunger Wald, Hann. Münden",
+				"description": "Ringwall von 82 × 110 m, als Außenposten des Lagers Hedemünden gedeutet.",
+				"sources": [
+					{
+						"label": "Wikipedia: Kring (Kaufunger Wald)",
+						"url": "https://de.wikipedia.org/wiki/Kring_(Kaufunger_Wald)"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [9.71154, 51.379]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "oberbrechen",
+				"name": "Römerlager Oberbrechen (Alteburg)",
+				"type": "kastell",
+				"status": "bestätigt",
+				"inModel": true,
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": null,
+				"dating": "augusteisch, aufgegeben spätestens um 9 n. Chr.",
+				"place": "Brechen, Landkreis Limburg-Weilburg",
+				"description": "Frührömisches Lager an der Lahn, nur kurz belegt.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römerlager Oberbrechen",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Oberbrechen"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [8.2387, 50.3591]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "bedburg-hau",
+				"name": "Legionslager Bedburg-Hau-Till",
+				"type": "legionslager",
+				"status": "bestätigt",
+				"inModel": false,
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": "14",
+				"dating": "unklar (claudisch oder vespasianisch diskutiert)",
+				"place": "Bedburg-Hau, Kreis Kleve",
+				"description": "Lager mit drei parallelen Spitzgräben, 2015 im Luftbild entdeckt. Nicht augusteisch gesichert, deshalb nicht im Modell.",
+				"sources": [
+					{
+						"label": "Wikipedia: Legionslager bei Bedburg-Hau-Till",
+						"url": "https://de.wikipedia.org/wiki/Legionslager_bei_Bedburg-Hau-Till"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [6.2399, 51.779]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "ermelo",
+				"name": "Marskamp Ermelo-Leuvenum",
+				"type": "marschlager",
+				"status": "bestätigt",
+				"inModel": false,
+				"precision": "ungefähr, ±0,5–1 km",
+				"size_ha": "9",
+				"dating": "ca. 170–180 n. Chr.",
+				"place": "Ermelo, Gelderland (NL)",
+				"description": "Temporäres Lager des 2. Jh. mit erhaltenen Wällen. Zum Vergleich, nicht im Modell.",
+				"sources": [
+					{
+						"label": "romeinen.nl",
+						"url": "https://www.romeinen.nl/weten/nederland-in-de-romeinse-tijd/gelderland-in-de-romeinse-tijd/ermelo-marskamp"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [5.67556, 52.28528]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "hachelbich",
+				"name": "Marschlager Hachelbich",
+				"type": "marschlager",
+				"status": "bestätigt",
+				"inModel": false,
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": null,
+				"dating": "1.–3. Jh. n. Chr.",
+				"place": "Kyffhäuserland, Thüringen",
+				"description": "Spitzgraben auf etwa 460 m verfolgt, im Wippertal. Nicht augusteisch, nicht im Modell.",
+				"sources": [
+					{
+						"label": "Wikipedia: Römisches Marschlager bei Hachelbich",
+						"url": "https://de.wikipedia.org/wiki/R%C3%B6misches_Marschlager_bei_Hachelbich"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [10.97668, 51.339024]
+			}
+		},
+		{
+			"type": "Feature",
+			"properties": {
+				"id": "harzhorn",
+				"name": "Harzhorn",
+				"type": "schlachtfeld",
+				"status": "bestätigt",
+				"inModel": false,
+				"precision": "Lagermitte, etwa ±200–300 m",
+				"size_ha": null,
+				"dating": "ca. 235 n. Chr.",
+				"place": "Kalefeld, Landkreis Northeim",
+				"description": "Römisches Gefechtsfeld des 3. Jh., zum Vergleich.",
+				"sources": [
+					{
+						"label": "Wikipedia: Harzhornereignis",
+						"url": "https://de.wikipedia.org/wiki/Harzhornereignis"
+					}
+				]
+			},
+			"geometry": {
+				"type": "Point",
+				"coordinates": [10.082102, 51.812913]
 			}
 		}
 	]

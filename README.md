@@ -17,7 +17,20 @@ bun install
 bun run dev
 ```
 
-Danach http://localhost:3000/roemer/ öffnen. `bun test` prüft das Rechenmodell,
+Danach http://localhost:3000/roemer/ öffnen.
+
+Die Startansicht zeigt den Kreis Minden-Lübbecke mit vorberechneter Analyse.
+Nach Änderungen an Fundstellen oder Modell neu rechnen:
+
+```bash
+bun run precompute
+```
+
+Römerstraßen (Itiner-e und Hellweg vor dem Santforde) neu bauen:
+
+```bash
+bun scripts/build-roads.mjs
+``` `bun test` prüft das Rechenmodell,
 `bun run lint` den Code (Biome).
 
 Live unter https://experiments.erleben.app/roemer/ (statischer Export).
@@ -40,13 +53,18 @@ sonst nicht ausliefert.
 | `src/lib/potential/worker.js` | Web Worker: Höhenmodell laden, Raster rechnen |
 | `src/lib/terrain.js` | Terrarium-Höhenkacheln (AWS Open Data) |
 | `src/lib/potential/drainage.js` | Gewässernetz aus dem Höhenmodell (Senkenfüllung, Abfluss) |
-| `src/lib/water.js` | Fließgewässer aus OSM über Overpass (optional) |
+| `src/lib/water.js` | Heutige Fließgewässer aus den OSM-Kacheln von tiles.erleben.app, ohne Kanäle und Gräben |
+| `src/lib/potential/pipeline.js` | Rechenkette für Worker und Vorberechnung |
+| `src/lib/potential/routes.js` | Marschwege als Least-Cost-Path (Tobler) und Etappenhalte |
+| `src/lib/criteria.js` | Erklärtexte und Quellen je Kriterium |
+| `scripts/precompute.mjs` | Vorberechnung der Regionen nach `public/precomputed` |
+| `scripts/build-roads.mjs` | Römerstraßen-Datensatz |
 | `src/components/` | Karte, Seitenleiste, Info-Karten |
 
 ## Potenzialmodell
 
 Der sichtbare Kartenausschnitt (höchstens 90 × 90 km) wird in Zellen von
-100–500 m zerlegt. Jede Zelle bekommt fünf Teilwerte zwischen 0 und 1:
+100–500 m zerlegt. Jede Zelle bekommt sechs Teilwerte zwischen 0 und 1:
 
 | Kriterium | Berechnung |
 |-----------|------------|
@@ -54,6 +72,7 @@ Der sichtbare Kartenausschnitt (höchstens 90 × 90 km) wird in Zellen von
 | Fließgewässer | 1 bis 300 m Abstand zum nächsten Bach oder Fluss, danach abfallend |
 | Anhöhe | Topographic Position Index: Höhe minus Mittel im Umkreis von 1,5 km, logistisch skaliert |
 | Hanglage | 0,5–6° Neigung ideal, ab 15° null |
+| Marschroute | Nähe zum Weg geringster Gehzeit zwischen zwei bekannten Lagern |
 | Flusskorridor | Nähe zu größeren Flüssen als Hinweis auf die Marschroute |
 
 Das Gewässernetz wird standardmäßig aus dem Höhenmodell berechnet. Dazu

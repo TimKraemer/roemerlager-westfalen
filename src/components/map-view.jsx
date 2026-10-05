@@ -130,10 +130,13 @@ function addAnalysisLayers(map) {
 			"line-color": "#5d4037",
 			"line-width": 3,
 			"line-dasharray": [
-				"case",
-				["==", ["get", "certainty"], "belegt"],
+				"match",
+				["get", "certainty"],
+				"belegt",
 				["literal", [1, 0]],
+				"vermutet",
 				["literal", [2, 1.5]],
+				["literal", [0.6, 1.6]],
 			],
 		},
 	})
@@ -309,7 +312,7 @@ function ringFeatures(ringSource, mean, sigma) {
 // Auf der Karte nur die besten Kandidaten, die Liste zeigt alle
 const MAP_CANDIDATES = 12
 
-const CLICKABLE = ["sites", "candidates", "stages", "routes"]
+const CLICKABLE = ["sites", "candidates", "stages", "routes", "roads"]
 
 function handleClick(map, e) {
 	const store = useMapStore.getState()
@@ -338,6 +341,32 @@ function handleClick(map, e) {
 		store.setInspect(
 			inspectAt(lon, lat, { kind: "stage", stage: { ...stage.properties } }),
 		)
+		return
+	}
+	const road = pick("roads")
+	if (road && !pick("routes")) {
+		const p = road.properties
+		const label = {
+			belegt: "belegt",
+			vermutet: "vermutet",
+			hypothetisch: "Hypothese",
+		}
+		const box = document.createElement("div")
+		box.style.font = "13px system-ui, sans-serif"
+		const title = document.createElement("b")
+		title.textContent = p.name
+		const meta = document.createElement("div")
+		meta.textContent = `Verlauf ${label[p.certainty] ?? p.certainty}`
+		const link = document.createElement("a")
+		link.href = p.url
+		link.target = "_blank"
+		link.rel = "noreferrer"
+		link.textContent = p.source
+		box.append(title, meta, link)
+		new maplibregl.Popup({ maxWidth: "280px" })
+			.setLngLat(e.lngLat)
+			.setDOMContent(box)
+			.addTo(map)
 		return
 	}
 	const route = pick("routes")

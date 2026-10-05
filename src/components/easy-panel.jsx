@@ -14,6 +14,7 @@ import {
 	Skeleton,
 	Stack,
 	Typography,
+	useMediaQuery,
 } from "@mui/material"
 import { useState } from "react"
 import { placeLabel } from "@/lib/criteria"
@@ -99,7 +100,9 @@ export default function EasyPanel({ onFlyTo }) {
 	const setPanelOpen = useMapStore((s) => s.setPanelOpen)
 	const setInspect = useMapStore((s) => s.setInspect)
 	const setSelectedSite = useMapStore((s) => s.setSelectedSite)
-	const [collapsed, setCollapsed] = useState(false)
+	// Auf dem Handy eingeklappt starten, damit die Karte sichtbar bleibt
+	const desktop = useMediaQuery("(min-width: 900px)", { noSsr: true })
+	const [collapsed, setCollapsed] = useState(!desktop)
 
 	const top = rankedCandidates(result)
 		.filter((c) => c.rank)

@@ -9,6 +9,11 @@
 				"note": "Lagepläne der Grabung „Auf der Lake“"
 			},
 			{
+				"label": "Tremmel 2012: Die Römer an der Weser. Das Marschlager von Porta Westfalica-Barkhausen. Mitteilungen des Mindener Geschichtsvereins 84, S. 25–33",
+				"url": "https://nwbib.de/HT018555379",
+				"note": "Zusammenfassung zu Barkhausen für die Region"
+			},
+			{
 				"label": "Olfen-Sülsen. Ein neues Römerlager aus der Zeit der Drususfeldzüge, AiW 2011",
 				"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/issue/view/2515"
 			},
@@ -114,32 +119,155 @@
 		]
 	},
 	{
+		"title": "Minden-Lübbecke und Nachbarn",
+		"intro": "Außer Barkhausen ist im Kreis kein römisches Lager belegt. Die Hinweise auf weitere Zwischenlager stammen aus Tagesmarsch-Abständen und Münzfunden entlang der Wege.",
+		"items": [
+			{
+				"label": "Marschlager Porta Westfalica (Wikipedia, mit Literatur)",
+				"url": "https://de.wikipedia.org/wiki/Marschlager_Porta_Westfalica"
+			},
+			{
+				"label": "Zwischenlager bei Löhne vermutet (Kühlborn 2008, zitiert bei Wikipedia)",
+				"url": "https://de.wikipedia.org/wiki/Marschlager_Bielefeld-Sennestadt",
+				"note": "Original nicht geprüft"
+			},
+			{
+				"label": "Schatzfund von Gehrden: Hinweis auf eine Ost-West-Route über Wilkenburg",
+				"url": "https://de.wikipedia.org/wiki/Schatzfund_von_Gehrden"
+			},
+			{
+				"label": "Idistaviso: Lokalisierungen an der Weser zwischen Minden und Hameln",
+				"url": "https://de.wikipedia.org/wiki/Idistaviso",
+				"note": "Hypothesen"
+			},
+			{
+				"label": "Angrivarierwall: Lokalisierung bei Leese",
+				"url": "https://de.wikipedia.org/wiki/Angrivarierwall",
+				"note": "Hypothese, Wall heute mittelalterlich datiert"
+			},
+			{
+				"label": "Römische Goldmünze bei Costedt (spätantik)",
+				"url": "https://www.gefbdml.de/roemische-goldmuenze-bei-costedt-gefunden-ein-spaetantiker-solidus-aus-porta-westfalica/"
+			},
+			{
+				"label": "Kalkriese: Oberesch als mögliches Marschlager (Härtling u. a. 2025)",
+				"url": "https://doi.org/10.1002/gea.22031"
+			}
+		]
+	},
+	{
+		"title": "Römerstraßen und Wege",
+		"intro": "Rechts des Rheins sind keine römischen Straßen belegt. Die Karte zeigt die Straßen am Rhein, den Hellweg vor dem Santforde als vermutete Achse und berechnete Marschwege.",
+		"items": [
+			{
+				"label": "Itiner-e: Digital Atlas of Ancient Roads (CC BY 4.0)",
+				"url": "https://doi.org/10.5281/zenodo.17122148"
+			},
+			{
+				"label": "AWMC Geodata, Roman roads (ODbL)",
+				"url": "https://github.com/AWMC/geodata"
+			},
+			{
+				"label": "Spieker 17: Fernstraßen der Westfälischen Bucht (PDF)",
+				"url": "https://www.geographische-kommission.lwl.org/media/filer_public/5c/c8/5cc84e08-ccf2-4af4-b6f6-c56b4fd28280/spieker_17.pdf"
+			},
+			{
+				"label": "Wegekarte der Provinz Westfalen 1891",
+				"url": "https://www.lwl.org/westfaelische-geschichte/portal/Internet/finde/langDatensatz.php?urlID=495&url_tabelle=tab_karte"
+			},
+			{
+				"label": "KuLaDig: Kulturlandschaftsbereich Hellweg",
+				"url": "https://www.kuladig.de/Objektansicht/A-EK-20080730-0094"
+			},
+			{
+				"label": "Moorweg Pr VI im Aschener Moor (Bohlenweg um 46 v. Chr.)",
+				"url": "https://de.wikipedia.org/wiki/Moorweg_im_Aschener_Moor_Pr_VI"
+			},
+			{
+				"label": "Römer-Lippe-Route (moderner Radweg, GPX)",
+				"url": "https://www.roemerlipperoute.de/wp-content/uploads/2025/06/Roemer_Lippe_Route_Ost_West_2025.gpx"
+			}
+		]
+	},
+	{
+		"title": "Alte Gewässer und Böden",
+		"intro": "Heutige Gewässer sind oft jünger oder verlegt. Der Mittellandkanal entstand 1906–1938, die Mittelweser wurde 1911–1960 gestaut. Hinweise auf frühere Läufe geben die Uraufnahme, Auen und Böden.",
+		"items": [
+			{
+				"label": "Mittellandkanal: Bau 1906–1938",
+				"url": "https://de.wikipedia.org/wiki/Mittellandkanal"
+			},
+			{
+				"label": "Staustufe Schlüsselburg (Mittelweser)",
+				"url": "https://de.wikipedia.org/wiki/Staustufe_Schl%C3%BCsselburg"
+			},
+			{
+				"label": "Überschwemmungsgebiete NRW, darunter die Aue nach preußischer Aufnahme (WMS)",
+				"url": "https://www.wms.nrw.de/umwelt/wasser/uesg?SERVICE=WMS&REQUEST=GetCapabilities"
+			},
+			{
+				"label": "Bodenkarte BK50 NRW (WMS)",
+				"url": "https://www.wms.nrw.de/gd/bk050?SERVICE=WMS&REQUEST=GetCapabilities"
+			},
+			{
+				"label": "LBEG Niedersachsen: Moore (GUM50) und Bodenkarte (NIBIS)",
+				"url": "https://nibis.lbeg.de/cardomap3/"
+			},
+			{
+				"label": "Natürliches Gewässernetz: Barnes u. a. 2014, Priority-Flood",
+				"url": "https://doi.org/10.1016/j.cageo.2013.04.024",
+				"note": "Verfahren für das Gewässernetz aus dem Höhenmodell"
+			}
+		]
+	},
+	{
 		"title": "Standortwahl und Prognosemodelle",
 		"items": [
 			{
-				"label": "Kaye 2013: Roman marching camps in Britain, GIS und Gewässeranalyse",
-				"url": "https://www.bandaarcgeophysics.co.uk/arch/roman-marching-camps-uk.pdf",
-				"note": "374 Lager: 60 % mit Wasser bis 100 m, fast 90 % bis 300 m"
+				"label": "Ps.-Hyginus, De munitionibus castrorum 56–57 (lateinisch)",
+				"url": "https://www.thelatinlibrary.com/hyginus/hyginus6.shtml",
+				"note": "Sanft ansteigendes Gelände, Fluss oder Quelle auf einer Seite, keine überragenden Höhen"
 			},
 			{
-				"label": "Hoog Buurlo (NL): Marschlager über Routenmodell und Laserscan gefunden",
-				"url": "https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2025/05/ontdekking-romeins-legerkamp-nabij-hoog-buurlo"
+				"label": "Vegetius, Epitoma rei militaris 1,9, 1,22 und 3,8 (lateinisch)",
+				"url": "https://www.thelatinlibrary.com/vegetius1.html",
+				"note": "Marschleistung und Lagerplatz. Englisch: Clarke 1767"
 			},
 			{
-				"label": "Jens Goeree: vier Marschlager auf der Veluwe",
-				"url": "https://c-limes.nl/2023/12/05/jens-goeree-in-de-stentor-over-zijn-ontdekking-van-vier-romeinse-marskampen-op-de-veluwe/"
+				"label": "Vegetius englisch (Clarke 1767)",
+				"url": "https://www.digitalattic.org/home/war/vegetius/"
+			},
+			{
+				"label": "Kaye 2013: Roman Marching Camps in Britain",
+				"url": "https://zenodo.org/records/839026",
+				"note": "307 Lager: 45 % bis 50 m, 60 % bis 100 m, 90 % bis 300 m vom Fluss"
+			},
+			{
+				"label": "Jones 2011: Roman Camps in Scotland (frei verfügbar)",
+				"url": "https://books.socantscot.org/digital-books/catalog/book/26"
+			},
+			{
+				"label": "Tobler 1993: Wanderfunktion (NCGIA TR 93-1)",
+				"url": "https://escholarship.org/uc/item/05r820mz",
+				"note": "Grundlage der berechneten Marschwege"
+			},
+			{
+				"label": "LWL-Blog 2022: Das große Graben (Jüngerich)",
+				"url": "https://zeitmaschine.lwl.org/de/blog-neues-wissen-uber-alte-dinge/das-grosse-graben/",
+				"note": "Tagesmarsch etwa 20 km mit rund 48 kg Gepäck"
+			},
+			{
+				"label": "Hoog Buurlo (NL): Marschlager über ein Routenmodell gefunden",
+				"url": "https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2025/05/ontdekking-romeins-legerkamp-nabij-hoog-buurlo",
+				"note": "Wohl 2. Jh., methodisch das nächste Vorbild"
+			},
+			{
+				"label": "Omroep Gelderland 2024: weitere Kandidaten auf der Veluwe",
+				"url": "https://www.gld.nl/nieuws/8107238/romeinen-op-de-veluwe-jazeker-en-veel-vaker-dan-we-dachten"
 			},
 			{
 				"label": "Lewis 2021: Probabilistic least cost path",
 				"url": "https://link.springer.com/article/10.1007/s10816-021-09522-w"
-			},
-			{
-				"label": "R. H. Jones: Roman Camps in Britain (2012)",
-				"note": "Lagekriterien: Hanglage, Wasser, Anpassung an das Gelände"
-			},
-			{
-				"label": "Ps.-Hyginus, De munitionibus castrorum; Vegetius 1,22 und 3,8",
-				"note": "Antike Regeln: leichte Anhöhe, Wasser nah, nicht überragt, nicht überschwemmt"
 			}
 		]
 	},

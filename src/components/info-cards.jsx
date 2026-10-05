@@ -96,6 +96,14 @@ function SiteCard({ id }) {
 					{p.dating && (
 						<Chip size="small" variant="outlined" label={p.dating} />
 					)}
+					{p.status && p.status !== "bestätigt" && (
+						<Chip
+							size="small"
+							color="warning"
+							variant="outlined"
+							label={p.status}
+						/>
+					)}
 					{p.size_ha && (
 						<Chip size="small" variant="outlined" label={`${p.size_ha} ha`} />
 					)}
@@ -111,6 +119,17 @@ function SiteCard({ id }) {
 					{p.description}
 				</Typography>
 			)}
+			{!p.inModel &&
+				["marschlager", "legionslager", "kastell"].includes(p.type) && (
+					<Typography
+						variant="caption"
+						color="text.secondary"
+						component="p"
+						sx={{ mt: 1 }}
+					>
+						Nicht augusteisch gesichert, deshalb nicht im Potenzialmodell.
+					</Typography>
+				)}
 			<Typography
 				variant="caption"
 				color="text.secondary"

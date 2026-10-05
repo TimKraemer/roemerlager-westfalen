@@ -139,6 +139,67 @@ export const OVERLAYS = [
 		opacity: 0.85,
 	},
 	{
+		id: "aue-preussisch",
+		group: "Alte Gewässer und Böden",
+		label: "Historische Aue (preußische Aufnahme)",
+		note: "Überschwemmungsgebiete nach der preußischen Aufnahme, vor Deichen und Begradigung. Nur NRW.",
+		wms: "https://www.wms.nrw.de/umwelt/wasser/uesg",
+		layers: "4",
+		attribution: "© Land NRW, Überschwemmungsgebiete",
+		opacity: 0.7,
+	},
+	{
+		id: "bk50-grundwasser",
+		group: "Alte Gewässer und Böden",
+		label: "Grundwassereinfluss im Boden (BK50 NRW)",
+		note: "Gleye und Auenböden zeigen frühere Bachtäler und nasse Niederungen",
+		wms: "https://www.wms.nrw.de/gd/bk050",
+		layers: "Grundwasser",
+		attribution: "© Geologischer Dienst NRW (dl-de/by-2-0)",
+		opacity: 0.6,
+	},
+	{
+		id: "bk50-bodentyp",
+		group: "Alte Gewässer und Böden",
+		label: "Bodentypen (BK50 NRW)",
+		wms: "https://www.wms.nrw.de/gd/bk050",
+		layers: "Bodentyp",
+		attribution: "© Geologischer Dienst NRW (dl-de/by-2-0)",
+		opacity: 0.6,
+	},
+	{
+		id: "moore-ni",
+		group: "Alte Gewässer und Böden",
+		label: "Ursprüngliche Moore (GUM50 Niedersachsen)",
+		note: "Moorverbreitung vor der Kultivierung, ab Zoom 12",
+		wms: "https://nibis.lbeg.de/net3/public/ogc.ashx?PkgId=22",
+		layers: "L112",
+		attribution: "© LBEG Niedersachsen",
+		minzoom: 12,
+		opacity: 0.6,
+	},
+	{
+		id: "bk50-ni",
+		group: "Alte Gewässer und Böden",
+		label: "Bodenkarte BK50 Niedersachsen",
+		note: "Ab Zoom 12",
+		wms: "https://nibis.lbeg.de/net3/public/ogc.ashx?NodeId=989",
+		layers: "L816",
+		attribution: "© LBEG Niedersachsen",
+		minzoom: 12,
+		opacity: 0.6,
+	},
+	{
+		id: "gk100-nrw",
+		group: "Alte Gewässer und Böden",
+		label: "Geologie bis 2 m Tiefe (GK100 NRW)",
+		note: "Holozäne Bach- und Flussablagerungen markieren alte Talböden",
+		wms: "https://www.wms.nrw.de/gd/GK100",
+		layers: "1",
+		attribution: "© Geologischer Dienst NRW (dl-de/by-2-0)",
+		opacity: 0.6,
+	},
+	{
 		id: "gewaesser-nrw",
 		group: "Gewässer",
 		label: "Fließgewässer NRW (GSK3B)",
@@ -195,7 +256,7 @@ export const OVERLAYS = [
 export function rasterSource(layer) {
 	const tiles = layer.wms
 		? [
-				`${layer.wms}?SERVICE=WMS&REQUEST=GetMap&VERSION=1.3.0&LAYERS=${encodeURIComponent(layer.layers)}&STYLES=&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&BBOX={bbox-epsg-3857}`,
+				`${layer.wms}${layer.wms.includes("?") ? "&" : "?"}SERVICE=WMS&REQUEST=GetMap&VERSION=1.3.0&LAYERS=${encodeURIComponent(layer.layers)}&STYLES=&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&BBOX={bbox-epsg-3857}`,
 			]
 		: layer.tiles
 	return {

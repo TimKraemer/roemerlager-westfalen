@@ -42,7 +42,7 @@ const TABS = [
 export default function AppShell() {
 	const mapRef = useRef(null)
 	const [tab, setTab] = useState("layers")
-	const desktop = useMediaQuery("(min-width: 900px)")
+	const desktop = useMediaQuery("(min-width: 900px)", { noSsr: true })
 	const open = useMapStore((s) => s.panelOpen)
 	const setOpen = useMapStore((s) => s.setPanelOpen)
 

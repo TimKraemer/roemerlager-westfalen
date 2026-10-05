@@ -11,7 +11,8 @@ export const SITE_TYPES = [
 	{ id: "marschlager", label: "Marschlager", color: "#6a1b9a" },
 	{ id: "posten", label: "Wach- oder Signalposten", color: "#ad1457" },
 	{ id: "schlachtfeld", label: "Schlachtfeld / Konfliktort", color: "#263238" },
-	{ id: "verdacht", label: "Fundplatz, kein Lager belegt", color: "#78909c" },
+	{ id: "fund", label: "Römische Funde (Münzen, Militaria)", color: "#00897b" },
+	{ id: "verdacht", label: "Verdacht, Fundplatz ohne Lager", color: "#78909c" },
 ]
 
 export const SITE_TYPE_BY_ID = Object.fromEntries(
@@ -31,8 +32,9 @@ export function campsFor(ringSource) {
 		ringSource === "marching"
 			? ["marschlager"]
 			: ["marschlager", "legionslager", "kastell"]
+	// Nur augusteische Lager erzeugen Ringe und Routen (inModel)
 	return SITES.features
-		.filter((f) => types.includes(f.properties.type))
+		.filter((f) => f.properties.inModel && types.includes(f.properties.type))
 		.map((f) => ({
 			id: f.properties.id,
 			name: f.properties.name,
