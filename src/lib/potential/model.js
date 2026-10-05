@@ -32,6 +32,11 @@ export const FACTORS = [
 		hint: "Ideal 0,5–6° Neigung, steiles Gelände fällt ab",
 	},
 	{
+		key: "route",
+		label: "Auf möglicher Marschroute",
+		hint: "Nähe zum Weg geringster Kosten zwischen zwei bekannten Lagern",
+	},
+	{
 		key: "corridor",
 		label: "Flusskorridor (Marschroute)",
 		hint: "Nähe zu größeren Flüssen wie Lippe, Weser, Ems",
@@ -51,7 +56,8 @@ export const DEFAULT_PARAMS = {
 	corridorSigma: 6000,
 	tpiRadius: 1500,
 	hideKnownRadius: 2500,
-	weights: { ring: 3, water: 2, height: 2, slope: 1, corridor: 1 },
+	routeSigma: 1500,
+	weights: { ring: 3, water: 2, height: 2, slope: 1, route: 2, corridor: 1 },
 }
 
 const DEG = 180 / Math.PI
@@ -335,6 +341,10 @@ export const factorFns = {
 		if (deg >= 15) return 0
 		return 1 - (deg - 6) / 9
 	},
+	route(dist, p) {
+		if (!Number.isFinite(dist)) return 0
+		return Math.exp(-(dist * dist) / (2 * p.routeSigma ** 2))
+	},
 	corridor(dist, p) {
 		if (!Number.isFinite(dist)) return 0
 		return Math.exp(-(dist * dist) / (2 * p.corridorSigma ** 2))
@@ -343,7 +353,7 @@ export const factorFns = {
 
 /** Faktoren und Gesamtwert aus den vorbereiteten Rastern berechnen. */
 export function combine(layers, params) {
-	const { ring, distWater, distRiver, tpi, slope, distCamp } = layers
+	const { ring, distWater, distRiver, distRoute, tpi, slope, distCamp } = layers
 	const n = ring.length
 	const w = params.weights
 	const total = Object.values(w).reduce((a, b) => a + b, 0) || 1
@@ -352,6 +362,7 @@ export function combine(layers, params) {
 		water: new Float32Array(n),
 		height: new Float32Array(n),
 		slope: new Float32Array(n),
+		route: new Float32Array(n),
 		corridor: new Float32Array(n),
 	}
 	const score = new Float32Array(n)
@@ -359,9 +370,10 @@ export function combine(layers, params) {
 		factors.water[i] = factorFns.water(distWater[i], params)
 		factors.height[i] = factorFns.height(tpi[i])
 		factors.slope[i] = factorFns.slope(slope[i])
+		factors.route[i] = distRoute ? factorFns.route(distRoute[i], params) : 0
 		factors.corridor[i] = factorFns.corridor(distRiver[i], params)
 		let s = 0
-		for (const key in w) s += w[key] * factors[key][i]
+		for (const key in w) if (factors[key]) s += w[key] * factors[key][i]
 		s /= total
 		// Steiles Gelände schließt ein Lager praktisch aus
 		if (slope[i] > 12) s *= 0.3

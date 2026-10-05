@@ -16,6 +16,7 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material"
+import { rankedCandidates } from "@/lib/potential/candidates"
 import { FACTORS } from "@/lib/potential/model"
 import { MAX_AREA_KM } from "@/lib/potential/use-potential"
 import { RING_SOURCES } from "@/lib/sites"
@@ -243,14 +244,14 @@ export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
 				<>
 					<SectionTitle>Kandidaten ({result.candidates.length})</SectionTitle>
 					<List dense disablePadding>
-						{result.candidates.map((c, i) => (
+						{rankedCandidates(result).map((c) => (
 							<ListItemButton
 								key={c.index}
 								onClick={() => onFlyTo(c.lon, c.lat)}
 								sx={{ borderRadius: 1 }}
 							>
 								<ListItemText
-									primary={`${i + 1}. Wert ${c.score.toFixed(2)}`}
+									primary={`${c.rank ? `${c.rank}. ` : "außerhalb · "}Wert ${c.score.toFixed(2)}`}
 									secondary={`${c.lat.toFixed(4)}° N, ${c.lon.toFixed(4)}° O`}
 								/>
 							</ListItemButton>

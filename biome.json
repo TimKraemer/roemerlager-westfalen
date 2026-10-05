@@ -7,7 +7,8 @@
 			"!!node_modules",
 			"!bun.lock",
 			"!public/maplibre",
-			"!!out"
+			"!!out",
+			"!!public/precomputed"
 		],
 		"ignoreUnknown": true
 	},

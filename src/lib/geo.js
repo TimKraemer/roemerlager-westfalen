@@ -64,3 +64,27 @@ export function circlePolygon(lon, lat, radiusMeters, steps = 96) {
 	}
 	return coords
 }
+
+/** Punkt in (Multi-)Polygon, Ray-Casting über alle Ringe. */
+export function pointInGeometry(lon, lat, geometry) {
+	const polygons =
+		geometry.type === "MultiPolygon"
+			? geometry.coordinates
+			: [geometry.coordinates]
+	let inside = false
+	for (const polygon of polygons) {
+		for (const ring of polygon) {
+			for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) {
+				const [xi, yi] = ring[i]
+				const [xj, yj] = ring[j]
+				if (
+					yi > lat !== yj > lat &&
+					lon < ((xj - xi) * (lat - yi)) / (yj - yi) + xi
+				) {
+					inside = !inside
+				}
+			}
+		}
+	}
+	return inside
+}

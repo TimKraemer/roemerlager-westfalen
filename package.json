@@ -10,22 +10,26 @@
 		"test": "bun test",
 		"lint": "biome check .",
 		"lint:fix": "biome check --write .",
-		"deploy": "bash deploy/deploy.sh"
+		"deploy": "bash deploy/deploy.sh",
+		"precompute": "bun scripts/precompute.mjs"
 	},
 	"dependencies": {
 		"@emotion/cache": "^11.14.0",
 		"@emotion/react": "^11.14.0",
 		"@emotion/styled": "^11.14.1",
+		"@mapbox/vector-tile": "^3.0.0",
 		"@mui/icons-material": "^9",
 		"@mui/material": "^9",
 		"@mui/material-nextjs": "^9",
 		"maplibre-gl": "^6",
 		"next": "^16",
+		"pbf": "^5.1.2",
 		"react": "^19",
 		"react-dom": "^19",
 		"zustand": "^5"
 	},
 	"devDependencies": {
-		"@biomejs/biome": "^2.4"
+		"@biomejs/biome": "^2.4",
+		"fast-png": "^8.0.0"
 	}
 }

@@ -38,6 +38,10 @@ export default function LayerPanel() {
 	const showRings = useMapStore((s) => s.showRings)
 	const setShowRings = useMapStore((s) => s.setShowRings)
 	const showWaterways = useMapStore((s) => s.showWaterways)
+	const showRoutes = useMapStore((s) => s.showRoutes)
+	const setShowRoutes = useMapStore((s) => s.setShowRoutes)
+	const showRoads = useMapStore((s) => s.showRoads)
+	const setShowRoads = useMapStore((s) => s.setShowRoads)
 	const setShowWaterways = useMapStore((s) => s.setShowWaterways)
 
 	const groups = [...new Set(OVERLAYS.map((o) => o.group))]
@@ -123,30 +127,51 @@ export default function LayerPanel() {
 				))}
 			</Stack>
 
-			<SectionTitle>Hilfslinien</SectionTitle>
-			<FormControlLabel
-				control={
-					<Switch
-						size="small"
-						checked={showRings}
-						onChange={(e) => setShowRings(e.target.checked)}
-					/>
-				}
-				label={<Typography variant="body2">Tagesmarsch-Ringe</Typography>}
+			<SectionTitle>Analyse und Wege</SectionTitle>
+			<HelperSwitch
+				checked={showRings}
+				onChange={setShowRings}
+				label="1 Tagesmarsch um jedes Marschlager"
 			/>
-			<FormControlLabel
-				control={
-					<Switch
-						size="small"
-						checked={showWaterways}
-						onChange={(e) => setShowWaterways(e.target.checked)}
-					/>
-				}
-				label={
-					<Typography variant="body2">Gewässernetz der Analyse</Typography>
-				}
+			<HelperSwitch
+				checked={showRoutes}
+				onChange={setShowRoutes}
+				label="Mögliche Marschwege und Etappenhalte"
+				note="Weg geringster Gehzeit zwischen bekannten Lagern (Modell)"
+			/>
+			<HelperSwitch
+				checked={showRoads}
+				onChange={setShowRoads}
+				label="Römerstraßen"
+				note="Belegt durchgezogen, vermutet gestrichelt"
+			/>
+			<HelperSwitch
+				checked={showWaterways}
+				onChange={setShowWaterways}
+				label="Natürliches Gewässernetz der Analyse"
+				note="Aus den Talzügen des Höhenmodells, ohne Kanäle"
 			/>
 		</Box>
+	)
+}
+
+function HelperSwitch({ checked, onChange, label, note }) {
+	return (
+		<FormControlLabel
+			control={
+				<Switch
+					size="small"
+					checked={checked}
+					onChange={(e) => onChange(e.target.checked)}
+				/>
+			}
+			label={<LayerLabel layer={{ label, note }} />}
+			sx={{
+				alignItems: "flex-start",
+				mb: 0.5,
+				"& .MuiSwitch-root": { mt: 0.25 },
+			}}
+		/>
 	)
 }
 

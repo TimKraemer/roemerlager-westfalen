@@ -9,6 +9,7 @@ export const SITE_TYPES = [
 	{ id: "legionslager", label: "Legionslager / Hauptlager", color: "#b71c1c" },
 	{ id: "kastell", label: "Kastell / Versorgungslager", color: "#e65100" },
 	{ id: "marschlager", label: "Marschlager", color: "#6a1b9a" },
+	{ id: "posten", label: "Wach- oder Signalposten", color: "#ad1457" },
 	{ id: "schlachtfeld", label: "Schlachtfeld / Konfliktort", color: "#263238" },
 	{ id: "verdacht", label: "Fundplatz, kein Lager belegt", color: "#78909c" },
 ]
@@ -34,7 +35,11 @@ export function campsFor(ringSource) {
 		.filter((f) => types.includes(f.properties.type))
 		.map((f) => ({
 			id: f.properties.id,
+			name: f.properties.name,
 			lon: f.geometry.coordinates[0],
 			lat: f.geometry.coordinates[1],
 		}))
 }
+
+// Routen verbinden alle Militärlager, unabhängig von der Ring-Auswahl
+export const routeCamps = () => campsFor("camps")

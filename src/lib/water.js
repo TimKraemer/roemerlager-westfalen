@@ -1,61 +1,78 @@
+import { VectorTile } from "@mapbox/vector-tile"
+import { PbfReader } from "pbf"
+import { lonLatToPixel, pixelToLonLat } from "./geo"
+
 /**
- * Fließgewässer aus OpenStreetMap über die Overpass API. Kanäle und Gräben
- * bleiben außen vor, sie sind neuzeitlich. Heutige Verläufe weichen von
- * den römerzeitlichen ab (Begradigung, Mäander), für einen Abstand von
- * einigen hundert Metern reicht das als Näherung.
+ * Heutige Fließgewässer aus den OpenMapTiles-Kacheln von tiles.erleben.app
+ * (OpenStreetMap, Planetiler). Bäche gibt es erst ab Zoom 13. Kanäle
+ * (Mittellandkanal 1906–1938), Gräben und Drainagen bleiben außen vor, sie
+ * sind neuzeitlich. Verrohrte Bäche zählen mit, ihr Tal gab es schon.
+ * Läuft im Worker.
  */
 
-// Öffentliche Overpass-Server, bei Überlast (429/504) der nächste
-const OVERPASS_URLS = [
-	"https://overpass-api.de/api/interpreter",
-	"https://overpass.private.coffee/api/interpreter",
-	"https://maps.mail.ru/osm/tools/overpass/api/interpreter",
-	"https://overpass.kumi.systems/api/interpreter",
-]
-const cache = new Map()
+export const VECTOR_TILES = "https://tiles.erleben.app/germany/{z}/{x}/{y}"
+export const WATER_CLASSES = ["river", "stream"]
+const ZOOM = 13
+const TILE = 256
 
-export async function fetchWaterways(bbox, signal) {
-	const [west, south, east, north] = bbox.map((v) => Number(v.toFixed(3)))
-	const key = [west, south, east, north].join(",")
-	if (cache.has(key)) return cache.get(key)
-	const query = `[out:json][timeout:90];
-way["waterway"~"^(river|stream)$"](${south},${west},${north},${east});
-out geom qt;`
-	const json = await queryOverpass(query, signal)
-	const features = json.elements
-		.filter((el) => el.type === "way" && el.geometry?.length > 1)
-		.map((el) => ({
-			type: "Feature",
-			properties: {
-				id: el.id,
-				kind: el.tags.waterway,
-				name: el.tags.name ?? "",
-			},
-			geometry: {
-				type: "LineString",
-				coordinates: el.geometry.map((p) => [p.lon, p.lat]),
-			},
-		}))
-	const collection = { type: "FeatureCollection", features }
-	cache.set(key, collection)
-	return collection
-}
-
-async function queryOverpass(query, signal) {
-	const errors = []
-	for (const url of OVERPASS_URLS) {
-		try {
-			const res = await fetch(url, {
-				method: "POST",
-				body: new URLSearchParams({ data: query }),
-				signal,
+async function loadTile(x, y) {
+	const url = VECTOR_TILES.replace("{z}", ZOOM)
+		.replace("{x}", x)
+		.replace("{y}", y)
+	const res = await fetch(url)
+	if (res.status === 204 || res.status === 404) return []
+	if (!res.ok) throw new Error(`tiles.erleben.app antwortet mit ${res.status}`)
+	const tile = new VectorTile(
+		new PbfReader(new Uint8Array(await res.arrayBuffer())),
+	)
+	const layer = tile.layers.waterway
+	if (!layer) return []
+	const lines = []
+	for (let i = 0; i < layer.length; i++) {
+		const f = layer.feature(i)
+		if (!WATER_CLASSES.includes(f.properties.class)) continue
+		const scale = TILE / layer.extent
+		for (const ring of f.loadGeometry()) {
+			lines.push({
+				kind: f.properties.class,
+				name: f.properties.name ?? "",
+				coords: ring.map((p) =>
+					pixelToLonLat(x * TILE + p.x * scale, y * TILE + p.y * scale, ZOOM),
+				),
 			})
-			if (res.ok) return await res.json()
-			errors.push(`${new URL(url).host}: ${res.status}`)
-		} catch (error) {
-			if (signal?.aborted) throw error
-			errors.push(`${new URL(url).host}: ${error.message}`)
 		}
 	}
-	throw new Error(`Gewässer nicht ladbar (${errors.join(", ")})`)
+	return lines
+}
+
+/** Alle Fließgewässer im Ausschnitt als GeoJSON-Linien. */
+export async function fetchWaterways(bbox, onProgress) {
+	const [west, south, east, north] = bbox
+	const [px0, py0] = lonLatToPixel(west, north, ZOOM)
+	const [px1, py1] = lonLatToPixel(east, south, ZOOM)
+	const jobs = []
+	for (let y = Math.floor(py0 / TILE); y <= Math.floor(py1 / TILE); y++) {
+		for (let x = Math.floor(px0 / TILE); x <= Math.floor(px1 / TILE); x++) {
+			jobs.push([x, y])
+		}
+	}
+	const features = []
+	let done = 0
+	const queue = [...jobs]
+	await Promise.all(
+		Array.from({ length: 8 }, async () => {
+			while (queue.length) {
+				const [x, y] = queue.shift()
+				for (const line of await loadTile(x, y)) {
+					features.push({
+						type: "Feature",
+						properties: { kind: line.kind, name: line.name },
+						geometry: { type: "LineString", coordinates: line.coords },
+					})
+				}
+				onProgress?.(++done / jobs.length)
+			}
+		}),
+	)
+	return { type: "FeatureCollection", features }
 }

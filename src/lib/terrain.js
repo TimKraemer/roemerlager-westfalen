@@ -1,14 +1,44 @@
 /**
- * Höhenmodell aus Terrarium-Kacheln (AWS Open Data, wie in erleben.app
- * scripts/map-styles/build-dem.mjs). Höhe = R·256 + G + B/256 − 32768.
+ * Höhenmodell aus Terrarium-Kacheln (Höhe = R·256 + G + B/256 − 32768).
+ * Zuerst tiles.erleben.app (eigener Cache, bis Zoom 12), bei Fehlern die
+ * Originalquelle auf AWS (Mapzen Terrain Tiles: SRTM, EU-DEM).
  * Läuft im Worker: fetch -> createImageBitmap -> OffscreenCanvas.
  */
 
-export const TERRARIUM_URL =
-	"https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"
+export const TERRARIUM_URLS = [
+	"https://tiles.erleben.app/dem/{z}/{x}/{y}",
+	"https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
+]
 const TILE = 256
 
+async function fetchTerrarium(z, x, y) {
+	for (const template of TERRARIUM_URLS) {
+		const url = template.replace("{z}", z).replace("{x}", x).replace("{y}", y)
+		try {
+			const res = await fetch(url)
+			if (res.ok && res.status !== 204) return await res.blob()
+		} catch {
+			// nächste Quelle
+		}
+	}
+	return null
+}
+
 const tileCache = new Map()
+
+// Im Browser über OffscreenCanvas, das Vorberechnungs-Skript setzt einen
+// eigenen PNG-Dekoder (setImageDecoder), der RGBA-Bytes liefert
+let decodeImage = async (blob) => {
+	const bitmap = await createImageBitmap(blob)
+	const canvas = new OffscreenCanvas(TILE, TILE)
+	const ctx = canvas.getContext("2d", { willReadFrequently: true })
+	ctx.drawImage(bitmap, 0, 0)
+	return ctx.getImageData(0, 0, TILE, TILE).data
+}
+
+export function setImageDecoder(decoder) {
+	decodeImage = decoder
+}
 
 async function loadTile(z, x, y) {
 	const key = `${z}/${x}/${y}`
@@ -16,16 +46,9 @@ async function loadTile(z, x, y) {
 		tileCache.set(
 			key,
 			(async () => {
-				const url = TERRARIUM_URL.replace("{z}", z)
-					.replace("{x}", x)
-					.replace("{y}", y)
-				const res = await fetch(url)
-				if (!res.ok) return null
-				const bitmap = await createImageBitmap(await res.blob())
-				const canvas = new OffscreenCanvas(TILE, TILE)
-				const ctx = canvas.getContext("2d", { willReadFrequently: true })
-				ctx.drawImage(bitmap, 0, 0)
-				const { data } = ctx.getImageData(0, 0, TILE, TILE)
+				const blob = await fetchTerrarium(z, x, y)
+				if (!blob) return null
+				const data = await decodeImage(blob)
 				const heights = new Float32Array(TILE * TILE)
 				for (let i = 0; i < heights.length; i++) {
 					heights[i] =

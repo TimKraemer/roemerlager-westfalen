@@ -120,3 +120,38 @@ describe("Gewässernetz aus dem Höhenmodell", () => {
 		expect(acc[20 * w + 31]).toBeGreaterThan(acc[20 * w + 29])
 	})
 })
+
+describe("Marschrouten", () => {
+	test("Route zwischen zwei Lagern, Umweg um steilen Rücken, Etappen", async () => {
+		const { computeRoutes, costSurface, routeStages } = await import("./routes")
+		const n = grid.cols * grid.rows
+		const slope = new Float32Array(n).fill(1)
+		// steiler Rücken quer durch die Mitte mit einer Lücke im Süden
+		const midCol = Math.floor(grid.cols / 2)
+		for (let r = 0; r < grid.rows - 15; r++)
+			for (let c = midCol - 2; c <= midCol + 2; c++)
+				slope[r * grid.cols + c] = 30
+		const flat = new Float32Array(n)
+		const far = new Float32Array(n).fill(1e6)
+		const cost = costSurface(grid, {
+			slope,
+			tpi: flat,
+			distWater: far,
+			distRiver: far,
+		})
+		const camps = [
+			{ id: "a", name: "A", lon: 8.65, lat: 52.3 },
+			{ id: "b", name: "B", lon: 9.15, lat: 52.3 },
+		]
+		const routes = computeRoutes(grid, cost, camps, 19000)
+		expect(routes.length).toBe(1)
+		const r = routes[0]
+		expect(r.length).toBeGreaterThan(r.crow)
+		expect(r.length).toBeLessThan(r.crow * 1.6)
+		// kein Schritt über den steilen Rücken
+		for (const c of r.cells) expect(slope[c]).toBeLessThan(30)
+		const score = new Float32Array(n).fill(0.5)
+		const stages = routeStages(grid, routes, score, 19000)
+		expect(stages.length).toBe(Math.max(0, Math.round(r.length / 19000) - 1))
+	})
+})

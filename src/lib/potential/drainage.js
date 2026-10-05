@@ -140,10 +140,18 @@ export function flowAccumulation(dem, width, height, pixelMeters) {
 
 /**
  * Gewässerpixel zu Linien verketten: Eine Linie beginnt an einer Quelle
- * oder einem Zusammenfluss und läuft abwärts bis zum nächsten.
+ * oder einem Zusammenfluss und läuft abwärts bis zum nächsten. Die
+ * D8-Treppen werden mit Douglas-Peucker (Toleranz in Pixeln) geglättet.
  * @param {(i: number) => [number, number]} toLonLat Pixelmitte -> Länge/Breite
  */
-export function streamLines({ acc, receiver }, minKm2, riverKm2, toLonLat) {
+export function streamLines(
+	{ acc, receiver },
+	minKm2,
+	riverKm2,
+	toLonLat,
+	gridWidth,
+	tolerance = 1.2,
+) {
 	const n = acc.length
 	const donors = new Uint8Array(n)
 	for (let i = 0; i < n; i++) {
@@ -152,14 +160,15 @@ export function streamLines({ acc, receiver }, minKm2, riverKm2, toLonLat) {
 	const features = []
 	for (let i = 0; i < n; i++) {
 		if (acc[i] < minKm2 || donors[i] === 1) continue
-		const coords = [toLonLat(i)]
+		const chain = [i]
 		let c = i
 		while (receiver[c] >= 0) {
 			c = receiver[c]
-			coords.push(toLonLat(c))
+			chain.push(c)
 			if (donors[c] !== 1) break
 		}
-		if (coords.length < 2) continue
+		if (chain.length < 2) continue
+		const coords = simplify(chain, tolerance, gridWidth).map(toLonLat)
 		features.push({
 			type: "Feature",
 			properties: {
@@ -170,4 +179,35 @@ export function streamLines({ acc, receiver }, minKm2, riverKm2, toLonLat) {
 		})
 	}
 	return { type: "FeatureCollection", features }
+}
+
+/** Douglas-Peucker über Pixelindizes eines Rasters der Breite width. */
+function simplify(chain, tolerance, width) {
+	if (chain.length <= 2) return chain
+	const xy = chain.map((i) => [i % width, Math.floor(i / width)])
+	const keep = new Uint8Array(chain.length)
+	keep[0] = 1
+	keep[chain.length - 1] = 1
+	const stack = [[0, chain.length - 1]]
+	while (stack.length) {
+		const [a, b] = stack.pop()
+		const [ax, ay] = xy[a]
+		const [bx, by] = xy[b]
+		const len = Math.hypot(bx - ax, by - ay) || 1
+		let worst = -1
+		let dmax = tolerance
+		for (let k = a + 1; k < b; k++) {
+			const [px, py] = xy[k]
+			const d = Math.abs((bx - ax) * (ay - py) - (ax - px) * (by - ay)) / len
+			if (d > dmax) {
+				dmax = d
+				worst = k
+			}
+		}
+		if (worst >= 0) {
+			keep[worst] = 1
+			stack.push([a, worst], [worst, b])
+		}
+	}
+	return chain.filter((_, k) => keep[k])
 }

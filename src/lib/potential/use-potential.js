@@ -1,20 +1,50 @@
 "use client"
 
 import { useCallback, useEffect, useRef } from "react"
-import { campsFor } from "@/lib/sites"
-import { fetchWaterways } from "@/lib/water"
+import { DEFAULT_REGION } from "@/lib/regions"
+import { campsFor, routeCamps } from "@/lib/sites"
 import { useMapStore } from "@/store/use-map-store"
 import { cellAt, FACTORS } from "./model"
+import { unpack } from "./packed"
 
-// Größere Ausschnitte würden zu viele DEM-Kacheln und Overpass-Daten laden
+// Größere Ausschnitte würden zu viele Höhen- und Gewässerkacheln laden
 export const MAX_AREA_KM = 90
 
+function message(type, extra = {}) {
+	const { params, ringSource, heatmap } = useMapStore.getState()
+	return {
+		type,
+		params,
+		camps: campsFor(ringSource),
+		routeCamps: routeCamps(),
+		candidateThreshold: heatmap.threshold,
+		...extra,
+	}
+}
+
+async function loadPrecomputed(region) {
+	const base = `${process.env.NEXT_PUBLIC_BASE_PATH}/${region.file}`
+	try {
+		const [meta, bin] = await Promise.all([
+			fetch(`${base}.json`).then((r) => (r.ok ? r.json() : null)),
+			fetch(`${base}.bin`).then((r) => (r.ok ? r.arrayBuffer() : null)),
+		])
+		if (!meta || !bin) return null
+		return { ...unpack(meta, bin), precomputed: true }
+	} catch {
+		return null
+	}
+}
+
 /**
- * Steuert den Analyse-Worker: "analyze" für den aktuellen Kartenausschnitt,
- * danach "update", sobald sich Gewichte oder Parameter ändern.
+ * Steuert den Analyse-Worker. Beim Start wird das vorberechnete Ergebnis
+ * der Standardregion geladen. "analyze" rechnet den Kartenausschnitt neu,
+ * "update" nur die Gewichtung, sobald sich Parameter ändern.
  */
 export function usePotential(getMap) {
 	const workerRef = useRef(null)
+	// Hat der Worker Gelände geladen? Bei vorberechneten Ergebnissen nicht.
+	const workerReady = useRef(false)
 	const params = useMapStore((s) => s.params)
 	const ringSource = useMapStore((s) => s.ringSource)
 	const threshold = useMapStore((s) => s.heatmap.threshold)
@@ -25,112 +55,91 @@ export function usePotential(getMap) {
 			type: "module",
 		})
 		worker.onmessage = ({ data }) => {
-			const { setAnalysis, setResult } = useMapStore.getState()
+			const store = useMapStore.getState()
 			if (data.type === "progress") {
-				setAnalysis({
+				store.setAnalysis({
 					status: "running",
 					stage: data.stage,
 					progress: data.value,
 				})
 			} else if (data.type === "result") {
-				if (data.streams !== undefined) {
-					useMapStore.getState().setDerivedWaterways(data.streams)
-				}
-				setResult(data)
-				setAnalysis({ status: "done", stage: "", progress: 1, error: null })
+				if (data.streams !== undefined) store.setDerivedWaterways(data.streams)
+				if (data.routes !== undefined) store.setRoutes(data.routes)
+				store.setResult({ places: store.result?.places, ...data })
+				store.setAnalysis({
+					status: "done",
+					stage: "",
+					progress: 1,
+					error: null,
+				})
 			} else if (data.type === "error") {
-				setAnalysis({ status: "error", error: data.message })
+				store.setAnalysis({ status: "error", error: data.message })
 			}
 		}
 		workerRef.current = worker
 		return () => worker.terminate()
 	}, [])
 
-	const analyze = useCallback(async () => {
-		const map = getMap()
-		if (!map) return
-		const { setAnalysis, setWaterways, params, ringSource, heatmap } =
-			useMapStore.getState()
-		const b = map.getBounds()
-		const bbox = clampBbox([
-			b.getWest(),
-			b.getSouth(),
-			b.getEast(),
-			b.getNorth(),
-		])
-		setAnalysis({
+	// Vorberechnetes Ergebnis der Standardregion sofort anzeigen
+	useEffect(() => {
+		let cancelled = false
+		loadPrecomputed(DEFAULT_REGION).then((result) => {
+			const store = useMapStore.getState()
+			if (cancelled || !result || store.result) return
+			store.setDerivedWaterways(result.streams)
+			store.setRoutes(result.routes)
+			store.setResult(result)
+		})
+		return () => {
+			cancelled = true
+		}
+	}, [])
+
+	const analyzeBbox = useCallback((bbox) => {
+		useMapStore.getState().setAnalysis({
 			status: "running",
 			stage: "",
 			progress: 0,
 			error: null,
-			notice: null,
 		})
-		const waterways = params.waterSource === "osm" ? await loadOsm(bbox) : null
-		setWaterways(waterways)
-		workerRef.current.postMessage({
-			type: "analyze",
-			bbox,
-			params,
-			camps: campsFor(ringSource),
-			candidateThreshold: heatmap.threshold,
-			waterways,
-		})
-	}, [getMap])
+		workerReady.current = true
+		workerRef.current.postMessage(message("analyze", { bbox }))
+	}, [])
 
-	// Wechsel auf OSM nach einer Berechnung: Gewässer für den Ausschnitt nachladen
-	const waterSource = params.waterSource
-	useEffect(() => {
-		const { result, waterways } = useMapStore.getState()
-		if (waterSource !== "osm" || !result || waterways) return
-		const [nw, , se] = result.grid.corners
-		loadOsm([nw[0], se[1], se[0], nw[1]]).then((loaded) => {
-			if (!loaded) return
-			const { setWaterways, params, ringSource, heatmap } =
-				useMapStore.getState()
-			setWaterways(loaded)
-			workerRef.current?.postMessage({ type: "waterways", waterways: loaded })
-			workerRef.current?.postMessage({
-				type: "update",
-				params,
-				camps: campsFor(ringSource),
-				candidateThreshold: heatmap.threshold,
-			})
-		})
-	}, [waterSource])
+	const analyze = useCallback(() => {
+		const map = getMap()
+		if (!map) return
+		const b = map.getBounds()
+		analyzeBbox(
+			clampBbox([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]),
+		)
+	}, [getMap, analyzeBbox])
 
-	// Schieberegler: nur neu gewichten, Gelände bleibt im Worker
+	// Schieberegler: nur neu gewichten, Gelände bleibt im Worker. Beim
+	// vorberechneten Ergebnis muss das Gelände dafür erst geladen werden.
+	const lastSettings = useRef(null)
 	useEffect(() => {
 		if (!hasResult) return
+		// Nur auf geänderte Regler reagieren, nicht auf das erste Ergebnis
+		const key = JSON.stringify([params, ringSource, threshold])
+		if (lastSettings.current === null || lastSettings.current === key) {
+			lastSettings.current = key
+			return
+		}
+		lastSettings.current = key
 		const id = setTimeout(() => {
-			workerRef.current?.postMessage({
-				type: "update",
-				params,
-				camps: campsFor(ringSource),
-				candidateThreshold: threshold,
-			})
+			if (workerReady.current) {
+				workerRef.current?.postMessage(message("update"))
+				return
+			}
+			if (useMapStore.getState().result?.precomputed) {
+				analyzeBbox(DEFAULT_REGION.bbox)
+			}
 		}, 150)
 		return () => clearTimeout(id)
-	}, [params, ringSource, threshold, hasResult])
+	}, [params, ringSource, threshold, hasResult, analyzeBbox])
 
 	return { analyze }
-}
-
-// OSM-Gewässer laden, bei Ausfall mit Hinweis auf das Höhenmodell ausweichen
-async function loadOsm(bbox) {
-	const { setAnalysis } = useMapStore.getState()
-	setAnalysis({
-		status: "running",
-		stage: "Gewässer aus OSM laden",
-		progress: 0,
-	})
-	try {
-		return await fetchWaterways(bbox)
-	} catch (error) {
-		setAnalysis({
-			notice: `${error.message}. Gerechnet wird mit dem Gewässernetz aus dem Höhenmodell.`,
-		})
-		return null
-	}
 }
 
 // Auf MAX_AREA_KM um die Mitte begrenzen
@@ -145,7 +154,7 @@ function clampBbox([w, s, e, n]) {
 }
 
 /** Werte einer Zelle für die Info-Karte nach einem Klick. */
-export function inspectAt(lon, lat) {
+export function inspectAt(lon, lat, extra = {}) {
 	const { result } = useMapStore.getState()
 	if (!result) return null
 	const i = cellAt(result.grid, lon, lat)
@@ -163,5 +172,8 @@ export function inspectAt(lon, lat) {
 		distWater: result.raw.distWater[i],
 		distRiver: result.raw.distRiver[i],
 		distCamp: result.raw.distCamp[i],
+		distRoute: result.raw.distRoute?.[i] ?? Number.POSITIVE_INFINITY,
+		waterSource: result.waterSource,
+		...extra,
 	}
 }

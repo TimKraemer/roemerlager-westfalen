@@ -3,47 +3,57 @@
 import "maplibre-gl/dist/maplibre-gl.css"
 import * as maplibregl from "maplibre-gl"
 import { useEffect, useRef, useState } from "react"
+import roads from "@/data/roemerstrassen.json"
 import { circlePolygon } from "@/lib/geo"
-import { BASE_LAYERS, OVERLAYS, rasterSource } from "@/lib/layers"
+import {
+	BASE_LAYERS,
+	FONT,
+	GLYPHS,
+	OVERLAYS,
+	styleFor,
+	styleLayersOf,
+} from "@/lib/layers"
 import maplibreVersion from "@/lib/maplibre-version.json"
+import { rankedCandidates } from "@/lib/potential/candidates"
 import { renderHeatmap } from "@/lib/potential/render"
 import { inspectAt } from "@/lib/potential/use-potential"
+import { DEFAULT_REGION } from "@/lib/regions"
 import { campsFor, SITE_TYPES, SITES } from "@/lib/sites"
 import { useMapStore } from "@/store/use-map-store"
 
-const START = { center: [8.4, 51.85], zoom: 7.6 }
-
-// Startansicht aus dem URL-Hash (#zoom/lat/lon), sonst ganz Westfalen
+// Startansicht aus dem URL-Hash (#zoom/lat/lon), sonst der Kreis
 function initialView() {
 	const [zoom, lat, lon] = window.location.hash.slice(1).split("/").map(Number)
 	if ([zoom, lat, lon].every(Number.isFinite)) {
 		return { center: [lon, lat], zoom }
 	}
-	return START
+	return {
+		bounds: DEFAULT_REGION.view.bounds,
+		// Links Platz für die Startkarte lassen, auf dem Handy nicht
+		fitBoundsOptions: {
+			padding:
+				window.innerWidth >= 900
+					? { top: 40, bottom: 40, left: 380, right: 40 }
+					: 20,
+		},
+	}
 }
 const EMPTY = { type: "FeatureCollection", features: [] }
 const EMPTY_IMAGE =
 	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
+const HALO = {
+	"text-halo-color": "rgba(255,255,255,0.92)",
+	"text-halo-width": 1.6,
+}
 
 function buildStyle() {
-	const sources = {}
-	const layers = []
+	const style = { version: 8, glyphs: GLYPHS, sources: {}, layers: [] }
 	for (const layer of [...BASE_LAYERS, ...OVERLAYS]) {
-		sources[layer.id] = rasterSource(layer)
-		layers.push({
-			id: layer.id,
-			type: "raster",
-			source: layer.id,
-			layout: { visibility: "none" },
-			paint: { "raster-opacity": layer.opacity ?? 1 },
-		})
+		const part = styleFor(layer)
+		Object.assign(style.sources, part.sources)
+		style.layers.push(...part.layers)
 	}
-	return {
-		version: 8,
-		glyphs: "https://demotiles.maplibre.org/font/{fontstack}/{range}.pbf",
-		sources,
-		layers,
-	}
+	return style
 }
 
 const typeColor = [
@@ -78,7 +88,7 @@ function addAnalysisLayers(map) {
 		source: "waterways",
 		layout: { visibility: "none" },
 		paint: {
-			"line-color": "#0277bd",
+			"line-color": "#29b6f6",
 			"line-width": [
 				"interpolate",
 				["linear"],
@@ -91,6 +101,43 @@ function addAnalysisLayers(map) {
 		},
 	})
 
+	map.addSource("region", { type: "geojson", data: DEFAULT_REGION.outline })
+	map.addLayer({
+		id: "region-casing",
+		type: "line",
+		source: "region",
+		paint: { "line-color": "#fff", "line-width": 4, "line-opacity": 0.7 },
+	})
+	map.addLayer({
+		id: "region",
+		type: "line",
+		source: "region",
+		paint: {
+			"line-color": "#4a148c",
+			"line-width": 1.6,
+			"line-dasharray": [4, 2],
+		},
+	})
+
+	// Belegte und vermutete Römerstraßen
+	map.addSource("roads", { type: "geojson", data: roads })
+	map.addLayer({
+		id: "roads",
+		type: "line",
+		source: "roads",
+		layout: { "line-cap": "round" },
+		paint: {
+			"line-color": "#5d4037",
+			"line-width": 3,
+			"line-dasharray": [
+				"case",
+				["==", ["get", "certainty"], "belegt"],
+				["literal", [1, 0]],
+				["literal", [2, 1.5]],
+			],
+		},
+	})
+
 	map.addSource("rings", { type: "geojson", data: EMPTY })
 	map.addLayer({
 		id: "rings",
@@ -98,10 +145,86 @@ function addAnalysisLayers(map) {
 		source: "rings",
 		paint: {
 			"line-color": "#6a1b9a",
-			"line-width": ["match", ["get", "kind"], "mean", 1.6, 1],
+			"line-width": ["match", ["get", "kind"], "mean", 2, 1],
 			"line-dasharray": [3, 2],
-			"line-opacity": ["match", ["get", "kind"], "mean", 0.85, 0.45],
+			"line-opacity": ["match", ["get", "kind"], "mean", 0.9, 0.35],
 		},
+	})
+	map.addLayer({
+		id: "rings-label",
+		type: "symbol",
+		source: "rings",
+		filter: ["==", ["get", "kind"], "mean"],
+		layout: {
+			"symbol-placement": "line",
+			"symbol-spacing": 400,
+			"text-field": ["get", "label"],
+			"text-font": FONT,
+			"text-size": 11,
+		},
+		paint: { "text-color": "#4a148c", ...HALO },
+	})
+
+	// Mögliche Marschrouten (Least-Cost-Path)
+	map.addSource("routes", { type: "geojson", data: EMPTY })
+	map.addLayer({
+		id: "routes-casing",
+		type: "line",
+		source: "routes",
+		layout: { "line-cap": "round", "line-join": "round" },
+		paint: { "line-color": "#3e2723", "line-width": 6, "line-opacity": 0.55 },
+	})
+	map.addLayer({
+		id: "routes",
+		type: "line",
+		source: "routes",
+		layout: { "line-cap": "round", "line-join": "round" },
+		paint: { "line-color": "#ffca28", "line-width": 3 },
+	})
+	map.addLayer({
+		id: "routes-label",
+		type: "symbol",
+		source: "routes",
+		layout: {
+			"symbol-placement": "line",
+			"symbol-spacing": 500,
+			"text-field": [
+				"concat",
+				["to-string", ["get", "km"]],
+				" km · ",
+				["to-string", ["get", "days"]],
+				" Tagesmärsche",
+			],
+			"text-font": FONT,
+			"text-size": 11,
+		},
+		paint: { "text-color": "#3e2723", ...HALO },
+	})
+
+	// Etappenpunkte auf den Routen, verbunden mit dem besten Potenzial
+	map.addSource("stages", { type: "geojson", data: EMPTY })
+	map.addLayer({
+		id: "stages",
+		type: "circle",
+		source: "stages",
+		paint: {
+			"circle-radius": 10,
+			"circle-color": "#ffca28",
+			"circle-stroke-color": "#3e2723",
+			"circle-stroke-width": 2,
+		},
+	})
+	map.addLayer({
+		id: "stages-label",
+		type: "symbol",
+		source: "stages",
+		layout: {
+			"text-field": "E",
+			"text-font": FONT,
+			"text-size": 11,
+			"text-allow-overlap": true,
+		},
+		paint: { "text-color": "#3e2723" },
 	})
 
 	map.addSource("candidates", { type: "geojson", data: EMPTY })
@@ -110,10 +233,10 @@ function addAnalysisLayers(map) {
 		type: "circle",
 		source: "candidates",
 		paint: {
-			"circle-radius": 11,
+			"circle-radius": ["case", ["get", "inRegion"], 11, 5],
 			"circle-color": "#fff",
 			"circle-stroke-color": "#d84315",
-			"circle-stroke-width": 2.5,
+			"circle-stroke-width": ["case", ["get", "inRegion"], 2.5, 2],
 		},
 	})
 	map.addLayer({
@@ -122,7 +245,7 @@ function addAnalysisLayers(map) {
 		source: "candidates",
 		layout: {
 			"text-field": ["to-string", ["get", "rank"]],
-			"text-font": ["Open Sans Semibold"],
+			"text-font": FONT,
 			"text-size": 11,
 			"text-allow-overlap": true,
 		},
@@ -148,17 +271,13 @@ function addAnalysisLayers(map) {
 		minzoom: 8,
 		layout: {
 			"text-field": ["get", "name"],
-			"text-font": ["Open Sans Semibold"],
+			"text-font": FONT,
 			"text-size": 12,
 			"text-offset": [0, 1.1],
 			"text-anchor": "top",
 			"text-optional": true,
 		},
-		paint: {
-			"text-color": "#212121",
-			"text-halo-color": "rgba(255,255,255,0.9)",
-			"text-halo-width": 1.6,
-		},
+		paint: { "text-color": "#212121", ...HALO },
 	})
 }
 
@@ -166,6 +285,7 @@ function addAnalysisLayers(map) {
 const alive = (map) => map && !map._removed
 
 function ringFeatures(ringSource, mean, sigma) {
+	const label = `1 Tagesmarsch (${Math.round(mean / 1000)} km)`
 	const features = []
 	for (const camp of campsFor(ringSource)) {
 		for (const [kind, radius] of [
@@ -175,7 +295,7 @@ function ringFeatures(ringSource, mean, sigma) {
 		]) {
 			features.push({
 				type: "Feature",
-				properties: { kind, camp: camp.id },
+				properties: { kind, camp: camp.id, label },
 				geometry: {
 					type: "LineString",
 					coordinates: circlePolygon(camp.lon, camp.lat, radius),
@@ -184,6 +304,52 @@ function ringFeatures(ringSource, mean, sigma) {
 		}
 	}
 	return { type: "FeatureCollection", features }
+}
+
+// Auf der Karte nur die besten Kandidaten, die Liste zeigt alle
+const MAP_CANDIDATES = 12
+
+const CLICKABLE = ["sites", "candidates", "stages", "routes"]
+
+function handleClick(map, e) {
+	const store = useMapStore.getState()
+	const hits = map.queryRenderedFeatures(e.point, { layers: CLICKABLE })
+	const pick = (id) => hits.find((f) => f.layer.id === id)
+	const site = pick("sites")
+	if (site) {
+		store.setSelectedSite(site.properties.id)
+		return
+	}
+	store.setSelectedSite(null)
+	const candidate = pick("candidates")
+	if (candidate) {
+		const [lon, lat] = candidate.geometry.coordinates
+		store.setInspect(
+			inspectAt(lon, lat, {
+				kind: "candidate",
+				rank: candidate.properties.rank,
+			}),
+		)
+		return
+	}
+	const stage = pick("stages")
+	if (stage) {
+		const [lon, lat] = stage.geometry.coordinates
+		store.setInspect(
+			inspectAt(lon, lat, { kind: "stage", stage: { ...stage.properties } }),
+		)
+		return
+	}
+	const route = pick("routes")
+	if (route) {
+		const { lng, lat } = e.lngLat
+		store.setInspect(
+			inspectAt(lng, lat, { kind: "route", route: { ...route.properties } }),
+		)
+		return
+	}
+	const { lng, lat } = e.lngLat
+	store.setInspect(inspectAt(lng, lat, { kind: "cell" }))
 }
 
 export default function MapView({ onMapReady }) {
@@ -198,13 +364,15 @@ export default function MapView({ onMapReady }) {
 	const siteTypes = useMapStore((s) => s.siteTypes)
 	const showRings = useMapStore((s) => s.showRings)
 	const showWaterways = useMapStore((s) => s.showWaterways)
+	const showRoutes = useMapStore((s) => s.showRoutes)
+	const showRoads = useMapStore((s) => s.showRoads)
 	const ringSource = useMapStore((s) => s.ringSource)
 	const ringMean = useMapStore((s) => s.params.ringMean)
 	const ringSigma = useMapStore((s) => s.params.ringSigma)
 	const heatmap = useMapStore((s) => s.heatmap)
 	const result = useMapStore((s) => s.result)
-	const waterways = useMapStore((s) => s.waterways)
 	const derivedWaterways = useMapStore((s) => s.derivedWaterways)
+	const routes = useMapStore((s) => s.routes)
 	const selectedSite = useMapStore((s) => s.selectedSite)
 
 	useEffect(() => {
@@ -234,20 +402,8 @@ export default function MapView({ onMapReady }) {
 			setMap(map)
 			onMapReady?.(map)
 		})
-
-		map.on("click", (e) => {
-			const hit = map.queryRenderedFeatures(e.point, {
-				layers: ["sites", "candidates"],
-			})
-			const site = hit.find((f) => f.layer.id === "sites")
-			if (site) {
-				useMapStore.getState().setSelectedSite(site.properties.id)
-				return
-			}
-			const { lng, lat } = e.lngLat
-			useMapStore.getState().setInspect(inspectAt(lng, lat))
-		})
-		for (const id of ["sites", "candidates"]) {
+		map.on("click", (e) => handleClick(map, e))
+		for (const id of CLICKABLE) {
 			map.on("mouseenter", id, () => {
 				map.getCanvas().style.cursor = "pointer"
 			})
@@ -264,11 +420,13 @@ export default function MapView({ onMapReady }) {
 	useEffect(() => {
 		if (!alive(map)) return
 		for (const layer of BASE_LAYERS) {
-			map.setLayoutProperty(
-				layer.id,
-				"visibility",
-				layer.id === baseLayer ? "visible" : "none",
-			)
+			for (const { id } of styleLayersOf(layer)) {
+				map.setLayoutProperty(
+					id,
+					"visibility",
+					layer.id === baseLayer ? "visible" : "none",
+				)
+			}
 		}
 	}, [baseLayer, map])
 
@@ -276,12 +434,16 @@ export default function MapView({ onMapReady }) {
 		if (!alive(map)) return
 		for (const layer of OVERLAYS) {
 			const o = overlays[layer.id]
-			map.setLayoutProperty(
-				layer.id,
-				"visibility",
-				o.visible ? "visible" : "none",
-			)
-			map.setPaintProperty(layer.id, "raster-opacity", o.opacity)
+			for (const { id, opacity } of styleLayersOf(layer)) {
+				map.setLayoutProperty(id, "visibility", o.visible ? "visible" : "none")
+				if (opacity) map.setPaintProperty(id, opacity, o.opacity)
+				else
+					map.setPaintProperty(
+						id,
+						"hillshade-exaggeration",
+						Math.min(1, o.opacity),
+					)
+			}
 		}
 	}, [overlays, map])
 
@@ -302,25 +464,52 @@ export default function MapView({ onMapReady }) {
 			)
 	}, [showRings, ringSource, ringMean, ringSigma, map])
 
-	// Gewässer der Analyse: OSM-Linien oder das Netz aus dem Höhenmodell
+	useEffect(() => {
+		if (!alive(map)) return
+		map.setLayoutProperty("roads", "visibility", showRoads ? "visible" : "none")
+	}, [showRoads, map])
+
+	// Gewässer der Analyse: abgeleitetes Netz als Linien, OSM direkt aus den
+	// Vektorkacheln (Ebene "osm-gewaesser")
 	const waterSource = result?.waterSource
 	useEffect(() => {
 		if (!alive(map)) return
-		const data = waterSource === "osm" ? waterways : derivedWaterways
-		map.getSource("waterways").setData(data ?? EMPTY)
+		const dem = waterSource !== "osm"
+		map
+			.getSource("waterways")
+			.setData(dem && derivedWaterways ? derivedWaterways : EMPTY)
 		map.setLayoutProperty(
 			"waterways",
 			"visibility",
-			showWaterways ? "visible" : "none",
+			showWaterways && dem ? "visible" : "none",
 		)
-	}, [waterways, derivedWaterways, showWaterways, waterSource, map])
+		if (showWaterways && !dem) {
+			useMapStore.getState().setOverlay("osm-gewaesser", { visible: true })
+		}
+	}, [derivedWaterways, showWaterways, waterSource, map])
+
+	useEffect(() => {
+		if (!alive(map)) return
+		map.getSource("routes").setData(routes ?? EMPTY)
+		for (const id of [
+			"routes",
+			"routes-casing",
+			"routes-label",
+			"stages",
+			"stages-label",
+		]) {
+			map.setLayoutProperty(id, "visibility", showRoutes ? "visible" : "none")
+		}
+	}, [routes, showRoutes, map])
 
 	useEffect(() => {
 		if (!alive(map)) return
 		const source = map.getSource("heatmap")
 		const cands = map.getSource("candidates")
+		const stages = map.getSource("stages")
 		if (!result) {
 			cands.setData(EMPTY)
+			stages.setData(EMPTY)
 			map.setLayoutProperty("heatmap", "visibility", "none")
 			return
 		}
@@ -336,10 +525,32 @@ export default function MapView({ onMapReady }) {
 		map.setPaintProperty("heatmap", "raster-opacity", heatmap.opacity)
 		cands.setData({
 			type: "FeatureCollection",
-			features: result.candidates.map((c, i) => ({
+			features: rankedCandidates(result)
+				.filter((c) => !c.rank || c.rank <= MAP_CANDIDATES)
+				.map((c) => ({
+					type: "Feature",
+					properties: {
+						rank: c.rank ?? "",
+						score: c.score,
+						inRegion: c.inRegion,
+					},
+					geometry: { type: "Point", coordinates: [c.lon, c.lat] },
+				})),
+		})
+		stages.setData({
+			type: "FeatureCollection",
+			features: (result.stages ?? []).map((s) => ({
 				type: "Feature",
-				properties: { rank: i + 1, score: c.score },
-				geometry: { type: "Point", coordinates: [c.lon, c.lat] },
+				properties: {
+					from: s.from,
+					to: s.to,
+					stage: s.stage,
+					of: s.of,
+					km: Math.round(s.km * 10) / 10,
+					score: s.score,
+					offset: Math.round(s.offset),
+				},
+				geometry: { type: "Point", coordinates: [s.lon, s.lat] },
 			})),
 		})
 	}, [result, heatmap, map])
