@@ -10,6 +10,13 @@ Arbeitshypothese lagen Marschlager etwa einen Tagesmarsch (18–20 km) auseinand
 Wasser und meist auf Anhöhen oder in leichter Hanglage. Im Boden erkennt man
 sie an geraden Gräben mit abgerundeten Ecken („Spielkartenform“).
 
+## Zitieren
+
+Krämer, Tim (2026): Römerlager in Westfalen. Potenzialkarte für unentdeckte
+Marschlager. Online: https://experiments.erleben.app/roemer/ (abgerufen am …).
+
+Maschinenlesbar in [CITATION.cff](CITATION.cff).
+
 ## Starten
 
 ```bash

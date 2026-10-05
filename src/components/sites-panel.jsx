@@ -11,6 +11,7 @@ import {
 import sources from "@/data/quellen.json"
 import { SITE_TYPES, SITES } from "@/lib/sites"
 import { useMapStore } from "@/store/use-map-store"
+import CitationBox from "./citation-box"
 import { SectionTitle } from "./layer-panel"
 
 export function SitesPanel() {
@@ -64,6 +65,11 @@ export function SitesPanel() {
 export function SourcesPanel() {
 	return (
 		<Box>
+			<SectionTitle>Zitiervorschlag</SectionTitle>
+			<Typography variant="body2" color="text.secondary">
+				Karte, Modell und Zusammenstellung der Quellen von Tim Krämer, 2026.
+			</Typography>
+			<CitationBox />
 			{sources.map((group) => (
 				<Box key={group.title}>
 					<SectionTitle>{group.title}</SectionTitle>

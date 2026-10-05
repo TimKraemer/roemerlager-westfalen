@@ -17,6 +17,7 @@ import {
 	useMediaQuery,
 } from "@mui/material"
 import { useState } from "react"
+import { SHORT_CREDIT } from "@/lib/citation"
 import { placeLabel } from "@/lib/criteria"
 import { rankedCandidates } from "@/lib/potential/candidates"
 import { inspectAt } from "@/lib/potential/use-potential"
@@ -219,6 +220,14 @@ export default function EasyPanel({ onFlyTo }) {
 						Das ist eine Modellrechnung, keine Fundstelle. Wer nach
 						Bodendenkmälern graben oder mit einer Metallsonde suchen will,
 						braucht eine Genehmigung der Denkmalbehörde.
+					</Typography>
+					<Typography
+						variant="caption"
+						color="text.secondary"
+						component="p"
+						sx={{ mt: 1 }}
+					>
+						{SHORT_CREDIT}. Zitiervorschlag unter „Quellen“.
 					</Typography>
 				</>
 			)}

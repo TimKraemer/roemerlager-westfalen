@@ -6,6 +6,8 @@ export const metadata = {
 	title: "Römerlager Westfalen",
 	description:
 		"Bekannte Römerlager in Westfalen auf einer Karte und eine Potenzialkarte für noch unentdeckte Marschlager.",
+	authors: [{ name: "Tim Krämer" }],
+	creator: "Tim Krämer",
 }
 
 export default function RootLayout({ children }) {

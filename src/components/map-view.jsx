@@ -4,6 +4,7 @@ import "maplibre-gl/dist/maplibre-gl.css"
 import * as maplibregl from "maplibre-gl"
 import { useEffect, useRef, useState } from "react"
 import roads from "@/data/roemerstrassen.json"
+import { SHORT_CREDIT } from "@/lib/citation"
 import { circlePolygon } from "@/lib/geo"
 import {
 	BASE_LAYERS,
@@ -418,7 +419,7 @@ export default function MapView({ onMapReady }) {
 			maxZoom: 19,
 			// Ausschnitt in der URL, damit er sich teilen lässt
 			hash: true,
-			attributionControl: { compact: true },
+			attributionControl: { compact: true, customAttribution: SHORT_CREDIT },
 		})
 		map.addControl(new maplibregl.NavigationControl(), "bottom-right")
 		map.addControl(

@@ -1,0 +1,9 @@
+cff-version: 1.2.0
+message: "Bitte so zitieren:"
+title: "Römerlager in Westfalen. Potenzialkarte für unentdeckte Marschlager"
+authors:
+  - family-names: "Krämer"
+    given-names: "Tim"
+date-released: 2026-10-05
+url: "https://experiments.erleben.app/roemer/"
+type: software
