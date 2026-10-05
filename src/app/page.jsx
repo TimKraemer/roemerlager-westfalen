@@ -1,5 +1,5 @@
-import AppShell from "@/components/app-shell"
+import ClientApp from "@/components/client-app"
 
 export default function Home() {
-	return <AppShell />
+	return <ClientApp />
 }
