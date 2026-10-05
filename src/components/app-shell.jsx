@@ -1,6 +1,7 @@
 "use client"
 
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
+import HistoryEduIcon from "@mui/icons-material/HistoryEdu"
 import LayersIcon from "@mui/icons-material/Layers"
 import MenuBookIcon from "@mui/icons-material/MenuBook"
 import PlaceIcon from "@mui/icons-material/Place"
@@ -23,6 +24,7 @@ import EasyPanel from "./easy-panel"
 import { InfoCards } from "./info-cards"
 import LayerPanel from "./layer-panel"
 import { SitesPanel, SourcesPanel } from "./sites-panel"
+import TextsPanel from "./texts-panel"
 
 const MapView = dynamic(() => import("./map-view"), { ssr: false })
 
@@ -36,6 +38,7 @@ const TABS = [
 		label: "Analyse",
 		icon: <TravelExploreIcon fontSize="small" />,
 	},
+	{ id: "texts", label: "Texte", icon: <HistoryEduIcon fontSize="small" /> },
 	{ id: "sources", label: "Quellen", icon: <MenuBookIcon fontSize="small" /> },
 ]
 
@@ -103,7 +106,7 @@ export default function AppShell() {
 						sx={{
 							minHeight: 56,
 							minWidth: 0,
-							fontSize: 12,
+							fontSize: 11,
 							textTransform: "none",
 							py: 0.5,
 						}}
@@ -116,6 +119,7 @@ export default function AppShell() {
 				{tab === "analysis" && (
 					<AnalysisPanel onAnalyze={analyze} onFlyTo={flyTo} />
 				)}
+				{tab === "texts" && <TextsPanel />}
 				{tab === "sources" && <SourcesPanel />}
 			</Box>
 		</Box>

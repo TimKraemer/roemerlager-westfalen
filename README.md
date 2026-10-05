@@ -33,6 +33,14 @@ Nach Änderungen an Fundstellen oder Modell neu rechnen:
 bun run precompute
 ```
 
+Gegenprobe (je ein bekanntes Lager weggelassen, mit Zufallsorten als
+Vergleich) und Prüfung der Linienerkennung:
+
+```bash
+bun scripts/validate-model.mjs
+bun scripts/validate-lineaments.mjs
+```
+
 Römerstraßen (Itiner-e und Hellweg vor dem Santforde) neu bauen:
 
 ```bash

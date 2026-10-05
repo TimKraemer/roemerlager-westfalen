@@ -55,7 +55,8 @@ export const DEFAULT_PARAMS = {
 	waterFalloff: 700,
 	corridorSigma: 6000,
 	tpiRadius: 1500,
-	hideKnownRadius: 2500,
+	// Mindestabstand neuer Vorschläge zu schon bekannten Lagern (Meter)
+	hideKnownRadius: 5000,
 	routeSigma: 1500,
 	// Aufschlag für gerade Strukturen im Laserscan (0,15 = bis zu +15 %).
 	// Standard 0: die Gegenprobe an bestätigten Lagern zeigte keinen Vorteil.
@@ -399,7 +400,16 @@ export const factorFns = {
 
 /** Faktoren und Gesamtwert aus den vorbereiteten Rastern berechnen. */
 export function combine(layers, params) {
-	const { ring, distWater, distRiver, distRoute, tpi, slope, distCamp } = layers
+	const {
+		ring,
+		distWater,
+		distRiver,
+		distRoute,
+		tpi,
+		slope,
+		distCamp,
+		distKnown,
+	} = layers
 	const n = ring.length
 	const w = params.weights
 	const total = Object.values(w).reduce((a, b) => a + b, 0) || 1
@@ -424,8 +434,8 @@ export function combine(layers, params) {
 		// Steiles Gelände schließt ein Lager praktisch aus
 		if (slope[i] > 12) s *= 0.3
 		// Umfeld bekannter Lager ist erforscht, dort nichts vorschlagen
-		if (distCamp[i] < params.hideKnownRadius)
-			s *= distCamp[i] / params.hideKnownRadius
+		const known = distKnown ? distKnown[i] : distCamp[i]
+		if (known < params.hideKnownRadius) s *= known / params.hideKnownRadius
 		score[i] = s
 	}
 	return { factors, score }

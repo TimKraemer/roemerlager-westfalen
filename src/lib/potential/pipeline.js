@@ -324,6 +324,8 @@ export async function evaluate(
 
 	const ring = ringFactor(grid, camps, params.ringMean, params.ringSigma)
 	const distCamp = distanceToCamps(grid, camps)
+	// Umkreis ohne Vorschläge um alle bekannten Lager, nicht nur die Ring-Lager
+	const distKnown = distanceToCamps(grid, routeCamps ?? camps)
 	const { factors, score } = combine(
 		{
 			ring,
@@ -333,6 +335,7 @@ export async function evaluate(
 			tpi: state.tpi,
 			slope,
 			distCamp,
+			distKnown,
 		},
 		params,
 	)

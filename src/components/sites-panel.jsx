@@ -13,6 +13,7 @@ import { SITE_TYPES, SITES } from "@/lib/sites"
 import { useMapStore } from "@/store/use-map-store"
 import CitationBox from "./citation-box"
 import { SectionTitle } from "./layer-panel"
+import ValidationPanel from "./validation-panel"
 
 export function SitesPanel() {
 	const setSelectedSite = useMapStore((s) => s.setSelectedSite)
@@ -70,6 +71,7 @@ export function SourcesPanel() {
 				Karte, Modell und Zusammenstellung der Quellen von Tim Krämer, 2026.
 			</Typography>
 			<CitationBox />
+			<ValidationPanel />
 			{sources.map((group) => (
 				<Box key={group.title}>
 					<SectionTitle>{group.title}</SectionTitle>

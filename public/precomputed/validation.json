@@ -1,0 +1,378 @@
+{
+ "voll": {
+  "rows": [
+   {
+    "id": "vetera",
+    "name": "Vetera I (Xanten-Fürstenberg)",
+    "removed": [
+     "Vetera I (Xanten-Fürstenberg)"
+    ],
+    "score": 0.497,
+    "percentile": 0.896,
+    "best2km": 0.519,
+    "percentileBest": 0.919,
+    "nearestCandidateKm": 13.7,
+    "nearestCandidateRank": 60
+   },
+   {
+    "id": "holsterhausen",
+    "name": "Dorsten-Holsterhausen",
+    "removed": [
+     "Dorsten-Holsterhausen"
+    ],
+    "score": 0.788,
+    "percentile": 0.999,
+    "best2km": 0.819,
+    "percentileBest": 0.999,
+    "nearestCandidateKm": 2.8,
+    "nearestCandidateRank": 4
+   },
+   {
+    "id": "haltern-hauptlager",
+    "name": "Haltern, Hauptlager",
+    "removed": [
+     "Haltern, Hauptlager",
+     "Haltern, Feldlager",
+     "Haltern, ältestes Marschlager (2021)",
+     "Haltern, Annaberg",
+     "Haltern, Uferkastelle Hofestatt und Wiegel",
+     "Haltern, Ostlager „In der Borg“"
+    ],
+    "score": 0.697,
+    "percentile": 0.993,
+    "best2km": 0.752,
+    "percentileBest": 0.998,
+    "nearestCandidateKm": 2.9,
+    "nearestCandidateRank": 3
+   },
+   {
+    "id": "olfen",
+    "name": "Olfen-Sülsen",
+    "removed": [
+     "Olfen-Sülsen"
+    ],
+    "score": 0.617,
+    "percentile": 0.974,
+    "best2km": 0.691,
+    "percentileBest": 0.992,
+    "nearestCandidateKm": 4.3,
+    "nearestCandidateRank": 4
+   },
+   {
+    "id": "beckinghausen",
+    "name": "Lünen-Beckinghausen",
+    "removed": [
+     "Lünen-Beckinghausen",
+     "Bergkamen-Oberaden"
+    ],
+    "score": 0.536,
+    "percentile": 0.935,
+    "best2km": 0.611,
+    "percentileBest": 0.973,
+    "nearestCandidateKm": 10.4,
+    "nearestCandidateRank": 4
+   },
+   {
+    "id": "kneblinghausen",
+    "name": "Rüthen-Kneblinghausen",
+    "removed": [
+     "Rüthen-Kneblinghausen"
+    ],
+    "score": 0.449,
+    "percentile": 0.836,
+    "best2km": 0.485,
+    "percentileBest": 0.886,
+    "nearestCandidateKm": 11.4,
+    "nearestCandidateRank": 20
+   },
+   {
+    "id": "anreppen",
+    "name": "Delbrück-Anreppen",
+    "removed": [
+     "Delbrück-Anreppen"
+    ],
+    "score": 0.516,
+    "percentile": 0.917,
+    "best2km": 0.599,
+    "percentileBest": 0.968,
+    "nearestCandidateKm": 4.8,
+    "nearestCandidateRank": 8
+   },
+   {
+    "id": "paderborn",
+    "name": "Paderborn, Riemeke-Lager (St. Johannisstift)",
+    "removed": [
+     "Paderborn, Riemeke-Lager (St. Johannisstift)"
+    ],
+    "score": 0.35,
+    "percentile": 0.558,
+    "best2km": 0.515,
+    "percentileBest": 0.927,
+    "nearestCandidateKm": 10.9,
+    "nearestCandidateRank": 5
+   },
+   {
+    "id": "sennestadt",
+    "name": "Bielefeld-Sennestadt (Haus Neuland)",
+    "removed": [
+     "Bielefeld-Sennestadt (Haus Neuland)"
+    ],
+    "score": 0.298,
+    "percentile": 0.311,
+    "best2km": 0.469,
+    "percentileBest": 0.874,
+    "nearestCandidateKm": 10.3,
+    "nearestCandidateRank": 17
+   },
+   {
+    "id": "barkhausen",
+    "name": "Porta Westfalica-Barkhausen „Auf der Lake“",
+    "removed": [
+     "Porta Westfalica-Barkhausen „Auf der Lake“"
+    ],
+    "score": 0.298,
+    "percentile": 0.314,
+    "best2km": 0.508,
+    "percentileBest": 0.919,
+    "nearestCandidateKm": 20.2,
+    "nearestCandidateRank": 21
+   },
+   {
+    "id": "wilkenburg",
+    "name": "Hannover-Wilkenburg",
+    "removed": [
+     "Hannover-Wilkenburg"
+    ],
+    "score": 0.356,
+    "percentile": 0.601,
+    "best2km": 0.44,
+    "percentileBest": 0.834,
+    "nearestCandidateKm": 38.8,
+    "nearestCandidateRank": 42
+   },
+   {
+    "id": "hedemuenden",
+    "name": "Hann. Münden-Hedemünden",
+    "removed": [
+     "Hann. Münden-Hedemünden",
+     "Kring (Außenposten Hedemünden)"
+    ],
+    "score": 0.361,
+    "percentile": 0.611,
+    "best2km": 0.538,
+    "percentileBest": 0.939,
+    "nearestCandidateKm": 58.8,
+    "nearestCandidateRank": 46
+   }
+  ],
+  "summary": {
+   "tests": 12,
+   "highBest": 12,
+   "medianPercentile": 0.896,
+   "medianPercentileBest": 0.939
+  },
+  "baseline": {
+   "points": 300,
+   "medianPercentile": 0.5226083266537791,
+   "medianPercentileBest": 0.8679098495921542,
+   "shareHighBest": 0.73
+  },
+  "weights": {
+   "ring": 3,
+   "water": 2,
+   "height": 2,
+   "slope": 1,
+   "route": 2,
+   "corridor": 1
+  },
+  "generatedAt": "2026-10-05T22:23:48.222Z"
+ },
+ "ohne-routen": {
+  "rows": [
+   {
+    "id": "vetera",
+    "name": "Vetera I (Xanten-Fürstenberg)",
+    "removed": [
+     "Vetera I (Xanten-Fürstenberg)"
+    ],
+    "score": 0.607,
+    "percentile": 0.915,
+    "best2km": 0.634,
+    "percentileBest": 0.937,
+    "nearestCandidateKm": 13.7,
+    "nearestCandidateRank": 55
+   },
+   {
+    "id": "holsterhausen",
+    "name": "Dorsten-Holsterhausen",
+    "removed": [
+     "Dorsten-Holsterhausen"
+    ],
+    "score": 0.791,
+    "percentile": 0.992,
+    "best2km": 0.805,
+    "percentileBest": 0.994,
+    "nearestCandidateKm": 2.8,
+    "nearestCandidateRank": 4
+   },
+   {
+    "id": "haltern-hauptlager",
+    "name": "Haltern, Hauptlager",
+    "removed": [
+     "Haltern, Hauptlager",
+     "Haltern, Feldlager",
+     "Haltern, ältestes Marschlager (2021)",
+     "Haltern, Annaberg",
+     "Haltern, Uferkastelle Hofestatt und Wiegel",
+     "Haltern, Ostlager „In der Borg“"
+    ],
+    "score": 0.772,
+    "percentile": 0.989,
+    "best2km": 0.839,
+    "percentileBest": 0.996,
+    "nearestCandidateKm": 3.6,
+    "nearestCandidateRank": 11
+   },
+   {
+    "id": "olfen",
+    "name": "Olfen-Sülsen",
+    "removed": [
+     "Olfen-Sülsen"
+    ],
+    "score": 0.549,
+    "percentile": 0.856,
+    "best2km": 0.655,
+    "percentileBest": 0.95,
+    "nearestCandidateKm": 4.3,
+    "nearestCandidateRank": 12
+   },
+   {
+    "id": "beckinghausen",
+    "name": "Lünen-Beckinghausen",
+    "removed": [
+     "Lünen-Beckinghausen",
+     "Bergkamen-Oberaden"
+    ],
+    "score": 0.443,
+    "percentile": 0.637,
+    "best2km": 0.572,
+    "percentileBest": 0.883,
+    "nearestCandidateKm": 12.5,
+    "nearestCandidateRank": 21
+   },
+   {
+    "id": "kneblinghausen",
+    "name": "Rüthen-Kneblinghausen",
+    "removed": [
+     "Rüthen-Kneblinghausen"
+    ],
+    "score": 0.548,
+    "percentile": 0.855,
+    "best2km": 0.593,
+    "percentileBest": 0.903,
+    "nearestCandidateKm": 11.4,
+    "nearestCandidateRank": 7
+   },
+   {
+    "id": "anreppen",
+    "name": "Delbrück-Anreppen",
+    "removed": [
+     "Delbrück-Anreppen"
+    ],
+    "score": 0.529,
+    "percentile": 0.83,
+    "best2km": 0.575,
+    "percentileBest": 0.886,
+    "nearestCandidateKm": 4.8,
+    "nearestCandidateRank": 53
+   },
+   {
+    "id": "paderborn",
+    "name": "Paderborn, Riemeke-Lager (St. Johannisstift)",
+    "removed": [
+     "Paderborn, Riemeke-Lager (St. Johannisstift)"
+    ],
+    "score": 0.428,
+    "percentile": 0.581,
+    "best2km": 0.629,
+    "percentileBest": 0.944,
+    "nearestCandidateKm": 6.7,
+    "nearestCandidateRank": 56
+   },
+   {
+    "id": "sennestadt",
+    "name": "Bielefeld-Sennestadt (Haus Neuland)",
+    "removed": [
+     "Bielefeld-Sennestadt (Haus Neuland)"
+    ],
+    "score": 0.365,
+    "percentile": 0.321,
+    "best2km": 0.574,
+    "percentileBest": 0.895,
+    "nearestCandidateKm": 8.3,
+    "nearestCandidateRank": 60
+   },
+   {
+    "id": "barkhausen",
+    "name": "Porta Westfalica-Barkhausen „Auf der Lake“",
+    "removed": [
+     "Porta Westfalica-Barkhausen „Auf der Lake“"
+    ],
+    "score": 0.364,
+    "percentile": 0.324,
+    "best2km": 0.62,
+    "percentileBest": 0.936,
+    "nearestCandidateKm": 20.2,
+    "nearestCandidateRank": 11
+   },
+   {
+    "id": "wilkenburg",
+    "name": "Hannover-Wilkenburg",
+    "removed": [
+     "Hannover-Wilkenburg"
+    ],
+    "score": 0.436,
+    "percentile": 0.619,
+    "best2km": 0.538,
+    "percentileBest": 0.856,
+    "nearestCandidateKm": 38.8,
+    "nearestCandidateRank": 35
+   },
+   {
+    "id": "hedemuenden",
+    "name": "Hann. Münden-Hedemünden",
+    "removed": [
+     "Hann. Münden-Hedemünden",
+     "Kring (Außenposten Hedemünden)"
+    ],
+    "score": 0.441,
+    "percentile": 0.63,
+    "best2km": 0.658,
+    "percentileBest": 0.952,
+    "nearestCandidateKm": 58.8,
+    "nearestCandidateRank": 37
+   }
+  ],
+  "summary": {
+   "tests": 12,
+   "highBest": 12,
+   "medianPercentile": 0.83,
+   "medianPercentileBest": 0.937
+  },
+  "baseline": {
+   "points": 300,
+   "medianPercentile": 0.5306709415814042,
+   "medianPercentileBest": 0.8876715073789428,
+   "shareHighBest": 0.77
+  },
+  "weights": {
+   "ring": 3,
+   "water": 2,
+   "height": 2,
+   "slope": 1,
+   "route": 0,
+   "corridor": 1
+  },
+  "generatedAt": "2026-10-05T22:24:24.530Z"
+ }
+}

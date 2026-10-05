@@ -138,11 +138,11 @@ export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
 				onChange={(ringSigma) => setParams({ ringSigma })}
 			/>
 			<LabeledSlider
-				label="Umkreis bekannter Lager nicht vorschlagen"
-				hint="Dort ist das Lager schon bekannt. Das Potenzial sinkt zum Lager hin auf null, damit es nicht selbst als Kandidat erscheint."
+				label="Keine Vorschläge näher als … an bekannten Lagern"
+				hint="Rund um ein schon gefundenes Lager wird nichts Neues vorgeschlagen. Das Potenzial wird zum Lager hin immer schwächer, sonst erschiene das bekannte Lager selbst als Kandidat."
 				value={params.hideKnownRadius}
 				min={0}
-				max={6000}
+				max={10000}
 				step={250}
 				format={km}
 				onChange={(hideKnownRadius) => setParams({ hideKnownRadius })}
