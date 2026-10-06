@@ -19,6 +19,21 @@ export const REGIONS = [
 export const DEFAULT_REGION = REGIONS[0]
 
 /**
+ * Weiter lässt sich die Karte nicht verschieben oder herauszoomen:
+ * Nordwestdeutschland vom Niederrhein (Xanten) bis Hachelbich und von der
+ * Nordseeküste bis Oberbrechen an der Lahn, mit Rand rundherum. Breit
+ * genug, dass auf Breitbildschirmen das ganze Gebiet auf einmal sichtbar
+ * ist, und im Westen extra Platz, weil dort auf dem Desktop die
+ * Seitenleiste über der Karte liegt. Die Ortssuche bleibt ebenfalls drinnen.
+ */
+export const MAP_BOUNDS = [3.0, 49.3, 14.0, 54.6]
+
+export function inMapBounds(lon, lat) {
+	const [w, s, e, n] = MAP_BOUNDS
+	return lon >= w && lon <= e && lat >= s && lat <= n
+}
+
+/**
  * Überregionales Marschwege-Netz: von Vetera am Rhein über die Lippelager
  * bis Wilkenburg und Hedemünden, gröber gerechnet (500 m). Liefert Routen,
  * Etappenhalte und die großen natürlichen Flussläufe.

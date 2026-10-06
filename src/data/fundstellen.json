@@ -777,37 +777,6 @@
 		{
 			"type": "Feature",
 			"properties": {
-				"id": "hoog-buurlo",
-				"name": "Hoog Buurlo (Veluwe, NL)",
-				"type": "marschlager",
-				"precision": "ungefähr, ±0,5–1 km",
-				"size_ha": "ca. 9",
-				"dating": "vermutlich 2. Jh. n. Chr., noch nicht gesichert",
-				"place": "Apeldoorn, Gelderland",
-				"description": "2025 mit LiDAR-Höhendaten und Luftbildern entdeckt und ausgegraben. Nach Staatsbosbeheer wohl aus dem 2. Jh., also nicht augusteisch. Eine Studie zur Veluwe sucht weitere Lagerplätze über Tagesmarsch-Abstände und Laserscan, ein ähnlicher Ansatz wie diese Karte.",
-				"sources": [
-					{
-						"ref": "staatsbosbeheer2025"
-					},
-					{
-						"ref": "oosterbaan2026"
-					},
-					{
-						"ref": "gld2024",
-						"note": "Suche nach weiteren Lagerplätzen auf der Veluwe über Tagesmarsch-Abstände und Laserscan"
-					}
-				],
-				"status": "bestätigt",
-				"inModel": false
-			},
-			"geometry": {
-				"type": "Point",
-				"coordinates": [5.844, 52.176]
-			}
-		},
-		{
-			"type": "Feature",
-			"properties": {
 				"id": "loehne",
 				"name": "Suchraum Zwischenlager Löhne",
 				"type": "verdacht",
@@ -1142,37 +1111,6 @@
 			"geometry": {
 				"type": "Point",
 				"coordinates": [6.2399, 51.779]
-			}
-		},
-		{
-			"type": "Feature",
-			"properties": {
-				"id": "ermelo",
-				"name": "Marskamp Ermelo-Leuvenum",
-				"type": "marschlager",
-				"status": "bestätigt",
-				"inModel": false,
-				"precision": "ungefähr, ±0,5–1 km",
-				"size_ha": "9",
-				"dating": "2. Hälfte 2. Jh. n. Chr. (ca. 160–175)",
-				"place": "Ermelo, Gelderland (NL)",
-				"description": "Temporäres Lager des 2. Jh. mit erhaltenen Wällen. Zum Vergleich, nicht im Modell.",
-				"sources": [
-					{
-						"label": "romeinen.nl",
-						"url": "https://www.romeinen.nl/weten/nederland-in-de-romeinse-tijd/gelderland-in-de-romeinse-tijd/ermelo-marskamp"
-					},
-					{
-						"ref": "hulst2007"
-					},
-					{
-						"ref": "driessen2024"
-					}
-				]
-			},
-			"geometry": {
-				"type": "Point",
-				"coordinates": [5.67556, 52.28528]
 			}
 		},
 		{

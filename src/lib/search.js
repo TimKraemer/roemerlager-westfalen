@@ -5,6 +5,7 @@ import roads from "@/data/roemerstrassen.json"
 import texts from "@/data/texte.json"
 import { BASE_LAYERS, OVERLAYS } from "./layers"
 import { resolveSource } from "./literature"
+import { inMapBounds } from "./regions"
 import { SITE_TYPE_BY_ID, SITES } from "./sites"
 import { hasTextGeo } from "./text-geo"
 import { utmToLonLat } from "./utm"
@@ -448,31 +449,35 @@ export function loadPlaces() {
 		})
 	places ??= Promise.all([json("orte.json", true), json("gebiete.json")])
 		.then(([orte, gebiete]) => [
-			...orte.places.map(([name, cls, lon, lat, n, alias]) => ({
-				key: `place:${name}:${lon}:${lat}`,
-				name,
-				cls,
-				lon,
-				lat,
-				near: orte.near[n],
-				n: norm(name),
-				alias: alias ? norm(alias) : null,
-				words: wordsOf(alias ? `${name} ${alias}` : name),
-			})),
+			...orte.places
+				.filter(([, , lon, lat]) => inMapBounds(lon, lat))
+				.map(([name, cls, lon, lat, n, alias]) => ({
+					key: `place:${name}:${lon}:${lat}`,
+					name,
+					cls,
+					lon,
+					lat,
+					near: orte.near[n],
+					n: norm(name),
+					alias: alias ? norm(alias) : null,
+					words: wordsOf(alias ? `${name} ${alias}` : name),
+				})),
 			// Gebirge, Höhenzüge, Länder, Kreise, Gemeinden (build-areas.mjs)
-			...(gebiete?.areas ?? []).map(([name, type, bounds, lines]) => ({
-				key: `area:${type}:${name}`,
-				name,
-				cls: "a",
-				type,
-				bounds,
-				lines,
-				lon: (bounds[0] + bounds[2]) / 2,
-				lat: (bounds[1] + bounds[3]) / 2,
-				n: norm(name),
-				alias: null,
-				words: wordsOf(name),
-			})),
+			...(gebiete?.areas ?? [])
+				.filter(([, , [w, s, e, n]]) => inMapBounds((w + e) / 2, (s + n) / 2))
+				.map(([name, type, bounds, lines]) => ({
+					key: `area:${type}:${name}`,
+					name,
+					cls: "a",
+					type,
+					bounds,
+					lines,
+					lon: (bounds[0] + bounds[2]) / 2,
+					lat: (bounds[1] + bounds[3]) / 2,
+					n: norm(name),
+					alias: null,
+					words: wordsOf(name),
+				})),
 		])
 		.catch((e) => {
 			places = null

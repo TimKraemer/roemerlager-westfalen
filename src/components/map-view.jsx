@@ -23,7 +23,7 @@ import { rankedCandidates } from "@/lib/potential/candidates"
 import { oldRiverFeatures, withoutOldRivers } from "@/lib/potential/old-rivers"
 import { renderHeatmap } from "@/lib/potential/render"
 import { inspectAt } from "@/lib/potential/use-potential"
-import { DEFAULT_REGION } from "@/lib/regions"
+import { DEFAULT_REGION, MAP_BOUNDS } from "@/lib/regions"
 import { centerOffset, isMobile, mapInsets } from "@/lib/sheet"
 import { campsFor, SITE_TYPES, SITES } from "@/lib/sites"
 import { textGeo } from "@/lib/text-geo"
@@ -637,6 +637,8 @@ export default function MapView({ onMapReady }) {
 			style: buildStyle(),
 			...view,
 			maxZoom: 19,
+			maxBounds: MAP_BOUNDS,
+			renderWorldCopies: false,
 			// Ausschnitt in der URL, damit er sich teilen lässt
 			hash: true,
 			attributionControl: { compact: true, customAttribution: SHORT_CREDIT },
