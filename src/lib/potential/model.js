@@ -162,43 +162,6 @@ export function sampleElevation(grid, sampler) {
 	return elev
 }
 
-/**
- * Steilste Neigung innerhalb jeder Zelle (Grad), aus einem feineren
- * Abtastgitter des Höhenmodells. Grobe Zellen glätten schmale Kämme wie den
- * Teutoburger Wald sonst zu sanften Hängen, Routen gingen dann quer drüber.
- */
-export function computeFineSlope(grid, sampler, metersPerSample = 60) {
-	const { cols, rows, cellPx, cellMeters } = grid
-	const n = Math.max(2, Math.round(cellMeters / metersPerSample))
-	const step = cellPx / n
-	const stepMeters = cellMeters / n
-	const out = new Float32Array(cols * rows)
-	const z = new Float64Array((n + 1) * (n + 1))
-	for (let r = 0; r < rows; r++) {
-		for (let c = 0; c < cols; c++) {
-			const x0 = grid.x0 + c * cellPx
-			const y0 = grid.y0 + r * cellPx
-			for (let j = 0; j <= n; j++)
-				for (let i = 0; i <= n; i++)
-					z[j * (n + 1) + i] = sampler(x0 + i * step, y0 + j * step)
-			let max = 0
-			for (let j = 0; j < n; j++) {
-				for (let i = 0; i < n; i++) {
-					const a = z[j * (n + 1) + i]
-					const dx = (z[j * (n + 1) + i + 1] - a) / stepMeters
-					const dy = (z[(j + 1) * (n + 1) + i] - a) / stepMeters
-					const g = Math.hypot(dx, dy)
-					if (g > max) max = g
-				}
-			}
-			out[r * cols + c] = Number.isFinite(max)
-				? (Math.atan(max) * 180) / Math.PI
-				: 0
-		}
-	}
-	return out
-}
-
 /** Neigung in Grad aus zentralen Differenzen über den Zellabstand. */
 export function computeSlope(grid, elev) {
 	const { cols, rows, cellMeters } = grid

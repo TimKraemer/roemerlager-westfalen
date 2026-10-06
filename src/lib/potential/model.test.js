@@ -123,18 +123,23 @@ describe("Gewässernetz aus dem Höhenmodell", () => {
 
 describe("Marschrouten", () => {
 	test("Route zwischen zwei Lagern, Umweg um steilen Rücken, Etappen", async () => {
-		const { computeRoutes, costSurface, routeStages } = await import("./routes")
+		const { computeRoutes, costSurface, edgeHours, routeStages, terrainLanes } =
+			await import("./routes")
 		const n = grid.cols * grid.rows
-		const slope = new Float32Array(n).fill(1)
-		// steiler Rücken quer durch die Mitte mit einer Lücke im Süden
+		// 150 m hoher Kamm mit 50 % Flanken quer durch die Mitte, Pass im Süden
 		const midCol = Math.floor(grid.cols / 2)
-		for (let r = 0; r < grid.rows - 15; r++)
-			for (let c = midCol - 2; c <= midCol + 2; c++)
-				slope[r * grid.cols + c] = 30
+		const ridgeX = grid.x0 + (midCol + 0.5) * grid.cellPx
+		const passY = grid.y0 + (grid.rows - 15) * grid.cellPx
+		const metersPerPx = grid.cellMeters / grid.cellPx
+		const sampler = (x, y) =>
+			y < passY
+				? Math.max(0, 150 - Math.abs(x - ridgeX) * metersPerPx * 0.5)
+				: 0
+		const edges = edgeHours(grid, terrainLanes(grid, sampler))
 		const flat = new Float32Array(n)
 		const far = new Float32Array(n).fill(1e6)
 		const cost = costSurface(grid, {
-			slope,
+			slope: flat,
 			tpi: flat,
 			distWater: far,
 			distRiver: far,
@@ -143,13 +148,18 @@ describe("Marschrouten", () => {
 			{ id: "a", name: "A", lon: 8.65, lat: 52.3 },
 			{ id: "b", name: "B", lon: 9.15, lat: 52.3 },
 		]
-		const routes = computeRoutes(grid, cost, camps, 19000)
+		const routes = computeRoutes(grid, cost, camps, 19000, undefined, {
+			edges,
+		})
 		expect(routes.length).toBe(1)
 		const r = routes[0]
 		expect(r.length).toBeGreaterThan(r.crow)
 		expect(r.length).toBeLessThan(r.crow * 1.6)
-		// kein Schritt über den steilen Rücken
-		for (const c of r.cells) expect(slope[c]).toBeLessThan(30)
+		// über den Kamm nur durch den Pass
+		for (const c of r.cells) {
+			if (Math.abs((c % grid.cols) - midCol) <= 1)
+				expect(Math.floor(c / grid.cols)).toBeGreaterThanOrEqual(grid.rows - 15)
+		}
 		const score = new Float32Array(n).fill(0.5)
 		const stages = routeStages(grid, routes, score, 19000)
 		expect(stages.length).toBe(Math.max(0, Math.round(r.length / 19000) - 1))

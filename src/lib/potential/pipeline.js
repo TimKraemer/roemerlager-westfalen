@@ -7,7 +7,6 @@ import { linesFactor } from "./lineaments"
 import {
 	cellCenter,
 	combine,
-	computeFineSlope,
 	computeSlope,
 	computeTpi,
 	computeValleyHeight,
@@ -22,9 +21,12 @@ import {
 import {
 	computeRoutes,
 	costSurface,
+	edgeHours,
+	laneCrossings,
 	ROUTE_PARAMS,
 	routeStages,
 	routesGeoJSON,
+	terrainLanes,
 } from "./routes"
 
 /**
@@ -160,6 +162,17 @@ function demWater(state, params) {
 	return {
 		distWater,
 		distRiver,
+		// Für Routen: welche Schritte ein Gewässer queren
+		crossings: laneCrossings(grid, {
+			distWater: dW,
+			distRiver: dR,
+			x0: raster.x0,
+			y0: raster.y0,
+			step: raster.step,
+			width,
+			height,
+			meters,
+		}),
 		streams: streamLines(
 			flow,
 			params.streamKm2,
@@ -185,6 +198,7 @@ async function waterFor(state, params, isStale) {
 			distRiver: distanceToLines(grid, linesOf(osm, ["river"])),
 			// Die Karte zeigt OSM direkt aus den Vektorkacheln
 			streams: null,
+			crossings: null,
 		}
 	}
 	return demWater(state, params)
@@ -217,8 +231,8 @@ export async function prepare(
 		grid,
 		elev,
 		slope: computeSlope(grid, elev),
-		// Für Routen: steilste Neigung je Zelle, damit Kämme Hindernisse bleiben
-		slopeMax: computeFineSlope(grid, sampler),
+		// Für Routen: Gehzeit je Schritt und Spur aus dem feinen Höhenprofil
+		lanes: terrainLanes(grid, sampler),
 		raster: buildDrainageRaster(grid, sampler),
 		osm: null,
 		waterKey: null,
@@ -297,21 +311,26 @@ export async function evaluate(
 		state.routeKey = routeKey
 	} else if (routesChanged) {
 		state.onProgress("Marschrouten berechnen", 1)
-		const cost = costSurface(grid, {
-			moor: state.moor,
-			slope: state.slopeMax ?? slope,
-			tpi: state.tpi,
-			distWater,
-			distRiver,
-		})
-		const routes = computeRoutes(
+		const p = { ...ROUTE_PARAMS, ...routeParams }
+		const cost = costSurface(
 			grid,
-			cost,
-			routeCamps,
-			params.ringMean,
-			{ ...ROUTE_PARAMS, ...routeParams },
-			{ distRiver, elev, waypoints },
+			{
+				moor: state.moor,
+				slope,
+				tpi: state.tpi,
+				distWater,
+				distRiver,
+				valley: state.valley,
+				crossings: state.crossings,
+			},
+			p,
 		)
+		const edges = edgeHours(grid, state.lanes, state.crossings, p)
+		const routes = computeRoutes(grid, cost, routeCamps, params.ringMean, p, {
+			distRiver,
+			edges,
+			waypoints,
+		})
 		const mask = new Uint8Array(grid.cols * grid.rows)
 		for (const route of routes) for (const c of route.cells) mask[c] = 1
 		state.routes = routes
