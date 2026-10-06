@@ -1,26 +1,49 @@
 import { VectorTile } from "@mapbox/vector-tile"
 import { PbfReader } from "pbf"
 import { TILES } from "@/config"
+import { readJsonAsset } from "./assets"
 import { lonLatToPixel, pixelToLonLat } from "./geo"
 
 /**
  * Heutige Fließgewässer aus OpenMapTiles-Vektorkacheln (TILES.vector)
  * (OpenStreetMap, Planetiler). Bäche gibt es erst ab Zoom 13. Kanäle
  * (Mittellandkanal 1906–1938), Gräben und Drainagen bleiben außen vor, sie
- * sind neuzeitlich. Verrohrte Bäche zählen mit, ihr Tal gab es schon.
+ * sind neuzeitlich, außer benannten Gräben mit Bachnamen. Verrohrte Bäche
+ * zählen mit, ihr Tal gab es schon.
  * Läuft im Worker.
  */
 
 export const VECTOR_TILES = TILES.vector
 export const WATER_CLASSES = ["river", "stream"]
+// Benannte Gräben sind oft begradigte Bäche (Wickriede, Flöthe, Moorbach).
+// Sie zählen mit, außer der Name verrät ein künstliches Gewässer.
+const DITCH_CLASSES = ["ditch", "drain"]
+const ARTIFICIAL =
+	/graben|kanal|vorfluter|abzug|leitung|flut|zuleiter|ableiter|sammler|entwässer|entlast|gräfte|wätering|wetter/i
+
+function isNatural({ class: cls, name }) {
+	if (WATER_CLASSES.includes(cls)) return true
+	return DITCH_CLASSES.includes(cls) && Boolean(name) && !ARTIFICIAL.test(name)
+}
 const ZOOM = 13
 const TILE = 256
+
+/** fetch mit Wiederholung, wenn der Kachelserver bremst (429) oder hakt. */
+async function fetchPatiently(url, tries = 6) {
+	for (let attempt = 0; ; attempt++) {
+		const res = await fetch(url)
+		if ((res.status !== 429 && res.status < 500) || attempt >= tries - 1)
+			return res
+		const wait = Number(res.headers.get("retry-after")) * 1000
+		await new Promise((r) => setTimeout(r, wait || 500 * 2 ** attempt))
+	}
+}
 
 async function loadTile(x, y) {
 	const url = VECTOR_TILES.replace("{z}", ZOOM)
 		.replace("{x}", x)
 		.replace("{y}", y)
-	const res = await fetch(url)
+	const res = await fetchPatiently(url)
 	if (res.status === 204 || res.status === 404) return []
 	if (!res.ok) throw new Error(`Vektorkacheln: Antwort ${res.status}`)
 	const tile = new VectorTile(
@@ -31,11 +54,11 @@ async function loadTile(x, y) {
 	const lines = []
 	for (let i = 0; i < layer.length; i++) {
 		const f = layer.feature(i)
-		if (!WATER_CLASSES.includes(f.properties.class)) continue
+		if (!isNatural(f.properties)) continue
 		const scale = TILE / layer.extent
 		for (const ring of f.loadGeometry()) {
 			lines.push({
-				kind: f.properties.class,
+				kind: f.properties.class === "river" ? "river" : "stream",
 				name: f.properties.name ?? "",
 				coords: ring.map((p) =>
 					pixelToLonLat(x * TILE + p.x * scale, y * TILE + p.y * scale, ZOOM),
@@ -78,6 +101,31 @@ export async function fetchWaterways(bbox, onProgress) {
 	return { type: "FeatureCollection", features }
 }
 
+// Bachläufe der Uraufnahme um 1840 (scripts/altkarten/gewaesser.py), nur im
+// Kreis Minden-Lübbecke. Zeitschnitt "ura" der Ebene „Gewässer aus den Karten“.
+const OLD_WATER_FILE = "precomputed/gewaesser-zeit.geojson"
+
+/**
+ * Bäche und Flüsse der Uraufnahme im Ausschnitt als Linien [[lon, lat], …].
+ * Gräben ohne heutigen Bach bleiben außen vor. Leer außerhalb des Kreises.
+ */
+export async function fetchOldWaterways(bbox) {
+	const [west, south, east, north] = bbox
+	const data = await readJsonAsset(OLD_WATER_FILE)
+	const lines = []
+	for (const f of data.features) {
+		const p = f.properties
+		if (p.slice !== "ura" || p.kind === "graben") continue
+		const coords = f.geometry.coordinates
+		const inside = coords.some(
+			([lon, lat]) =>
+				lon >= west && lon <= east && lat >= south && lat <= north,
+		)
+		if (inside) lines.push({ name: p.name ?? "", kind: p.kind, coords })
+	}
+	return lines
+}
+
 /**
  * Anteil Wald je Rasterzelle aus der OSM-Landbedeckung (landcover: wood) der
  * Kacheln von tiles.erleben.app, Zoom 11. Heutiger Wald, nicht der
@@ -95,7 +143,7 @@ export async function forestCover(grid) {
 			const url = VECTOR_TILES.replace("{z}", z)
 				.replace("{x}", tx)
 				.replace("{y}", ty)
-			const res = await fetch(url)
+			const res = await fetchPatiently(url)
 			if (!res.ok || res.status === 204) continue
 			const tile = new VectorTile(
 				new PbfReader(new Uint8Array(await res.arrayBuffer())),

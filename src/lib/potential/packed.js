@@ -5,6 +5,12 @@ import { FACTORS } from "./model"
  * Raster als quantisierte Binärdatei. Faktoren und Gesamtwert 0–1 in
  * 1/255-Schritten, Höhen in 1 m, Neigung in 0,1°, Höhe über Umgebung in
  * 0,5 m, Abstände in 10 m. Gröber lässt es sich besser komprimieren.
+ *
+ * Mit encoding "delta" steht je Feld statt des Werts der Abstand zum
+ * vorigen Wert, bei 16-Bit-Feldern erst alle unteren, dann alle oberen
+ * Bytes. Benachbarte Zellen ähneln sich, gzip packt das rund 20 % kleiner
+ * (Kreis Minden-Lübbecke 1,37 → 1,09 MB). Ältere Dateien ohne encoding
+ * lassen sich weiter lesen.
  */
 
 const NO_DISTANCE = 65535
@@ -32,6 +38,31 @@ const FIELDS = [
 
 const get = (obj, path) => path.reduce((o, k) => o?.[k], obj)
 
+/** Differenzen, bei 16 Bit nach Bytes getrennt. Typed Arrays rechnen modulo. */
+function encode(values) {
+	const delta = new values.constructor(values.length)
+	for (let i = 0; i < values.length; i++)
+		delta[i] = values[i] - (i ? values[i - 1] : 0)
+	const bytes = new Uint8Array(delta.buffer)
+	const w = values.BYTES_PER_ELEMENT
+	if (w === 1) return bytes
+	const n = values.length
+	const out = new Uint8Array(bytes.length)
+	for (let i = 0; i < n; i++)
+		for (let b = 0; b < w; b++) out[b * n + i] = bytes[i * w + b]
+	return out
+}
+
+function decode(type, bytes, n) {
+	const w = type.BYTES_PER_ELEMENT
+	const joined = new Uint8Array(n * w)
+	for (let i = 0; i < n; i++)
+		for (let b = 0; b < w; b++) joined[i * w + b] = bytes[b * n + i]
+	const values = new type(joined.buffer)
+	for (let i = 1; i < n; i++) values[i] += values[i - 1]
+	return values
+}
+
 export function pack(result) {
 	const n = result.score.length
 	const chunks = []
@@ -56,14 +87,10 @@ export function pack(result) {
 					Math.min(max, Math.round((v ?? 0) * field.scale)),
 				)
 		}
-		// 16-Bit-Felder brauchen eine gerade Startadresse
-		if (offset % out.BYTES_PER_ELEMENT) {
-			chunks.push(new Uint8Array(1))
-			offset += 1
-		}
+		const bytes = encode(out)
 		fields.push({ path: field.path, offset })
-		chunks.push(new Uint8Array(out.buffer))
-		offset += out.byteLength
+		chunks.push(bytes)
+		offset += bytes.byteLength
 	}
 	const buffer = new Uint8Array(offset)
 	let pos = 0
@@ -72,14 +99,26 @@ export function pack(result) {
 		pos += c.byteLength
 	}
 	const { score, factors, raw, ...meta } = result
-	return { meta: { ...meta, cells: n, fields }, buffer }
+	return { meta: { ...meta, cells: n, fields, encoding: "delta" }, buffer }
 }
 
 export function unpack(meta, arrayBuffer) {
 	const result = { ...meta, factors: {}, raw: {} }
+	const n = meta.cells
 	FIELDS.forEach((field, k) => {
 		const { offset } = meta.fields[k]
-		const src = new field.type(arrayBuffer, offset, meta.cells)
+		const src =
+			meta.encoding === "delta"
+				? decode(
+						field.type,
+						new Uint8Array(
+							arrayBuffer,
+							offset,
+							n * field.type.BYTES_PER_ELEMENT,
+						),
+						n,
+					)
+				: new field.type(arrayBuffer, offset, n)
 		const out = new Float32Array(meta.cells)
 		for (let i = 0; i < meta.cells; i++) {
 			out[i] =
@@ -93,5 +132,6 @@ export function unpack(meta, arrayBuffer) {
 	})
 	delete result.fields
 	delete result.cells
+	delete result.encoding
 	return result
 }

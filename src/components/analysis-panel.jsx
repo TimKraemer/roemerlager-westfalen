@@ -189,8 +189,8 @@ export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
 
 			<SectionTitle>Abzüge</SectionTitle>
 			<LabeledSlider
-				label="Moore laut Bodenkarte"
-				hint="Hoch- und Niedermoore aus der BK50 NRW und der GUM50 Niedersachsen (ursprüngliche Moorverbreitung). Auf Moor ließ sich kein Lager mit Graben bauen."
+				label="Moore laut Boden- und Altkarte"
+				hint="Hoch- und Niedermoore aus der BK50 NRW und der GUM50 Niedersachsen (ursprüngliche Moorverbreitung), dazu abgetorfte Moore und Brüche der Kreiskarte Lübbecke 1844. Auf Moor ließ sich kein Lager mit Graben bauen."
 				value={params.moorPenalty}
 				min={0}
 				max={1}
@@ -227,6 +227,9 @@ export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
 				onChange={(_, v) => v && setParams({ waterSource: v })}
 				sx={{ mb: 1 }}
 			>
+				<ToggleButton value="karten" sx={{ textTransform: "none" }}>
+					Aus Karten
+				</ToggleButton>
 				<ToggleButton value="dem" sx={{ textTransform: "none" }}>
 					Aus Höhenmodell
 				</ToggleButton>
@@ -240,9 +243,14 @@ export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
 				component="p"
 				sx={{ mt: 0, mb: 1 }}
 			>
-				{params.waterSource === "dem"
-					? "Gewässernetz aus den Talzügen berechnet, ohne Kanäle und Begradigungen. Unter „Ebenen“ einblendbar."
-					: "Heutige Bäche und Flüsse aus den OpenStreetMap-Vektorkacheln, ohne Kanäle und Gräben."}
+				{
+					{
+						karten:
+							"Bäche im Kreis Minden-Lübbecke im Lauf der Uraufnahme um 1840, sonst heutige Bäche aus OpenStreetMap, ohne Kanäle und Gräben. Große Flüsse aus dem Höhenmodell.",
+						dem: "Gewässernetz aus den Talzügen berechnet, ohne Kanäle und Begradigungen. Liegt im Flachland oft einige hundert Meter neben den echten Bächen.",
+						osm: "Heutige Bäche und Flüsse aus den OpenStreetMap-Vektorkacheln, ohne Kanäle und Gräben.",
+					}[params.waterSource]
+				}
 			</Typography>
 			<Stack direction="row" sx={{ alignItems: "center" }}>
 				<Switch

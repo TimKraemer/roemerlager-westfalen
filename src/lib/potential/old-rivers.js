@@ -39,17 +39,12 @@ export function oldRiverLines(bbox, padDeg = 0.05) {
 	return out
 }
 
-/**
- * Alte Läufe in die Masken des Abflussrasters einbrennen. Fluss-Pixel aus
- * dem Höhenmodell, die näher als 1,5 km an einem alten Lauf liegen, werden
- * entfernt: dort ist es derselbe Fluss, nur heute anders geführt. Kleinere
- * Bäche bleiben.
- */
-export function burnOldRivers(streams, riverMask, raster, zoom, bbox) {
-	const { width, height, x0, y0, step, meters } = raster
-	const old = new Uint8Array(width * height)
+/** Linien [[lon, lat], …] als Maske im Abflussraster. */
+export function rasterizeLines(lines, raster, zoom) {
+	const { width, height, x0, y0, step } = raster
+	const mask = new Uint8Array(width * height)
 	let any = false
-	for (const line of oldRiverLines(bbox, 0.2)) {
+	for (const line of lines) {
 		let prev = null
 		for (const [lon, lat] of line) {
 			const [px, py] = lonLatToPixel(lon, lat, zoom)
@@ -61,7 +56,7 @@ export function burnOldRivers(streams, riverMask, raster, zoom, bbox) {
 					const c = Math.floor(prev[0] + (cur[0] - prev[0]) * t)
 					const r = Math.floor(prev[1] + (cur[1] - prev[1]) * t)
 					if (c >= 0 && r >= 0 && c < width && r < height) {
-						old[r * width + c] = 1
+						mask[r * width + c] = 1
 						any = true
 					}
 				}
@@ -69,6 +64,22 @@ export function burnOldRivers(streams, riverMask, raster, zoom, bbox) {
 			prev = cur
 		}
 	}
+	return { mask, any }
+}
+
+/**
+ * Alte Läufe in die Masken des Abflussrasters einbrennen. Fluss-Pixel aus
+ * dem Höhenmodell, die näher als 1,5 km an einem alten Lauf liegen, werden
+ * entfernt: dort ist es derselbe Fluss, nur heute anders geführt. Kleinere
+ * Bäche bleiben.
+ */
+export function burnOldRivers(streams, riverMask, raster, zoom, bbox) {
+	const { width, height, meters } = raster
+	const { mask: old, any } = rasterizeLines(
+		oldRiverLines(bbox, 0.2),
+		raster,
+		zoom,
+	)
 	if (!any) return
 	const dOld = distanceToMask(old, width, height, meters)
 	for (let i = 0; i < old.length; i++) {

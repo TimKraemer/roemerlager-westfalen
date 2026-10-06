@@ -50,8 +50,9 @@ export const FACTORS = [
 
 export const DEFAULT_PARAMS = {
 	cellMeters: 200,
-	// "dem": Gewässernetz aus dem Höhenmodell, "osm": OpenStreetMap
-	waterSource: "dem",
+	// "karten": Bäche der Uraufnahme um 1840, sonst OpenStreetMap,
+	// "dem": Gewässernetz aus dem Höhenmodell, "osm": nur OpenStreetMap
+	waterSource: "karten",
 	// Lippe, Rhein, Ems usw. im alten Lauf (Uraufnahme, römerzeitlich) statt heute
 	oldRivers: true,
 	streamKm2: 2,

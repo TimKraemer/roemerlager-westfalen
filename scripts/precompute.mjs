@@ -8,13 +8,18 @@
  * Nutzt dieselbe Rechenkette wie der Web Worker (src/lib/potential/pipeline.js),
  * nur das PNG-Dekodieren der Höhenkacheln läuft hier über fast-png.
  */
-import { mkdirSync, writeFileSync } from "node:fs"
+import { mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { VectorTile } from "@mapbox/vector-tile"
 import { decode } from "fast-png"
 import { PbfReader } from "pbf"
-import { lonLatToPixel, pixelToLonLat } from "../src/lib/geo.js"
+import { setAssetReader } from "../src/lib/assets.js"
+import {
+	lonLatToPixel,
+	pixelToLonLat,
+	pointInGeometry,
+} from "../src/lib/geo.js"
 import { setMoorDecoder } from "../src/lib/moor.js"
 import { rankedCandidates } from "../src/lib/potential/candidates.js"
 import {
@@ -51,6 +56,10 @@ setImageDecoder(async (blob) => {
 	}
 	return rgba
 })
+
+setAssetReader(async (file) =>
+	JSON.parse(readFileSync(join(ROOT, "public", file), "utf8")),
+)
 
 setMoorDecoder(async (blob) => {
 	const png = decode(new Uint8Array(await blob.arrayBuffer()))
@@ -116,7 +125,13 @@ async function loadPlaces(bbox) {
 /** Überregionales Netz: Routen, grobe Etappenhalte, große Flüsse. */
 async function computeNetwork() {
 	const t0 = Date.now()
-	const params = { ...DEFAULT_PARAMS, cellMeters: NETWORK.cellMeters }
+	// Bäche aus Karten bräuchten Tausende Vektorkacheln, fürs Netz reicht
+	// das Höhenmodell
+	const params = {
+		...DEFAULT_PARAMS,
+		waterSource: "dem",
+		cellMeters: NETWORK.cellMeters,
+	}
 	const log = (stage, value = 0) =>
 		process.stdout.write(
 			`\r${NETWORK.label}: ${stage} ${Math.round(value * 100)} %   `,
@@ -153,7 +168,11 @@ async function computeNetwork() {
  * Paare bleiben die des groben Netzes.
  */
 async function refineRoutes(result, fine) {
-	const params = { ...DEFAULT_PARAMS, cellMeters: fine.cellMeters }
+	const params = {
+		...DEFAULT_PARAMS,
+		waterSource: "dem",
+		cellMeters: fine.cellMeters,
+	}
 	const log = (stage, value = 0) =>
 		process.stdout.write(
 			`\r${NETWORK.label}, ${fine.label}: ${stage} ${Math.round(value * 100)} %   `,
@@ -321,8 +340,24 @@ for (const region of REGIONS) {
 	)
 	log("Ortsnamen laden")
 	const places = await loadPlaces(region.bbox)
+	// Heutige Bäche außerhalb des Kreises nur fürs Modell, nicht in die Datei:
+	// sie machten sie zehnmal so groß
+	const outline =
+		region.outline.features?.[0]?.geometry ?? region.outline.geometry
+	const streams = result.streams && {
+		...result.streams,
+		features: result.streams.features.filter(
+			(f) =>
+				f.properties.kind === "river" ||
+				f.properties.source === "1840" ||
+				f.geometry.coordinates.some(([lon, lat]) =>
+					pointInGeometry(lon, lat, outline),
+				),
+		),
+	}
 	const { meta, buffer } = pack({
 		...result,
+		streams,
 		routes: null,
 		stages: [],
 		region: region.id,

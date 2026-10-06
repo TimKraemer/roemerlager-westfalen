@@ -1,7 +1,7 @@
-import { metersPerPixel, pixelToLonLat } from "../geo"
+import { lonLatToPixel, metersPerPixel, pixelToLonLat } from "../geo"
 import { moorCover } from "../moor"
 import { loadElevationSampler } from "../terrain"
-import { fetchWaterways, forestCover } from "../water"
+import { fetchOldWaterways, fetchWaterways, forestCover } from "../water"
 import { flowAccumulation, streamLines } from "./drainage"
 import { linesFactor } from "./lineaments"
 import {
@@ -18,7 +18,12 @@ import {
 	ringFactor,
 	sampleElevation,
 } from "./model"
-import { burnOldRivers, OLD_RIVER_NAMES, oldRiverLines } from "./old-rivers"
+import {
+	burnOldRivers,
+	OLD_RIVER_NAMES,
+	oldRiverLines,
+	rasterizeLines,
+} from "./old-rivers"
 import {
 	computeRoutes,
 	costSurface,
@@ -124,10 +129,24 @@ function wetness(grid, raster, slope) {
 	return { wet, twi }
 }
 
+/** Pixelmitte des Abflussrasters als [lon, lat], auf etwa 1 m gerundet. */
+function rasterLonLat(raster, zoom) {
+	return (i) => {
+		const c = i % raster.width
+		const r = (i - c) / raster.width
+		const [lon, lat] = pixelToLonLat(
+			raster.x0 + (c + 0.5) * raster.step,
+			raster.y0 + (r + 0.5) * raster.step,
+			zoom,
+		)
+		return [Number(lon.toFixed(5)), Number(lat.toFixed(5))]
+	}
+}
+
 /** Gewässerabstände je Zelle aus dem Abflussraster. */
 function demWater(state, params) {
 	const { grid, raster } = state
-	const { flow, width, height, meters } = raster
+	const { flow, width } = raster
 	const { acc } = flow
 	const streams = new Uint8Array(acc.length)
 	const rivers = new Uint8Array(acc.length)
@@ -137,6 +156,114 @@ function demWater(state, params) {
 	}
 	if (params.oldRivers)
 		burnOldRivers(streams, rivers, raster, grid.zoom, gridBbox(grid))
+	const lines = streamLines(
+		flow,
+		params.streamKm2,
+		params.riverKm2,
+		rasterLonLat(raster, grid.zoom),
+		width,
+	)
+	return waterFromMasks(state, streams, rivers, lines)
+}
+
+// Heutiger Bach so nah an einem Lauf der Uraufnahme ist derselbe Bach,
+// nur begradigt oder verlegt
+const SAME_BROOK_M = 400
+// Abgeleitete Flüsse zählen als Wasser nur fern aller kartierten Gewässer
+const DERIVED_RIVER_M = 1000
+
+/**
+ * Gewässerabstände aus Karten: Bäche der Uraufnahme um 1840, wo es sie gibt,
+ * sonst heutige Bäche und Flüsse aus OSM (ohne Kanäle und Gräben). Das aus
+ * dem Höhenmodell abgeleitete Netz liegt im Flachland oft Hunderte Meter
+ * neben den echten Bächen und dient hier nur noch für die großen Flüsse.
+ */
+function mappedWater(state, params) {
+	const { grid, raster, mapped } = state
+	const { flow, width, height, meters } = raster
+	const { acc } = flow
+	const n = acc.length
+	const rivers = new Uint8Array(n)
+	const derived = new Uint8Array(n)
+	for (let i = 0; i < n; i++) {
+		if (acc[i] >= params.riverKm2) rivers[i] = derived[i] = 1
+	}
+	const bbox = gridBbox(grid)
+	if (params.oldRivers)
+		burnOldRivers(new Uint8Array(n), rivers, raster, grid.zoom, bbox)
+	const oldLines = [
+		...mapped.old.map((l) => l.coords),
+		...(params.oldRivers ? oldRiverLines(bbox, 0.2) : []),
+	]
+	const old = rasterizeLines(oldLines, raster, grid.zoom).mask
+	const osm = rasterizeLines(
+		mapped.osm.features.map((f) => f.geometry.coordinates),
+		raster,
+		grid.zoom,
+	).mask
+	const dOld = distanceToMask(old, width, height, meters)
+	const streams = new Uint8Array(n)
+	for (let i = 0; i < n; i++) {
+		if (old[i] || (osm[i] && dOld[i] > SAME_BROOK_M)) streams[i] = 1
+	}
+	const dMapped = distanceToMask(streams, width, height, meters)
+	for (let i = 0; i < n; i++) {
+		if (derived[i] && dMapped[i] > DERIVED_RIVER_M) streams[i] = 1
+	}
+	// Linien für die Karte: alte Läufe, heutige Bäche ohne alten Lauf, Flüsse
+	const toPixel = ([lon, lat]) => {
+		const [px, py] = lonLatToPixel(lon, lat, grid.zoom)
+		const c = Math.floor((px - raster.x0) / raster.step)
+		const r = Math.floor((py - raster.y0) / raster.step)
+		return c >= 0 && r >= 0 && c < width && r < height ? r * width + c : -1
+	}
+	const nearOld = (f) => {
+		const pts = f.geometry.coordinates
+		let near = 0
+		for (const p of pts) {
+			const i = toPixel(p)
+			if (i >= 0 && dOld[i] <= SAME_BROOK_M) near++
+		}
+		return near > pts.length / 2
+	}
+	const derivedRivers = streamLines(
+		flow,
+		params.riverKm2,
+		params.riverKm2,
+		rasterLonLat(raster, grid.zoom),
+		width,
+	)
+	const lines = {
+		type: "FeatureCollection",
+		features: [
+			...mapped.old.map((l) => ({
+				type: "Feature",
+				properties: { kind: l.kind, name: l.name, source: "1840" },
+				geometry: { type: "LineString", coordinates: l.coords },
+			})),
+			...mapped.osm.features
+				.filter((f) => !nearOld(f))
+				.map((f) => ({
+					...f,
+					geometry: {
+						type: "LineString",
+						// auf etwa 1 m runden, die Linien gehen in die Vorberechnung
+						coordinates: f.geometry.coordinates.map(([lon, lat]) => [
+							Number(lon.toFixed(5)),
+							Number(lat.toFixed(5)),
+						]),
+					},
+				})),
+			...derivedRivers.features,
+		],
+	}
+	return waterFromMasks(state, streams, rivers, lines)
+}
+
+/** Abstände je Zelle, Querungen und Linien aus Bach- und Flussmaske. */
+function waterFromMasks(state, streams, rivers, lines) {
+	const { grid, raster } = state
+	const { width, height, meters } = raster
 	const dW = distanceToMask(streams, width, height, meters)
 	const dR = distanceToMask(rivers, width, height, meters)
 	const n = grid.cols * grid.rows
@@ -152,16 +279,6 @@ function demWater(state, params) {
 			distRiver[r * grid.cols + c] = dR[rr * width + rc]
 		}
 	}
-	const toLonLat = (i) => {
-		const c = i % width
-		const r = (i - c) / width
-		const [lon, lat] = pixelToLonLat(
-			raster.x0 + (c + 0.5) * raster.step,
-			raster.y0 + (r + 0.5) * raster.step,
-			grid.zoom,
-		)
-		return [Number(lon.toFixed(5)), Number(lat.toFixed(5))]
-	}
 	return {
 		distWater,
 		distRiver,
@@ -176,17 +293,29 @@ function demWater(state, params) {
 			height,
 			meters,
 		}),
-		streams: streamLines(
-			flow,
-			params.streamKm2,
-			params.riverKm2,
-			toLonLat,
-			width,
-		),
+		streams: lines,
 	}
 }
 
 async function waterFor(state, params, isStale) {
+	if (params.waterSource === "karten") {
+		if (!state.mapped) {
+			const bbox = gridBbox(state.grid)
+			state.onProgress("Bäche aus Karten laden", 0)
+			const [osm, old] = await Promise.all([
+				state.osm ??
+					fetchWaterways(bbox, (v) =>
+						state.onProgress("Bäche aus Karten laden", v),
+					),
+				// Uraufnahme nur im Kreis Minden-Lübbecke, sonst bleibt es bei OSM
+				fetchOldWaterways(bbox).catch(() => []),
+			])
+			if (isStale()) return null
+			state.osm = osm
+			state.mapped = { osm, old }
+		}
+		return mappedWater(state, params)
+	}
 	if (params.waterSource === "osm") {
 		if (!state.osm) {
 			state.onProgress("Gewässer aus OSM-Kacheln laden", 0)
@@ -251,6 +380,7 @@ export async function prepare(
 		lanes: terrainLanes(grid, sampler),
 		raster: buildDrainageRaster(grid, sampler),
 		osm: null,
+		mapped: null,
 		waterKey: null,
 		routeKey: null,
 		tpi: null,

@@ -413,7 +413,12 @@ function InspectCard({ data }) {
 								</Typography>
 								<Chip
 									size="small"
-									label={`${item.verdict} · ${data.factors[item.key].toFixed(2)}`}
+									label={
+										// Moor und Nässe sind Abzüge ohne eigenen Faktor
+										data.factors[item.key] == null
+											? item.verdict
+											: `${item.verdict} · ${data.factors[item.key].toFixed(2)}`
+									}
 									color={VERDICT_COLOR[item.verdict]}
 									variant="outlined"
 								/>

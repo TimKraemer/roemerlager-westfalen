@@ -41,6 +41,14 @@ export const CRITERIA_SOURCES = {
 				"Vegetius 1,22: Holz, Futter und Wasser in der Nähe, keine Überschwemmungsgefahr",
 			url: "https://www.thelatinlibrary.com/vegetius1.html",
 		},
+		{
+			label: "Preußische Uraufnahme 1836–1850: Bachläufe vor den Begradigungen",
+			ref: "geobasis-uraufnahme",
+		},
+		{
+			label: "OpenStreetMap: heutige Bäche und Flüsse, ohne Kanäle und Gräben",
+			ref: "osm",
+		},
 	],
 	height: [
 		{
@@ -104,6 +112,11 @@ export const CRITERIA_SOURCES = {
 		{
 			label: "LBEG: GUM50, ursprüngliche Moorverbreitung in Niedersachsen",
 			ref: "lbeg-gum50",
+		},
+		{
+			label:
+				"Kreiskarte Lübbecke 1844, 1:80 000: Moore und Brüche, die in den Bodenkarten fehlen (Landesarchiv NRW, W 051 Nr. 11781, CC BY-SA 4.0)",
+			url: "http://www.archive.nrw.de/ms/search?link=VERZEICHUNGSEINHEIT-Vz_b106f9a0-c01c-416a-a36e-683134befbbd",
 		},
 		{
 			label: "Tacitus, Annalen 1,61–63: Bohlenwege (pontes longi) durch Moore",
@@ -171,9 +184,12 @@ export function explain(data, params) {
 	const verdict = (v) => (v >= 0.7 ? "gut" : v >= 0.35 ? "mittel" : "schwach")
 	const near = nearestSites(data.lon, data.lat, 1)[0]
 	const water =
-		data.waterSource === "osm"
-			? "heutigen Bach oder Fluss (OSM)"
-			: "Bach im natürlichen Gewässernetz aus dem Höhenmodell"
+		{
+			osm: "heutigen Bach oder Fluss (OSM)",
+			karten:
+				"Bach oder Fluss, im Kreis Minden-Lübbecke im Lauf der Uraufnahme um 1840, sonst nach OpenStreetMap",
+		}[data.waterSource] ??
+		"Bach im natürlichen Gewässernetz aus dem Höhenmodell"
 	return [
 		{
 			key: "ring",
@@ -217,8 +233,8 @@ export function explain(data, params) {
 			verdict: data.moor > 0.3 ? "schwach" : data.moor > 0 ? "mittel" : "gut",
 			text:
 				data.moor > 0
-					? `${Math.round(data.moor * 100)} % der Zelle sind laut Bodenkarte Moor. Das senkt das Potenzial um bis zu ${Math.round(params.moorPenalty * 100)} %, Marschwege meiden Moore.`
-					: "Laut Bodenkarte kein Moor.",
+					? `${Math.round(data.moor * 100)} % der Zelle sind laut Bodenkarte oder Kreiskarte 1844 Moor. Das senkt das Potenzial um bis zu ${Math.round(params.moorPenalty * 100)} %, Marschwege meiden Moore.`
+					: "Laut Bodenkarte und Kreiskarte 1844 kein Moor.",
 		},
 		{
 			key: "wet",
@@ -302,7 +318,7 @@ export function explainSimple(data, params) {
 		contra.push("Das nächste Gewässer ist recht weit entfernt.")
 	if (data.moor > 0.3)
 		contra.push(
-			"Lag laut Bodenkarte im Moor. Dort ließ sich kein Lager mit Wall und Graben bauen.",
+			"Lag laut Bodenkarte oder Kreiskarte 1844 im Moor. Dort ließ sich kein Lager mit Wall und Graben bauen.",
 		)
 	if (data.wet > 0.5)
 		contra.push(
