@@ -1,20 +1,272 @@
 [
 	{
-		"id": "1898-levern",
+		"id": "1650-theatrum-minden",
+		"year": 1650,
+		"title": "Minda Saxoniae inferioris ad Visurgim nobilissima, a conditoribus suis Witekindo et Carolo Magno antiquissima (Vogelschau, Jahr nicht auf dem Blatt, um 1650 nach Merian)",
+		"short": "Minden, Vogelschau (um 1650)",
+		"author": null,
+		"provenance": "Seitenzahl „783“ oben rechts",
+		"accuracy": "8 Bauwerke (Dom, 5 Kirchen, Markt, Weserbrücke), Median-LOO etwa 15 m, perspektivische Ansicht, außerhalb der Wälle grob",
+		"showFrom": 13,
+		"bounds": [
+			8.90847,
+			52.28376,
+			8.92559,
+			52.29319
+		],
+		"minzoom": 13,
+		"maxzoom": 17
+	},
+	{
+		"id": "1682-vogelschau-minden",
+		"year": 1682,
+		"title": "Minda : Saxoniae inferioris ad Visurgim nobilissima, à conditoribus suis Witekindo et Carolo Magno antiquissima.",
+		"short": "Minden, Vogelschau",
+		"author": null,
+		"provenance": "Signaturzettel „Tab. geogr. B / Germ. urb. 10765“, Zettel „Adelung.“, Bleistift unter dem Titel „Jans. Waesb. 683“ und „df_dk_0010400“",
+		"accuracy": "8 Bauwerke (Dom, 5 Kirchen, Markt, Weserbrücke), Median-LOO etwa 17 m, perspektivische Ansicht, außerhalb der Wälle grob",
+		"showFrom": 13,
+		"bounds": [
+			8.90836,
+			52.28376,
+			8.92566,
+			52.29318
+		],
+		"minzoom": 13,
+		"maxzoom": 17
+	},
+	{
+		"id": "1750-minden-ravensberg",
+		"year": 1750,
+		"title": "Zeichnung der Länder Minden, Ravensberg und Osnabrück mit dessen Environs localiter aufgenommen",
+		"short": "Minden, Ravensberg und Osnabrück",
+		"author": null,
+		"provenance": null,
+		"accuracy": "145 Kirchen und Ortsmitten (1 ausgeschaltet), Median-LOO etwa 840 m; Handzeichnung, örtlich 1–3 km verzerrt, Ränder im Westen und Süden ungenauer",
+		"showFrom": 8,
+		"bounds": [
+			7.22394,
+			51.80777,
+			9.20834,
+			52.68024
+		],
+		"minzoom": 8,
+		"maxzoom": 13
+	},
+	{
+		"id": "1759-schlacht-minden",
+		"year": 1759,
+		"title": "Plan de la Bataille de Tonhausen pres de Minden",
+		"short": "Schlacht bei Minden",
+		"author": "Guillaume Roy, Capitaine au Service de Sa M. Britannique; gestochen unter der Leitung von J. V. Schley",
+		"provenance": "Signaturzettel „Tab. geogr. B / Germ. urb. 10745“, Zettel „Adelung.“, Bleistift „Minden“ und „df_dk_0010398“",
+		"accuracy": "31 Ortsmitten und Kirchen, Median-LOO etwa 570 m",
+		"showFrom": 10,
+		"bounds": [
+			8.68096,
+			52.21717,
+			9.02628,
+			52.44135
+		],
+		"minzoom": 10,
+		"maxzoom": 15
+	},
+	{
+		"id": "1766-belagerung-minden",
+		"year": 1766,
+		"title": "Plan du Siege de Minden",
+		"short": "Belagerung von Minden",
+		"author": "F. W. de Bawr; gestochen unter der Leitung von J. V. Schley, verlegt in Den Haag bei Pierre Gosse junior & Daniel Pinet, 1766",
+		"provenance": "Signaturzettel „Tab. geogr. B / Germ. urb. 10760“, Zettel „Adelung.“, Bleistift „df_dk_0010399“",
+		"accuracy": "69 Ortsmitten und Kirchen, Median-LOO etwa 640 m, am Kartenrand (Werre, Kirchlengern, Quetzen) bis 2 km",
+		"showFrom": 10,
+		"bounds": [
+			8.53967,
+			52.14191,
+			9.11992,
+			52.45763
+		],
+		"minzoom": 10,
+		"maxzoom": 15
+	},
+	{
+		"id": "1797-fuerstentum-minden",
+		"year": 1797,
+		"title": "Charte, das Fürstenthum Minden und die Grafschaften Ravensberg, Tecklenburg und Lingen vorstellend",
+		"short": "Fürstentum Minden, Ravensberg, Tecklenburg, Lingen",
+		"author": "Entworfen v. F. L. Güssefeld, Nürnberg bey d. Hom. Erben 1797",
+		"provenance": "Signaturen „B 367a“ (Bleistift) und „B 480“ (Tinte) unter dem Rahmen",
+		"accuracy": "158 Kirchorte und Städte (2 ausgeschaltet), Median-LOO etwa 870 m; im Kern Minden–Lübbecke meist unter 1 km, an Nord- und Westrand bis 3 km",
+		"showFrom": 8,
+		"bounds": [
+			7.17275,
+			51.78409,
+			9.16097,
+			52.66651
+		],
+		"minzoom": 8,
+		"maxzoom": 13
+	},
+	{
+		"id": "1805-lecoq-osnabrueck",
+		"year": 1805,
+		"title": "Topographische Karte in XXII Blaettern den grösten Theil von Westphalen enthaltend, Section IX: Karte der Gegend von Osnabrück, Lübke und vom Dümmer-See, so wie eines Theils von Oldenburg und Hannover",
+		"short": "Le Coq, Osnabrück und Dümmer",
+		"author": "Herausgegeben vom General Major von Le Coq 1805; gemessen vom Haupt. v. Engelbrecht, den Lieuts. v. Schubert, v. Müffling, v. Zielinskj und mehreren; gezeichnet von P. J. Holzwarth, Dohme u. Grossmann; gestochen von K. Kolbe in Potsdam",
+		"provenance": null,
+		"accuracy": "66 Ortsmitten (Kirchen), etwa 290 m",
+		"showFrom": 9,
+		"bounds": [
+			7.63838,
+			52.22767,
+			8.7888,
+			52.67416
+		],
+		"minzoom": 9,
+		"maxzoom": 14
+	},
+	{
+		"id": "1818-atlas-sect3",
+		"year": 1818,
+		"title": "Topographisch-militairischer Atlas von der Königlich Preussischen Provinz Westphalen, Sect. 3",
+		"short": "Atlas Provinz Westphalen, Sect. 3",
+		"author": null,
+		"provenance": "Unterer Rand angeschnitten, lesbar nur „Weimar, …“; auf Leinen aufgezogenes Faltblatt, Kartuschenschild „SECT. 3.“",
+		"accuracy": "63 Ortszeichen (Kirchen, Städte), etwa 390 m",
+		"showFrom": 8,
+		"bounds": [
+			7.74669,
+			52.06611,
+			8.76326,
+			52.55035
+		],
+		"minzoom": 8,
+		"maxzoom": 13
+	},
+	{
+		"id": "1825-reymann-minden",
+		"year": 1825,
+		"title": "Topographische Special-Karte von Deutschland und den angrenzenden Gebieten, Blatt 87: Minden",
+		"short": "Reymann, Blatt Minden",
+		"author": "1821 entworfen von Heinr. Berghaus, gezeichnet von demselben und unter seiner Leitung von W. Walter 1822, gestochen von Ferd. Reyher 1822–25",
+		"provenance": "Bleistiftvermerke „21477“ und „Zell 1, m 047, P3“, Scan-Signatur df_dk_0011481_0087",
+		"accuracy": "58 Ortsmitten (Diepenau ausgeschaltet), Median-LOO etwa 480 m; Gradnetz (Ferro) passt zu den Orten bis auf etwa 1 km am Westrand, nicht verwendet",
+		"showFrom": 8,
+		"bounds": [
+			8.33409,
+			52.0283,
+			9.38294,
+			52.478
+		],
+		"minzoom": 8,
+		"maxzoom": 13
+	},
+	{
+		"id": "1838-rb-minden",
+		"year": 1838,
+		"title": "Special-karte des Regierungs-Bezirks Minden",
+		"short": "Regierungsbezirk Minden (Platt)",
+		"author": "Entworfen und herausgegeben von Albrecht Platt, Verlag v. Ferdinand Essmann in Minden und Leipzig, Zweite Auflage; in Stein gestochen und gedruckt im geogr. Institut von Albrecht Platt in Magdeburg; 1:172 800",
+		"provenance": "Signaturzettel „Tab. geogr. B / Westfal. 1475“, Bleistift „2620“, Scan-Signatur df_dk_0011687",
+		"accuracy": "61 Ortsmitten, Median-LOO etwa 550 m; Gradnetz (Ferro) liegt gegenüber den Orten im Mittel etwa 500 m zu weit südlich, nicht verwendet",
+		"showFrom": 8,
+		"bounds": [
+			8.06957,
+			51.40059,
+			9.50576,
+			52.53744
+		],
+		"minzoom": 8,
+		"maxzoom": 13
+	},
+	{
+		"id": "1844-kreis-luebbecke",
+		"year": 1844,
+		"title": "Karte vom Königlich Preussischen Regierungs-Bezirk Minden, [Blatt 1]: Karte vom Kreise Lübbecke im Regierungs-Bezirk Minden",
+		"short": "Kreis Lübbecke",
+		"author": "Nach den Kataster-Karten bearbeitet, 1:80 000. Gez. durch H. Dodt, herausgegeben durch Vorländer & Schmeltzer 1844, Berlin Geo-lithograph. Anst. v. H. Mahlmann",
+		"provenance": "Stempel „Staatsarchiv Münster – Bücherei“, handschriftlich „B 61 L 6“",
+		"accuracy": "38 Ortsmitten (Kirchdörfer und Bauerschaften), Median-LOO etwa 210 m",
+		"showFrom": 9,
+		"bounds": [
+			8.2637,
+			52.21548,
+			8.75675,
+			52.54504
+		],
+		"minzoom": 9,
+		"maxzoom": 14
+	},
+	{
+		"id": "1890-dechen-luebbecke",
+		"year": 1890,
+		"title": "Topographische Karte der Rheinprovinz und der Provinz Westfalen auf Grundlage der v. Dechen'schen Geologischen Karte und der Königl. Generalstabs Karte, Sect. 3: Lübbecke",
+		"short": "Dechen-Karte, Section Lübbecke",
+		"author": "Simon Schropp'sche Hof-Landkartenhandlung; Rev. von W. Liebenow; Berliner lith. Inst.",
+		"provenance": "Stempel „Staatsarchiv Münster – Bücherei“ (zweimal), handschriftlich „B 120“",
+		"accuracy": "4 Schnittpunkte des Gradnetzes (26°/26°30' östl. Ferro, 52°15'/52°30'), Ferro mit 17°39'46\" westl. Greenwich (ältere Generalstabszählung, am Ergebnis geprüft: mit 17°40' liegen die Orte 200 m zu weit östlich); Ortsprobe an 66 Orten etwa 100–250 m",
+		"showFrom": 9,
+		"bounds": [
+			8.09088,
+			52.12761,
+			8.86694,
+			52.50868
+		],
+		"minzoom": 9,
+		"maxzoom": 14
+	},
+	{
+		"id": "1891-wegekarte-luebbecke",
+		"year": 1891,
+		"title": "Wegekarte der Provinz Westfalen, Blatt 15: Regierungs-Bezirk Minden, Kreis Lübbecke",
+		"short": "Wegekarte Kreis Lübbecke",
+		"author": "Verlag von Max Pasch, Berlin SW; Geogr. lith. Inst. u. Steindr. v. Wilhelm Greve, Kgl. Hoflith., Berlin; Maßstab 1:80 000, 2te Auflage",
+		"provenance": null,
+		"accuracy": "Gradnetz (Länge östlich Ferro), 4 Schnittpunkte, Ortszeichen meist innerhalb etwa 50–100 m",
+		"showFrom": 9,
+		"bounds": [
+			8.29661,
+			52.2298,
+			8.75171,
+			52.53272
+		],
+		"minzoom": 9,
+		"maxzoom": 14
+	},
+	{
+		"id": "1898-levern-luebbecke",
 		"year": 1898,
-		"title": "Meßtischblatt 3616 Levern, 1:25 000",
-		"short": "Meßtischblatt Levern",
+		"title": "Meßtischblatt 3616 Levern und 3617 Lübbecke, 1:25 000 (zusammengesetzt)",
+		"short": "Meßtischblätter Levern und Lübbecke",
 		"author": "Preußische Landesaufnahme 1898, Reichsamt für Landesaufnahme, einzelne Nachträge 1938 (Ausgabe F)",
-		"provenance": "Händlerstempel Grasmück & Karnahl, Leipzig",
-		"accuracy": "Gradecken, Potsdam-Datum",
+		"provenance": "Händlerstempel Grasmück & Karnahl, Leipzig C 1, Paul-List-Str. 22; Bleistift „Ausg. 00 E 38“, „3617“; unten rechts „df_dk_0010001_3617“, „Zell1 LS1 92 / 2006 1 000777“",
+		"accuracy": "253 Kreuzungen des Gauß-Krüger-Kilometergitters und 6 Blattecken (Potsdam-Datum), Median-LOO etwa 1 m, an der Klebekante bis 14 m",
 		"showFrom": 11,
 		"bounds": [
-			8.33234,
-			52.29854,
-			8.49905,
-			52.39862
+			8.33231,
+			52.29859,
+			8.66567,
+			52.39869
 		],
 		"minzoom": 11,
 		"maxzoom": 16
+	},
+	{
+		"id": "1904-kdr-luebbecke",
+		"year": 1904,
+		"title": "Karte des Deutschen Reiches, Teil II/IV, Blatt 284: Lübbecke",
+		"short": "Karte des Deutschen Reiches, Blatt Lübbecke",
+		"author": "Aufgenommen von der Topogr. Abtheilung der Kgl. Preuss. Landes-Aufnahme 1896, herausgegeben von der Kartogr. Abtheilung der Kgl. Preuss. Landes-Aufnahme 1904; Vertrieb R. Eisenschmidt, Berlin",
+		"provenance": "Stempel „Königliche Landesbibliothek Dresden“; Bleistift „139,1“, „10670“, „zell1, LS1, 73“, „df_dk_0000532_0284“",
+		"accuracy": "Minutenleisten am Rahmen (41 Punkte) und 4 Blattecken, Länge östlich Ferro mit dem auf dem Blatt angegebenen Abstand Greenwich 17°39'57,6\", Potsdam-Datum; Median-LOO etwa 10 m, im Inneren ohne Passpunkte (Ortsprobe stimmt auf etwa 50 m)",
+		"showFrom": 9,
+		"bounds": [
+			8.33284,
+			52.24858,
+			8.83307,
+			52.49885
+		],
+		"minzoom": 9,
+		"maxzoom": 14
 	}
 ]
