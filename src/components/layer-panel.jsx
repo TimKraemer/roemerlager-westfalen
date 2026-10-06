@@ -43,8 +43,6 @@ export function SectionTitle({ children }) {
 export default function LayerPanel({ onFlyTo }) {
 	const baseLayer = useMapStore((s) => s.baseLayer)
 	const setBaseLayer = useMapStore((s) => s.setBaseLayer)
-	const overlays = useMapStore((s) => s.overlays)
-	const setOverlay = useMapStore((s) => s.setOverlay)
 	const siteTypes = useMapStore((s) => s.siteTypes)
 	const toggleSiteType = useMapStore((s) => s.toggleSiteType)
 	const showRings = useMapStore((s) => s.showRings)
@@ -140,56 +138,13 @@ export default function LayerPanel({ onFlyTo }) {
 							note="Leiste über der Karte: Stände um 1840, um 1900 und heute, je mit Leitkarte und den Gewässern dieser Zeit"
 						/>
 					)}
-					{inGroup(group).map((layer) => {
-						const state = overlays[layer.id]
-						return (
-							<Box key={layer.id} id={`ebene-${layer.id}`} sx={{ mb: 1 }}>
-								<FormControlLabel
-									onMouseEnter={() => !state.visible && prefetchLayer(layer.id)}
-									onFocus={() => !state.visible && prefetchLayer(layer.id)}
-									control={
-										<Switch
-											size="small"
-											checked={state.visible}
-											onChange={(e) =>
-												setOverlay(layer.id, { visible: e.target.checked })
-											}
-										/>
-									}
-									label={
-										<LayerLabel
-											layer={layer}
-											onJump={
-												onFlyTo &&
-												(() => {
-													// Springen schaltet die Ebene gleich mit ein
-													setOverlay(layer.id, { visible: true })
-													onFlyTo(...layer.jump)
-												})
-											}
-										/>
-									}
-									sx={{
-										alignItems: "flex-start",
-										"& .MuiSwitch-root": { mt: 0.25 },
-									}}
-								/>
-								{state.visible && (
-									<Slider
-										size="small"
-										min={0.1}
-										max={1}
-										step={0.05}
-										value={state.opacity}
-										onChange={(_, v) => setOverlay(layer.id, { opacity: v })}
-										sx={{ ml: 5, width: "calc(100% - 56px)" }}
-										aria-label={`Deckkraft ${layer.label}`}
-									/>
-								)}
-								{state.visible && <OverlayStatus layer={layer} />}
-							</Box>
-						)
-					})}
+					{group === HISTORIC_GROUP ? (
+						<HistoricTimeline layers={inGroup(group)} onFlyTo={onFlyTo} />
+					) : (
+						inGroup(group).map((layer) => (
+							<OverlayItem key={layer.id} layer={layer} onFlyTo={onFlyTo} />
+						))
+					)}
 				</Box>
 			))}
 
@@ -286,6 +241,149 @@ export default function LayerPanel({ onFlyTo }) {
 					aria-label="Deckkraft 3D-Modell Römerlager Oberaden"
 				/>
 			)}
+		</Box>
+	)
+}
+
+/**
+ * Historische Karten als senkrechter Zeitstrahl: Jahr, Punkt auf der Linie,
+ * Schalter. Was kein Jahr hat (Gewässer, Moore usw. über den Karten),
+ * folgt darunter ohne Linie.
+ */
+function HistoricTimeline({ layers, onFlyTo }) {
+	const overlays = useMapStore((s) => s.overlays)
+	const dated = layers.filter((l) => l.year)
+	const rest = layers.filter((l) => !l.year)
+	return (
+		<>
+			<Box role="list" aria-label="Historische Karten nach Jahr">
+				{dated.map((layer, i) => (
+					<TimelineRow
+						key={layer.id}
+						year={layer.year}
+						active={overlays[layer.id].visible}
+						first={i === 0}
+						last={i === dated.length - 1}
+					>
+						<OverlayItem
+							layer={{
+								...layer,
+								// Jahr steht schon am Zeitstrahl
+								label: layer.label.replace(/^\d{4}\s+/, ""),
+							}}
+							onFlyTo={onFlyTo}
+						/>
+					</TimelineRow>
+				))}
+			</Box>
+			{rest.length > 0 && (
+				<Box sx={{ mt: 1 }}>
+					{rest.map((layer) => (
+						<OverlayItem key={layer.id} layer={layer} onFlyTo={onFlyTo} />
+					))}
+				</Box>
+			)}
+		</>
+	)
+}
+
+function TimelineRow({ year, active, first, last, children }) {
+	return (
+		<Box role="listitem" sx={{ display: "flex" }}>
+			<Typography
+				variant="caption"
+				sx={{
+					width: 32,
+					flexShrink: 0,
+					pt: "5px",
+					textAlign: "right",
+					fontVariantNumeric: "tabular-nums",
+					color: active ? "text.primary" : "text.secondary",
+					fontWeight: active ? 600 : 400,
+				}}
+			>
+				{year}
+			</Typography>
+			<Box aria-hidden sx={{ position: "relative", width: 22, flexShrink: 0 }}>
+				{!(first && last) && (
+					<Box
+						sx={{
+							position: "absolute",
+							left: 10,
+							width: 2,
+							bgcolor: "divider",
+							top: first ? 13 : 0,
+							...(last ? { height: 13 } : { bottom: 0 }),
+						}}
+					/>
+				)}
+				<Box
+					sx={{
+						position: "absolute",
+						left: 6,
+						top: 8,
+						width: 10,
+						height: 10,
+						borderRadius: "50%",
+						border: 2,
+						borderColor: active ? "primary.main" : "text.disabled",
+						bgcolor: active ? "primary.main" : "background.paper",
+					}}
+				/>
+			</Box>
+			<Box sx={{ flex: 1, minWidth: 0, pl: 0.75 }}>{children}</Box>
+		</Box>
+	)
+}
+
+function OverlayItem({ layer, onFlyTo }) {
+	const state = useMapStore((s) => s.overlays[layer.id])
+	const setOverlay = useMapStore((s) => s.setOverlay)
+	return (
+		<Box id={`ebene-${layer.id}`} sx={{ mb: 1 }}>
+			<FormControlLabel
+				onMouseEnter={() => !state.visible && prefetchLayer(layer.id)}
+				onFocus={() => !state.visible && prefetchLayer(layer.id)}
+				control={
+					<Switch
+						size="small"
+						checked={state.visible}
+						onChange={(e) =>
+							setOverlay(layer.id, { visible: e.target.checked })
+						}
+					/>
+				}
+				label={
+					<LayerLabel
+						layer={layer}
+						onJump={
+							onFlyTo &&
+							(() => {
+								// Springen schaltet die Ebene gleich mit ein
+								setOverlay(layer.id, { visible: true })
+								onFlyTo(...layer.jump)
+							})
+						}
+					/>
+				}
+				sx={{
+					alignItems: "flex-start",
+					"& .MuiSwitch-root": { mt: 0.25 },
+				}}
+			/>
+			{state.visible && (
+				<Slider
+					size="small"
+					min={0.1}
+					max={1}
+					step={0.05}
+					value={state.opacity}
+					onChange={(_, v) => setOverlay(layer.id, { opacity: v })}
+					sx={{ ml: 5, width: "calc(100% - 56px)" }}
+					aria-label={`Deckkraft ${layer.label}`}
+				/>
+			)}
+			{state.visible && <OverlayStatus layer={layer} />}
 		</Box>
 	)
 }

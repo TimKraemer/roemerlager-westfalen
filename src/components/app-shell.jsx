@@ -202,7 +202,8 @@ export default function AppShell() {
 				>
 					<Box
 						sx={{
-							width: WIDTH,
+							// nicht WIDTH, die Leiste hat 1 px Rand und scrollte sonst seitlich
+							width: "100%",
 							display: "flex",
 							flexDirection: "column",
 							height: "100%",
