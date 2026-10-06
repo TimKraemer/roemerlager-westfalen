@@ -9,11 +9,14 @@
  * - ob ein Kandidat des Modells näher als 3 km liegt
  *
  *   bun scripts/validate-model.mjs
+ *   VARIANT=ohne-routen bun scripts/validate-model.mjs
+ *   WATER=dem VALIDATION_OUT=/tmp/v.json bun scripts/validate-model.mjs
  */
 import { readFileSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { decode } from "fast-png"
+import { setAssetReader } from "../src/lib/assets.js"
 import { haversine } from "../src/lib/geo.js"
 import { setMoorDecoder } from "../src/lib/moor.js"
 import {
@@ -48,10 +51,16 @@ setMoorDecoder(async (blob) =>
 	toRgba(decode(new Uint8Array(await blob.arrayBuffer()))),
 )
 
+setAssetReader(async (file) =>
+	JSON.parse(readFileSync(join(ROOT, "public", file), "utf8")),
+)
+
 // Variante „ohne-routen“: Routen-Faktor aus, nur Gelände, Wasser, Ringe
 const VARIANT = process.env.VARIANT ?? "voll"
 const params = {
 	...DEFAULT_PARAMS,
+	// WATER=dem zum Vergleich mit dem Gewässernetz aus dem Höhenmodell
+	waterSource: process.env.WATER ?? DEFAULT_PARAMS.waterSource,
 	cellMeters: NETWORK.cellMeters,
 	weights:
 		VARIANT === "ohne-routen"
@@ -217,7 +226,9 @@ console.log(
 	`\n${rows.length} Lager geprüft, bei ${high} liegt der beste Wert im Umkreis von 2 km in den oberen 20 %.` +
 		` Median-Perzentil an der Lagerstelle ${Math.round(summary.medianPercentile * 100)}, im 2-km-Umkreis ${Math.round(summary.medianPercentileBest * 100)}.`,
 )
-const file = join(ROOT, "public", "precomputed", "validation.json")
+const file =
+	process.env.VALIDATION_OUT ??
+	join(ROOT, "public", "precomputed", "validation.json")
 let existing = {}
 try {
 	existing = JSON.parse(readFileSync(file, "utf8"))

@@ -21,6 +21,15 @@ function saveServices(layers) {
 import { BASE_LAYERS, OVERLAYS } from "@/lib/layers"
 import { DEFAULT_PARAMS } from "@/lib/potential/model"
 import { SITE_TYPES } from "@/lib/sites"
+import {
+	MOOR_LAYER,
+	STAND_MAPS,
+	standById,
+	standOverlays,
+	TIME_WATER_LAYER,
+	WALD_LAYER,
+	WEGE_LAYER,
+} from "@/lib/zeitstrahl"
 
 // Auf dem Handy erscheinen Infokarten im Sheet, das dafür weit genug aufgeht.
 // Schon hier, damit Kamerafahrten die neue Sheethöhe kennen.
@@ -151,6 +160,17 @@ export const useMapStore = create((set) => ({
 	selectedText: null,
 	// Hervorgehobener Suchtreffer (GeoJSON-Feature) auf der Karte
 	searchHit: null,
+	// Zeitstrahl über die historischen Karten (src/lib/zeitstrahl.js): Leiste
+	// offen, gewählter Stand, darin gezeigte Karte, Gewässer und Moore dazu an
+	timeline: {
+		open: false,
+		stand: "1840",
+		map: null,
+		water: true,
+		moor: true,
+		wald: false,
+		wege: false,
+	},
 
 	setBaseLayer: (baseLayer) => set({ baseLayer }),
 	// Zustand eingeschalteter Ebenen aus der Karte: "loading", "zoom"
@@ -246,4 +266,39 @@ export const useMapStore = create((set) => ({
 		set((s) => ({ inspect, ...(inspect && showCard(s)) })),
 	setSelectedText: (selectedText) => set({ selectedText }),
 	setSearchHit: (searchHit) => set({ searchHit }),
+	// Stand, Karte oder Gewässer wählen; schaltet die Karten des Zeitstrahls
+	setTimeline: (patch) =>
+		set((s) => {
+			const timeline = { ...s.timeline, ...patch }
+			if (patch.stand && !patch.map) timeline.map = null
+			if (!timeline.open && patch.open !== false) return { timeline }
+			// Schließen blendet die Karten des Zeitstrahls wieder aus
+			const vis = timeline.open
+				? standOverlays(
+						standById(timeline.stand),
+						timeline.map,
+						timeline.water,
+						timeline.moor,
+						timeline.wald,
+						timeline.wege,
+					)
+				: Object.fromEntries(
+						[
+							...STAND_MAPS,
+							TIME_WATER_LAYER,
+							MOOR_LAYER,
+							WALD_LAYER,
+							WEGE_LAYER,
+						].map((id) => [id, false]),
+					)
+			return {
+				timeline,
+				overlays: Object.fromEntries(
+					Object.entries(s.overlays).map(([id, o]) => [
+						id,
+						id in vis ? { ...o, visible: vis[id] } : o,
+					]),
+				),
+			}
+		}),
 }))

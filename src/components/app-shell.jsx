@@ -9,6 +9,7 @@ import PlaceIcon from "@mui/icons-material/Place"
 import TravelExploreIcon from "@mui/icons-material/TravelExplore"
 import {
 	Box,
+	CircularProgress,
 	Drawer,
 	IconButton,
 	Tab,
@@ -19,19 +20,55 @@ import {
 import dynamic from "next/dynamic"
 import { useCallback, useRef } from "react"
 import { usePotential } from "@/lib/potential/use-potential"
+import { prefetchView } from "@/lib/prefetch"
 import { centerOffset, DESKTOP_QUERY } from "@/lib/sheet"
 import { useMapStore } from "@/store/use-map-store"
-import AnalysisPanel from "./analysis-panel"
 import BottomSheet from "./bottom-sheet"
-import CiteDialog from "./cite-dialog"
 import EasyPanel, { EasyContent } from "./easy-panel"
-import { InfoCards } from "./info-cards"
-import LayerPanel from "./layer-panel"
 import SearchBox from "./search-box"
-import { SitesPanel, SourcesPanel } from "./sites-panel"
 import TextsPanel, { TextChip } from "./texts-panel"
+import Zeitstrahl from "./zeitstrahl"
 
 const MapView = dynamic(() => import("./map-view"), { ssr: false })
+
+// Reiter, Infokarten und Zitierdialog sind beim Start nicht zu sehen. Sie
+// kommen in eigenen Chunks und werden geladen, sobald die Karte steht und
+// der Browser Luft hat (preloadPanels), spätestens beim ersten Öffnen.
+const PANEL_MODULES = {
+	layers: () => import("./layer-panel"),
+	analysis: () => import("./analysis-panel"),
+	sites: () => import("./sites-panel"),
+	info: () => import("./info-cards"),
+	cite: () => import("./cite-dialog"),
+}
+const loading = () => (
+	<Box sx={{ display: "flex", justifyContent: "center", py: 4 }}>
+		<CircularProgress size={24} />
+	</Box>
+)
+const LayerPanel = dynamic(PANEL_MODULES.layers, { ssr: false, loading })
+const AnalysisPanel = dynamic(PANEL_MODULES.analysis, { ssr: false, loading })
+const SitesPanel = dynamic(
+	() => PANEL_MODULES.sites().then((m) => m.SitesPanel),
+	{ ssr: false, loading },
+)
+const SourcesPanel = dynamic(
+	() => PANEL_MODULES.sites().then((m) => m.SourcesPanel),
+	{ ssr: false, loading },
+)
+const InfoCards = dynamic(() => PANEL_MODULES.info().then((m) => m.InfoCards), {
+	ssr: false,
+})
+const CiteDialog = dynamic(PANEL_MODULES.cite, { ssr: false })
+
+function preloadPanels() {
+	const run = () => {
+		for (const load of Object.values(PANEL_MODULES)) load()
+	}
+	if ("requestIdleCallback" in window)
+		requestIdleCallback(run, { timeout: 4000 })
+	else setTimeout(run, 1500)
+}
 
 const WIDTH = 360
 
@@ -97,6 +134,8 @@ export default function AppShell() {
 
 	const onMapReady = useCallback((map) => {
 		mapRef.current = map
+		// Erst wenn die ersten Kacheln da sind, die übrigen Chunks holen
+		map.once("idle", preloadPanels)
 	}, [])
 	const getMap = useCallback(() => mapRef.current, [])
 	const { analyze } = usePotential(getMap)
@@ -108,6 +147,8 @@ export default function AppShell() {
 				const s = useMapStore.getState()
 				if (s.sheetFrac > 0.45) s.setSheetFrac(0.45)
 			}
+			// Zielkacheln laden, während die Kamera noch fliegt
+			prefetchView([lon, lat], zoom)
 			mapRef.current?.flyTo({
 				center: [lon, lat],
 				zoom,
@@ -216,6 +257,7 @@ export default function AppShell() {
 				{desktop && !open && !textShown && <EasyPanel onFlyTo={flyTo} />}
 				{desktop && <InfoCards />}
 				<TextChip />
+				<Zeitstrahl />
 				{!desktop && (
 					<BottomSheet
 						open={open}

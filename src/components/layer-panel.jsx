@@ -16,11 +16,12 @@ import {
 import { useEffect, useState } from "react"
 import { hasLayerSources, layerCsl } from "@/lib/layer-sources"
 import {
-	ALTKARTEN_GROUP,
 	altkartenAvailable,
 	BASE_LAYERS,
+	HISTORIC_GROUP,
 	OVERLAYS,
 } from "@/lib/layers"
+import { prefetchLayer } from "@/lib/prefetch"
 import { DEFAULT_REGION } from "@/lib/regions"
 import { SITE_TYPES } from "@/lib/sites"
 import { anyLayerVisible, useMapStore } from "@/store/use-map-store"
@@ -74,9 +75,19 @@ export default function LayerPanel({ onFlyTo }) {
 		altkartenAvailable().then(setHasAltkarten)
 	}, [])
 
-	const groups = [...new Set(OVERLAYS.map((o) => o.group))].filter(
-		(g) => g !== ALTKARTEN_GROUP || hasAltkarten,
-	)
+	const timeline = useMapStore((s) => s.timeline)
+	const setTimeline = useMapStore((s) => s.setTimeline)
+
+	// Altkarten-Kacheln liegen nicht im Repo, ohne sie fehlen die Einträge.
+	// Historische Karten nach Jahr, die Gewässer daraus am Ende.
+	const shown = OVERLAYS.filter((o) => !o.altkarte || hasAltkarten)
+	const groups = [...new Set(shown.map((o) => o.group))]
+	const inGroup = (group) => {
+		const list = shown.filter((o) => o.group === group)
+		return group === HISTORIC_GROUP
+			? list.sort((a, b) => (a.year ?? 9999) - (b.year ?? 9999))
+			: list
+	}
 
 	return (
 		<Box>
@@ -104,6 +115,11 @@ export default function LayerPanel({ onFlyTo }) {
 						value={layer.id}
 						control={<Radio size="small" />}
 						label={<LayerLabel layer={layer} />}
+						// Kacheln schon holen, bevor der Klick kommt
+						onMouseEnter={() =>
+							layer.id !== baseLayer && prefetchLayer(layer.id)
+						}
+						onFocus={() => layer.id !== baseLayer && prefetchLayer(layer.id)}
 						sx={{
 							alignItems: "flex-start",
 							mb: 0.5,
@@ -116,11 +132,21 @@ export default function LayerPanel({ onFlyTo }) {
 			{groups.map((group) => (
 				<Box key={group}>
 					<SectionTitle>{group}</SectionTitle>
-					{OVERLAYS.filter((o) => o.group === group).map((layer) => {
+					{group === HISTORIC_GROUP && (
+						<HelperSwitch
+							checked={timeline.open}
+							onChange={(open) => setTimeline({ open })}
+							label="Zeitstrahl"
+							note="Leiste über der Karte: Stände um 1680, 1800, 1840, 1900, 1940 und heute, je mit Leitkarte und den Gewässern dieser Zeit"
+						/>
+					)}
+					{inGroup(group).map((layer) => {
 						const state = overlays[layer.id]
 						return (
 							<Box key={layer.id} id={`ebene-${layer.id}`} sx={{ mb: 1 }}>
 								<FormControlLabel
+									onMouseEnter={() => !state.visible && prefetchLayer(layer.id)}
+									onFocus={() => !state.visible && prefetchLayer(layer.id)}
 									control={
 										<Switch
 											size="small"
@@ -246,7 +272,7 @@ export default function LayerPanel({ onFlyTo }) {
 				onChange={setShowModel}
 				id="model3d"
 				label="3D-Modell Römerlager Oberaden"
-				note="Ab Zoomstufe 15, mit Beschriftungen und Link. Modell aus der Bergkamen-App, am Grabungsplan der LWL-Archäologie eingepasst"
+				note="Ab Zoomstufe 15, mit Beschriftungen und Link. Modell aus der Bergkamen-App, Maßstab nach dem LWL-Grabungsplan, Lage am erhaltenen Graben der Nordfront"
 			/>
 			{showModel && (
 				<Slider

@@ -4,7 +4,7 @@ import "maplibre-gl/dist/maplibre-gl.css"
 import { Box, CircularProgress } from "@mui/material"
 import * as maplibregl from "maplibre-gl"
 import { useEffect, useRef, useState } from "react"
-import { BASE_PATH } from "@/config"
+import { assetUrl, BASE_PATH } from "@/config"
 import roads from "@/data/roemerstrassen.json"
 import { throughGates } from "@/lib/camp-gates"
 import { SHORT_CREDIT } from "@/lib/citation"
@@ -13,20 +13,34 @@ import {
 	BASE_LAYERS,
 	FONT,
 	GLYPHS,
+	MAIN_ROADS,
+	MOOR_1844_FILE,
+	MOOR_FILE,
 	OVERLAYS,
 	partsOf,
 	styleFor,
 	styleLayersOf,
+	TIME_WATER_FILE,
+	WALD_FILE,
+	WEGE_FILE,
 } from "@/lib/layers"
 import maplibreVersion from "@/lib/maplibre-version.json"
 import { rankedCandidates } from "@/lib/potential/candidates"
 import { oldRiverFeatures, withoutOldRivers } from "@/lib/potential/old-rivers"
 import { renderHeatmap } from "@/lib/potential/render"
-import { inspectAt } from "@/lib/potential/use-potential"
+import { ensureLineaments, inspectAt } from "@/lib/potential/use-potential"
+import { prefetchView, setPrefetchMap } from "@/lib/prefetch"
 import { DEFAULT_REGION, MAP_BOUNDS } from "@/lib/regions"
 import { centerOffset, isMobile, mapInsets } from "@/lib/sheet"
 import { campsFor, SITE_TYPES, SITES } from "@/lib/sites"
 import { textGeo } from "@/lib/text-geo"
+import {
+	MOOR_LAYER,
+	standById,
+	TIME_WATER_LAYER,
+	WALD_LAYER,
+	WEGE_LAYER,
+} from "@/lib/zeitstrahl"
 import { useMapStore } from "@/store/use-map-store"
 import {
 	addModelAnnotations,
@@ -661,6 +675,7 @@ export default function MapView({ onMapReady }) {
 			addAnalysisLayers(map)
 			addTextLayers(map)
 			addSearchLayers(map)
+			setPrefetchMap(map)
 			setMap(map)
 			onMapReady?.(map)
 		})
@@ -708,6 +723,97 @@ export default function MapView({ onMapReady }) {
 			}
 		}
 	}, [overlays, map])
+
+	// Gewässer aus den historischen Karten erst beim ersten Einschalten laden
+	const timeWaterOn = overlays[TIME_WATER_LAYER]?.visible
+	const timeWaterLoaded = useRef(null)
+	useEffect(() => {
+		if (!alive(map) || !timeWaterOn || timeWaterLoaded.current === map) return
+		timeWaterLoaded.current = map
+		map.getSource(TIME_WATER_LAYER).setData(assetUrl(TIME_WATER_FILE))
+	}, [timeWaterOn, map])
+
+	// Moore und nasse Flächen: Dateien beim ersten Einschalten laden, dann je
+	// Stand die passenden Teile zeigen (Moorböden immer)
+	const moorOn = overlays[MOOR_LAYER]?.visible
+	const moorLoaded = useRef(null)
+	useEffect(() => {
+		if (!alive(map) || !moorOn || moorLoaded.current === map) return
+		moorLoaded.current = map
+		map.getSource(MOOR_LAYER).setData(assetUrl(MOOR_FILE))
+		map.getSource(`${MOOR_LAYER}-1844`).setData(assetUrl(MOOR_1844_FILE))
+	}, [moorOn, map])
+	const moorStand = useMapStore((s) => s.timeline.stand)
+	useEffect(() => {
+		if (!alive(map)) return
+		const parts = standById(moorStand).moor ?? []
+		// Kein Merkmal hat den Wert "-": Teil ausblenden
+		const never = ["==", ["get", "kind"], "-"]
+		map.setFilter(`${MOOR_LAYER}-nass`, [
+			"==",
+			["get", "slice"],
+			parts.includes("ura") ? "ura" : "",
+		])
+		for (const id of [`${MOOR_LAYER}-1844`, `${MOOR_LAYER}-1844-line`])
+			map.setFilter(id, parts.includes("1844") ? null : never)
+		map.setFilter(
+			`${MOOR_LAYER}-heute`,
+			parts.includes("heute") ? ["==", ["get", "class"], "wetland"] : never,
+		)
+	}, [moorStand, map])
+
+	// Wald: Datei beim ersten Einschalten laden, je Stand Flächen 1840 oder
+	// heutiger Wald mit dem Umriss von 1840
+	const waldOn = overlays[WALD_LAYER]?.visible
+	const waldLoaded = useRef(null)
+	useEffect(() => {
+		if (!alive(map) || !waldOn || waldLoaded.current === map) return
+		waldLoaded.current = map
+		map.getSource(WALD_LAYER).setData(assetUrl(WALD_FILE))
+	}, [waldOn, map])
+	useEffect(() => {
+		if (!alive(map)) return
+		const parts = standById(moorStand).wald ?? []
+		const hidden = ["==", ["get", "kind"], "-"]
+		map.setFilter(`${WALD_LAYER}-ura`, parts.includes("ura") ? null : hidden)
+		map.setFilter(`${WALD_LAYER}-ura-line`, parts.length ? null : hidden)
+		map.setFilter(
+			`${WALD_LAYER}-heute`,
+			parts.includes("heute") ? ["==", ["get", "class"], "wood"] : hidden,
+		)
+	}, [moorStand, map])
+
+	// Hauptwege: Datei beim ersten Einschalten laden, je Stand Wege von 1840
+	// und heutige Hauptstraßen
+	const wegeOn = overlays[WEGE_LAYER]?.visible
+	const wegeLoaded = useRef(null)
+	useEffect(() => {
+		if (!alive(map) || !wegeOn || wegeLoaded.current === map) return
+		wegeLoaded.current = map
+		map.getSource(WEGE_LAYER).setData(assetUrl(WEGE_FILE))
+	}, [wegeOn, map])
+	useEffect(() => {
+		if (!alive(map)) return
+		const parts = standById(moorStand).wege ?? []
+		const hidden = ["==", ["get", "kind"], "-"]
+		for (const id of [`${WEGE_LAYER}-ura`, `${WEGE_LAYER}-ura-casing`])
+			map.setFilter(id, parts.includes("ura") ? null : hidden)
+		map.setFilter(
+			`${WEGE_LAYER}-heute`,
+			parts.includes("heute")
+				? ["in", ["get", "class"], ["literal", MAIN_ROADS]]
+				: hidden,
+		)
+	}, [moorStand, map])
+
+	// Gewässer aus den historischen Karten: nur die des gewählten Stands
+	const stand = useMapStore((s) => s.timeline.stand)
+	useEffect(() => {
+		if (!alive(map)) return
+		const filter = ["==", ["get", "slice"], standById(stand).water ?? ""]
+		for (const id of [TIME_WATER_LAYER, `${TIME_WATER_LAYER}-casing`])
+			map.setFilter(id, filter)
+	}, [stand, map])
 
 	// Ladezustand der eingeschalteten Ebenen für Panel und Ladeanzeige
 	const setOverlayStatus = useMapStore((s) => s.setOverlayStatus)
@@ -782,6 +888,9 @@ export default function MapView({ onMapReady }) {
 	const lrm = overlays.lrm
 	const lines = overlays.lines
 	useEffect(() => {
+		if (lrm.visible || lines.visible) ensureLineaments()
+	}, [lrm.visible, lines.visible])
+	useEffect(() => {
 		if (!alive(map) || !lineaments) return
 		const windows = lineaments.windows.filter((w) => w.imageCorners)
 		if (lrm.visible) {
@@ -790,7 +899,7 @@ export default function MapView({ onMapReady }) {
 				if (!map.getSource(id)) {
 					map.addSource(id, {
 						type: "image",
-						url: `${BASE_PATH}/precomputed/lrm/${w.id}.jpg`,
+						url: assetUrl(`precomputed/lrm/${w.id}.jpg`),
 						coordinates: w.imageCorners,
 					})
 					map.addLayer(
@@ -880,6 +989,7 @@ export default function MapView({ onMapReady }) {
 	// Vektorkacheln (Ebene "osm-gewaesser")
 	const waterSource = result?.waterSource
 	const oldRivers = useMapStore((s) => s.params.oldRivers)
+	const timeWater = useMapStore((s) => s.timeline.open && s.timeline.water)
 	useEffect(() => {
 		if (!alive(map)) return
 		const dem = waterSource !== "osm"
@@ -893,17 +1003,24 @@ export default function MapView({ onMapReady }) {
 			? [...withoutOldRivers(derived), ...oldRiverFeatures()]
 			: derived
 		map.getSource("waterways").setData({ type: "FeatureCollection", features })
+		// Zeigt der Zeitstrahl Gewässer einer Zeit, tritt das abgeleitete Netz
+		// zurück, sonst mischen sich zwei Sorten blauer Linien
+		const visible = showWaterways && !timeWater
 		for (const id of ["waterways", "waterways-casing"]) {
-			map.setLayoutProperty(
-				id,
-				"visibility",
-				showWaterways ? "visible" : "none",
-			)
+			map.setLayoutProperty(id, "visibility", visible ? "visible" : "none")
 		}
 		if (showWaterways && !dem) {
 			useMapStore.getState().setOverlay("osm-gewaesser", { visible: true })
 		}
-	}, [derivedWaterways, network, showWaterways, waterSource, oldRivers, map])
+	}, [
+		derivedWaterways,
+		network,
+		showWaterways,
+		waterSource,
+		oldRivers,
+		timeWater,
+		map,
+	])
 
 	useEffect(() => {
 		if (!alive(map)) return
@@ -927,27 +1044,36 @@ export default function MapView({ onMapReady }) {
 		}
 	}, [showRegion, map])
 
+	// Bild der Potenzialkarte nur bei neuem Ergebnis oder neuer Schwelle
+	// rechnen, nicht bei jedem Schritt des Deckkraft-Reglers
+	const threshold = heatmap.threshold
+	useEffect(() => {
+		if (!alive(map) || !result) return
+		map.getSource("heatmap").updateImage({
+			url: renderHeatmap(result, threshold),
+			coordinates: result.grid.corners,
+		})
+	}, [result, threshold, map])
+
 	useEffect(() => {
 		if (!alive(map)) return
-		const source = map.getSource("heatmap")
+		map.setLayoutProperty(
+			"heatmap",
+			"visibility",
+			result && heatmap.visible ? "visible" : "none",
+		)
+		map.setPaintProperty("heatmap", "raster-opacity", heatmap.opacity)
+	}, [result, heatmap.visible, heatmap.opacity, map])
+
+	useEffect(() => {
+		if (!alive(map)) return
 		const cands = map.getSource("candidates")
 		const stages = map.getSource("stages")
 		if (!result) {
 			cands.setData(EMPTY)
 			stages.setData(EMPTY)
-			map.setLayoutProperty("heatmap", "visibility", "none")
 			return
 		}
-		source.updateImage({
-			url: renderHeatmap(result, heatmap.threshold),
-			coordinates: result.grid.corners,
-		})
-		map.setLayoutProperty(
-			"heatmap",
-			"visibility",
-			heatmap.visible ? "visible" : "none",
-		)
-		map.setPaintProperty("heatmap", "raster-opacity", heatmap.opacity)
 		cands.setData({
 			type: "FeatureCollection",
 			features: rankedCandidates(result)
@@ -978,7 +1104,7 @@ export default function MapView({ onMapReady }) {
 				geometry: { type: "Point", coordinates: [s.lon, s.lat] },
 			})),
 		})
-	}, [result, heatmap, network, map])
+	}, [result, network, map])
 
 	// Angeklickte Textstelle zeigen, mit Kamerafahrt und Animation
 	useEffect(() => {
@@ -998,9 +1124,11 @@ export default function MapView({ onMapReady }) {
 		if (!alive(map) || !selectedSite) return
 		const f = SITES.features.find((s) => s.properties.id === selectedSite)
 		if (f) {
+			const zoom = Math.max(map.getZoom(), 13)
+			prefetchView(f.geometry.coordinates, zoom)
 			map.flyTo({
 				center: f.geometry.coordinates,
-				zoom: Math.max(map.getZoom(), 13),
+				zoom,
 				offset: centerOffset(),
 			})
 		}

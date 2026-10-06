@@ -123,9 +123,14 @@ citation-js selbst mit.
 | `src/data/altkarten.json` | `scripts/altkarten/alt.sh index` | Verzeichnis der entzerrten Altkarten | CC BY 4.0 |
 | `src/data/altkarten-quellen.json` | von Hand | Bestandsnachweise der Scans (SLUB, Landesarchiv NRW) | CC BY 4.0 |
 | `scripts/altkarten/gcp/*.json` | von Hand und `alt.sh fit` | Passpunkte je Altkarte | CC BY 4.0 |
-| `public/precomputed/minden-luebbecke.*`, `westfalen-netz.json` | `bun run precompute` | Mapzen Terrain Tiles (SRTM, EU-DEM), OpenStreetMap, BK50 NRW, GUM50 NI | CC BY 4.0, enthält Ableitungen aus ODbL-Daten |
+| `public/precomputed/minden-luebbecke.*`, `westfalen-netz.json` | `bun run precompute` | Mapzen Terrain Tiles (SRTM, EU-DEM), OpenStreetMap, Preußische Uraufnahme (Bäche), BK50 NRW, GUM50 NI, Kreiskarte Lübbecke 1844 (Moore) | CC BY 4.0, enthält Ableitungen aus ODbL-Daten und aus der Kreiskarte 1844 (CC BY-SA 4.0) |
 | `public/precomputed/lineaments*.json`, `lrm/*.jpg` | `bun run precompute`, `scripts/validate-lineaments.mjs` | DGM1 NRW (Geobasis NRW, dl-de/zero-2-0), OpenStreetMap | CC BY 4.0 |
 | `public/precomputed/validation.json` | `scripts/validate-model.mjs`, `scripts/optimize-weights.mjs` | Gegenprobe des Modells | CC BY 4.0 |
+| `public/precomputed/gewaesser-zeit.geojson` | `scripts/altkarten/gewaesser.sh` | Preußische Uraufnahme (Geobasis NRW), Karte des Deutschen Reiches 1904 (SLUB, Public Domain Mark), OpenStreetMap als Leitlinien | ODbL 1.0 |
+| `public/precomputed/moor-1844.geojson` | `scripts/altkarten/moor1844.py` aus den Umrissen in `scripts/altkarten/moor/1844-kreis-luebbecke.json` | Kreiskarte Lübbecke 1844 (Landesarchiv NRW, W 051 Nr. 11781) | CC BY-SA 4.0 |
+| `public/precomputed/moor-zeit.geojson` | `scripts/altkarten/moor.sh` | BK50 NRW (GD NRW, dl-de/by-2-0), GUM50 (LBEG Niedersachsen), Überschwemmungsgebiete nach der preußischen Aufnahme (Land NRW, Dienst uesg) | Lizenzen der Landesämter |
+| `public/precomputed/wald-zeit.geojson` | `scripts/altkarten/wald.sh` | Waldflächen in NRW während der Preußischen Uraufnahme (LANUK NRW, Open Data), auf den Kreis zugeschnitten | Lizenz des LANUK, noch zu prüfen |
+| `public/precomputed/wege-zeit.geojson` | `scripts/altkarten/wege.sh` | Preußische Uraufnahme (Geobasis NRW), OpenStreetMap als Leitlinien | ODbL 1.0 |
 | `public/precomputed/orte.json` | `scripts/build-places.mjs` | OpenStreetMap (OpenMapTiles) | ODbL 1.0 |
 | `public/precomputed/gebiete.json` | `scripts/build-areas.mjs` | OpenStreetMap über Overpass | ODbL 1.0 |
 | `public/models/oberaden.glb` | 3D-Modell aus der Bergkamen-App von erleben.app | eigene Rekonstruktion nach dem Gesamtplan der LWL-Archäologie | © erleben.app, alle Rechte vorbehalten |
@@ -146,6 +151,7 @@ Netz (Kacheldienste in `src/config.js`).
 | `bun scripts/validate-lineaments.mjs` | kurz | Prüfung der Linienerkennung an bekannten Lagern |
 | `bun scripts/build-roads.mjs` | kurz | Römerstraßen, lädt Itiner-e von Zenodo |
 | `bun scripts/build-rivers.mjs [Fluss …] [--roemisch]` | beim ersten Mal etwa 1 h | Alte Flussläufe |
+| `scripts/altkarten/gewaesser.sh [--quelle ura,kdr1904]` | Uraufnahme beim ersten Mal etwa 20 min, danach wenige Minuten | Gewässer je Stand des Zeitstrahls |
 | `bun scripts/build-places.mjs` | einige Minuten | Ortsverzeichnis der Suche |
 | `bun scripts/build-areas.mjs` | je nach Overpass-Last | Höhenzüge und Verwaltungsgebiete der Suche |
 
@@ -166,8 +172,8 @@ Uraufnahme landen in `node_modules/.cache/uraufnahme`.
 Die Altkarten (Minden und Lübbecke, 1650–1904) sind entzerrte Scans
 historischer Karten. Weder die Scans noch die daraus gerechneten Kacheln
 liegen im Repository, nur die Passpunkte (`scripts/altkarten/gcp/`) und das
-Verzeichnis (`src/data/altkarten.json`). Ohne Kacheln blendet die App die
-Gruppe „Altkarten“ aus.
+Verzeichnis (`src/data/altkarten.json`). Ohne Kacheln blendet die App diese
+Karten in der Gruppe „Historische Karten“ und im Zeitstrahl aus.
 
 Bestandsnachweis und Rechteangabe je Scan stehen in
 `src/data/altkarten-quellen.json` und erscheinen in der Attribution der
@@ -190,6 +196,100 @@ scripts/altkarten/alt.sh fit 1844-kreis-luebbecke
 scripts/altkarten/alt.sh tiles 1844-kreis-luebbecke
 scripts/altkarten/alt.sh index                  # schreibt src/data/altkarten.json
 ```
+
+### Zeitstrahl und Gewässer aus den Karten
+
+Der Zeitstrahl (`src/lib/zeitstrahl.js`) fasst die historischen Karten zu
+Ständen zusammen: um 1680, um 1800, um 1840, um 1900, um 1940 und heute.
+Jeder Stand hat eine Leitkarte und weitere Karten derselben Zeit.
+
+`scripts/altkarten/gewaesser.sh` liest für den Kreis Minden-Lübbecke die
+Gewässer aus zwei Karten:
+
+- Um 1840, Preußische Uraufnahme: Bäche sind dünne blaugraue Linien auf
+  grünblau laviertem Grund und lassen sich nicht von jeder Feldgrenze
+  trennen. Das Skript sucht deshalb entlang jedes heutigen Bachs (OSM,
+  ohne Kanäle; benannte Bäche, die OSM als Graben führt, zählen mit, außer
+  der Name sagt Graben, Kanal oder Ähnliches) in einem Korridor von 150 m,
+  bei Flüssen 400 m, den günstigsten Weg über bläuliche, dunkle Linien und
+  übernimmt nur
+  Abschnitte, auf denen der Weg deutlich mehr Wasser trifft als der Grund
+  daneben. Gräben ohne heutigen Bach und verschwundene Bäche fehlen.
+- Um 1900, Karte des Deutschen Reiches 1904, Blatt Lübbecke: Gewässer sind
+  kräftig blau. Das Skript nimmt alle blauen Linien, schließt Lücken des
+  Drucks in Linienrichtung und dünnt auf Mittellinien aus. Linien nahe
+  einem heutigen Bach tragen dessen Namen, die übrigen gelten als Graben.
+
+Die Karten des 17. und 18. Jahrhunderts liegen örtlich 0,3–1 km neben der
+heutigen Lage, aus ihnen werden keine Linien gelesen.
+
+Moore und nasse Flächen (`scripts/altkarten/moor.sh`) stammen nur aus
+amtlichen Daten. In der Karte des Deutschen Reiches ist die Moorsignatur
+ein blasser Blauschleier, die Uraufnahme ist Blatt für Blatt anders
+koloriert, beides ließ sich nicht verlässlich auslesen. Immer gezeigt
+werden die Moorböden nach BK50 (NRW, Hoch- und Niedermoor samt Deck- und
+Fehnkultur) und außerhalb NRW nach GUM50; im Torfkörper steckt die
+Ausdehnung vor der Kultivierung, abgetorfte Flächen fehlen teils. In der
+GUM50 fehlt ein Kartenblatt am Dümmer. Um 1840 kommen die
+Überschwemmungsgebiete nach der preußischen Aufnahme dazu (der Dienst
+zeichnet sie schraffiert, das Skript füllt die Umrisse), heute die
+Feuchtgebiete aus OpenStreetMap.
+
+Wald um 1840 kommt aus dem Datensatz „Waldflächen in Nordrhein-Westfalen
+während der Preußischen Uraufnahme“ des Landesamts für Natur, Umwelt und
+Klima (`scripts/altkarten/wald.sh` lädt das GeoPackage und schneidet es
+zu), heute aus OpenStreetMap. Im Stand „heute“ liegen die Umrisse von 1840
+über dem heutigen Wald. Orte um 1840 gibt es nicht als amtliche Daten, und
+die Uraufnahme färbt Häuser je Blatt anders (teils rot, teils schwarz), eine
+automatische Erkennung war nicht verlässlich.
+
+Hauptwege um 1840 (`scripts/altkarten/wege.sh`) liest das Skript wie die
+Bäche: Leitlinien sind die heutigen Bundes-, Landes- und Kreisstraßen aus
+OSM (trunk bis tertiary). In einem Korridor von 120 m sucht es den
+günstigsten Weg über Linien, die wärmer (Rot über Blau) und dunkler sind
+als ihre Umgebung, so wie die Uraufnahme Wege braun bis rot zieht, und
+übernimmt nur Abschnitte, auf denen die Karte deutlich einen Weg zeigt.
+Das Ergebnis zeigt, welche heutigen Hauptstraßen es schon als Weg gab und
+wo der alte Weg anders lief. Verschwundene Wege fehlen, Feldgrenzen und
+Gräben entlang einer Straße können als Weg durchgehen. Zwischenstände und
+Prüfbilder (`--debug --bbox w s e n`) liegen in `scripts/altkarten/.cache`.
+
+### Bäche und Moore im Potenzialmodell
+
+Das Kriterium „Wasser“ misst den Abstand zum nächsten Bach. Standard ist
+die Wasserquelle „Aus Karten“: Im Kreis Minden-Lübbecke gelten die Bäche
+im Lauf der Uraufnahme um 1840 (Zeitschnitt `ura` aus
+`gewaesser-zeit.geojson`, ohne Gräben). Heutige Bäche aus OpenStreetMap
+zählen dort, wo in 400 m kein Lauf der Uraufnahme liegt, außerhalb des
+Kreises also überall. Große Flüsse ab 150 km² Einzugsgebiet kommen weiter
+aus dem Höhenmodell, Lippe, Weser und Ems im alten Lauf.
+
+Das aus dem Höhenmodell abgeleitete Netz bleibt als Wahl „Aus
+Höhenmodell“. Ein Abgleich im Kreis (Oktober 2026) zeigt, warum es nicht
+mehr Standard ist. Im Flachland nördlich des Wiehengebirges lagen die
+berechneten Bäche im Median 295 m neben dem nächsten OSM-Bach, 153 von
+471 km hatten in 600 m gar keinen. Im Bergland waren es 116 m und 16 von
+111 km. Bei Eilhausen etwa legte das Höhenmodell die Flöthe rund 400 m zu
+weit nach Süden.
+
+Moore ziehen das Potenzial um bis zu 70 % herunter. Grundlage sind die
+Moorböden der BK50 NRW und der GUM50 Niedersachsen. Der NRW-Dienst zeichnet
+erst unter etwa 70 m je Pixel und liefert gröber ein leeres Bild, er wird
+deshalb wie der niedersächsische Dienst in Unterpixeln abgefragt. Bis
+Oktober 2026 fehlten dadurch im Modell alle Moore in NRW.
+
+Wo der Torf später abgestochen oder kultiviert wurde, fehlt das Moor in
+der BK50. Diese Flächen kommen aus der Kreiskarte Lübbecke 1844
+(`moor-1844.geojson`), etwa das Stemmer Moor, die Moore bei Moorort und
+Spreen und das Schwarze und Weiße Moor bei Nutteln. Die Karte zeichnet
+Heide und Torfmoor mit derselben Signatur. Aufgenommen sind deshalb nur
+Flächen mit Torfstich-Zeichen oder Moor-, Torf- und Bruchnamen, von Hand in
+Bildpixeln umrissen und über die Passpunkte der Karte entzerrt
+(Lagefehler im Median etwa 210 m). Brüche zählen zu 60 %. Altes Moor,
+Gessmoor, Nettelstedter und Eilhauser Moor fehlen in der Datei, weil die
+BK50 sie deckungsgleich führt. Ein Moor von 1844 gilt im Modell auch zur
+Römerzeit als Moor. Wie weit sich die Ränder in den knapp 2000 Jahren
+dazwischen verschoben haben, lässt die Karte nicht erkennen.
 
 ## Externe Dienste zur Laufzeit
 

@@ -7,11 +7,16 @@
  */
 
 import { addProtocol } from "maplibre-gl"
-import { BASE_PATH, TILES } from "@/config"
+import { assetUrl, assetVersion, BASE_PATH, TILES } from "@/config"
 import ALTKARTEN from "@/data/altkarten.json"
 import ALTKARTEN_QUELLEN from "@/data/altkarten-quellen.json"
 import RIVERS from "@/data/fluesse.json"
-import { VECTOR_TILES } from "./water"
+import {
+	MOOR_LAYER,
+	TIME_WATER_LAYER,
+	WALD_LAYER,
+	WEGE_LAYER,
+} from "./zeitstrahl"
 
 const GEOBASIS_NRW = "© Geobasis NRW (dl-de/zero-2-0)"
 const LGLN = "© LGLN (CC BY 4.0)"
@@ -19,9 +24,18 @@ const BKG = "© BKG (CC BY 4.0)"
 const OSM = "© OpenStreetMap-Mitwirkende"
 
 export const DEM_TILES = TILES.dem
+const VECTOR_TILES = TILES.vector
 export const GLYPHS = TILES.glyphs
 export const FONT = ["Montserrat SemiBold"]
-export const ALTKARTEN_GROUP = "Altkarten (entzerrt)"
+// Dienste von Geobasis NRW und eigene entzerrte Scans in einer Gruppe,
+// im Panel nach Jahr sortiert
+export const HISTORIC_GROUP = "Historische Karten"
+
+// Grob umrissene Landesflächen. Dienste eines Landes bekommen sie als
+// bounds, dann fragt MapLibre außerhalb gar nicht erst nach Kacheln, und
+// das Panel meldet „außerhalb“.
+const NRW = [5.86, 50.32, 9.47, 52.54]
+const NI = [6.6, 51.29, 11.6, 53.9]
 
 const SENTINEL = {
 	tiles: [
@@ -36,15 +50,17 @@ const DOP_NI = {
 	layers: "ni_dop20",
 	attribution: LGLN,
 	minzoom: 8,
+	bounds: NI,
 }
 // Im WMTS NRW heißen die Stufen der Matrix EPSG_3857_16 "00" bis "16",
 // "00" ist Web-Mercator-Zoom 5. Das Protokoll nw-dop:// rechnet um.
 const NW_DOP_WMTS =
 	"https://www.wmts.nrw.de/geobasis/wmts_nw_dop/tiles/nw_dop/EPSG_3857_16"
+const nwDopUrl = (z, x, y) =>
+	`${NW_DOP_WMTS}/${String(Number(z) - 5).padStart(2, "0")}/${x}/${y}`
 addProtocol("nw-dop", async (params, abortController) => {
 	const [z, x, y] = params.url.slice("nw-dop://".length).split("/")
-	const matrix = String(Number(z) - 5).padStart(2, "0")
-	const res = await fetch(`${NW_DOP_WMTS}/${matrix}/${x}/${y}`, {
+	const res = await fetch(nwDopUrl(z, x, y), {
 		signal: abortController.signal,
 	})
 	if (!res.ok) throw new Error(`DOP NRW ${res.status}: ${params.url}`)
@@ -54,6 +70,7 @@ const DOP_NRW = {
 	tiles: ["nw-dop://{z}/{x}/{y}"],
 	attribution: GEOBASIS_NRW,
 	minzoom: 8,
+	bounds: NRW,
 	// Stufe 14 entspricht Zoom 19, etwa 19 cm je Pixel auf 51,6° N
 	maxzoom: 19,
 }
@@ -113,6 +130,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "schummerung-nrw",
+		bounds: NRW,
 		jump: [8.62, 52.3, 12],
 		group: "Gelände",
 		label: "Schummerung NRW (DGM1)",
@@ -141,6 +159,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "schummerung-nrw-col",
+		bounds: NRW,
 		jump: [8.62, 52.3, 12],
 		group: "Gelände",
 		label: "Schummerung NRW farbig (DGM1)",
@@ -183,8 +202,10 @@ export const OVERLAYS = [
 	},
 	{
 		id: "uraufnahme",
+		bounds: NRW,
 		jump: [8.62, 52.3, 14],
-		group: "Gewässer",
+		group: HISTORIC_GROUP,
+		year: 1836,
 		label: "Preußische Uraufnahme (1836–1850)",
 		note: "Vor Mittellandkanal (1906–1938) und Begradigungen, zeigt alte Bachläufe und Feuchtgebiete. Nur NRW.",
 		wms: "https://www.wms.nrw.de/geobasis/wms_nw_uraufnahme",
@@ -195,6 +216,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "aue-preussisch",
+		bounds: NRW,
 		jump: [8.92, 52.3, 12],
 		group: "Alte Gewässer und Böden",
 		label: "Historische Aue (preußische Aufnahme)",
@@ -206,6 +228,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "bk50-grundwasser",
+		bounds: NRW,
 		jump: [8.62, 52.3, 12],
 		group: "Alte Gewässer und Böden",
 		label: "Grundwassereinfluss im Boden (BK50 NRW)",
@@ -218,6 +241,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "bk50-bodentyp",
+		bounds: NRW,
 		jump: [8.62, 52.3, 12],
 		group: "Alte Gewässer und Böden",
 		label: "Bodentypen (BK50 NRW)",
@@ -229,6 +253,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "moore-ni",
+		bounds: NI,
 		jump: [8.5, 52.6, 12],
 		group: "Alte Gewässer und Böden",
 		label: "Ursprüngliche Moore (GUM50 Niedersachsen)",
@@ -241,6 +266,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "bk50-ni",
+		bounds: NI,
 		jump: [8.45, 52.48, 12],
 		group: "Alte Gewässer und Böden",
 		label: "Bodenkarte BK50 Niedersachsen",
@@ -253,6 +279,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "gk100-nrw",
+		bounds: NRW,
 		jump: [8.62, 52.3, 12],
 		group: "Alte Gewässer und Böden",
 		label: "Geologie bis 2 m Tiefe (GK100 NRW)",
@@ -265,6 +292,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "gewaesser-nrw",
+		bounds: NRW,
 		jump: [8.62, 52.3, 12],
 		group: "Gewässer",
 		label: "Fließgewässer NRW (GSK3B)",
@@ -276,8 +304,10 @@ export const OVERLAYS = [
 	},
 	{
 		id: "tranchot",
+		bounds: NRW,
 		jump: [6.45, 51.66, 12],
-		group: "Historische Karten",
+		group: HISTORIC_GROUP,
+		year: 1801,
 		label: "Tranchot/v. Müffling (1801–1828)",
 		note: "Nur Rheinland, rechts des Rheins etwa bis Duisburg, Wuppertal und Siegen. Xanten liegt drin, die Lippelager und Bergkamen nicht. Ab Zoom 11.",
 		wms: "https://www.wms.nrw.de/geobasis/wms_nw_tranchot",
@@ -288,8 +318,10 @@ export const OVERLAYS = [
 	},
 	{
 		id: "neuaufnahme",
+		bounds: NRW,
 		jump: [8.62, 52.3, 13],
-		group: "Historische Karten",
+		group: HISTORIC_GROUP,
+		year: 1891,
 		label: "Preußische Neuaufnahme (1891–1912)",
 		wms: "https://www.wms.nrw.de/geobasis/wms_nw_neuaufnahme",
 		layers: "nw_neuaufnahme",
@@ -299,8 +331,10 @@ export const OVERLAYS = [
 	},
 	{
 		id: "tk25-1936",
+		bounds: NRW,
 		jump: [8.62, 52.3, 15],
-		group: "Historische Karten",
+		group: HISTORIC_GROUP,
+		year: 1936,
 		label: "TK25 (1936–1945)",
 		wms: "https://www.wms.nrw.de/geobasis/wms_nw_tk25_1936-1945",
 		layers: "nw_tk25_1936-1945",
@@ -310,8 +344,10 @@ export const OVERLAYS = [
 	},
 	{
 		id: "hist-dop",
+		bounds: NRW,
 		jump: [7.62, 51.96, 13],
-		group: "Historische Karten",
+		group: HISTORIC_GROUP,
+		year: 1951,
 		label: "Luftbilder der 1950er (NRW)",
 		note: "Befliegungen 1951–1958, Bewuchsmerkmale vor der Bebauung",
 		wms: "https://www.wms.nrw.de/geobasis/wms_nw_hist_dop",
@@ -323,6 +359,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "bodendenkmal-nrw",
+		bounds: NRW,
 		jump: [6.45, 51.66, 12],
 		group: "Denkmäler",
 		label: "Bodendenkmäler NRW (INSPIRE)",
@@ -337,12 +374,17 @@ export const OVERLAYS = [
 	// und Lizenz der Scans je Karte in src/data/altkarten-quellen.json
 	...ALTKARTEN.map((m) => ({
 		id: `alt-${m.id}`,
-		group: ALTKARTEN_GROUP,
+		group: HISTORIC_GROUP,
+		year: m.year,
+		// Kacheln liegen nicht im Repo, das Panel zeigt sie nur, wenn vorhanden
+		altkarte: true,
 		label: `${m.year} ${m.short}`,
 		note: [m.author, m.accuracy && `Passpunkte: ${m.accuracy}`]
 			.filter(Boolean)
 			.join(". "),
-		tiles: [`${BASE_PATH}/altkarten/${m.id}/{z}/{x}/{y}.webp`],
+		tiles: [
+			`${BASE_PATH}/altkarten/${m.id}/{z}/{x}/{y}.webp?v=${assetVersion(`altkarten/${m.id}/meta.json`)}`,
+		],
 		bounds: m.bounds,
 		jump: jumpToBounds(m.bounds, m.minzoom),
 		minzoom: m.minzoom,
@@ -351,6 +393,44 @@ export const OVERLAYS = [
 		attribution: altkarteAttribution(m),
 		opacity: 0.85,
 	})),
+	// Über den Karten: Gewässer, die scripts/altkarten/gewaesser.py aus
+	// ihnen gelesen hat, je Stand des Zeitstrahls (src/lib/zeitstrahl.js)
+	{
+		id: TIME_WATER_LAYER,
+		kind: "timewater",
+		group: HISTORIC_GROUP,
+		label: "Gewässer aus den Karten (Kreis Minden-Lübbecke)",
+		note: "Je Stand des Zeitstrahls: um 1840 aus der Uraufnahme entlang der heutigen Bäche, um 1900 alle blauen Linien der Karte des Deutschen Reiches (Blatt Lübbecke) samt Gräben, heller gezeichnet.",
+		attribution: `${GEOBASIS_NRW}, ${OSM}`,
+		opacity: 0.95,
+	},
+	{
+		id: MOOR_LAYER,
+		kind: "timemoor",
+		group: HISTORIC_GROUP,
+		label: "Moore und nasse Flächen",
+		note: "Immer: Moorböden nach BK50 NRW und GUM50 Niedersachsen (braun Hochmoor, grün Niedermoor), dort war vor der Kultivierung Moor. Um 1840 zusätzlich Überschwemmungsgebiete der preußischen Aufnahme (blau) und Moore der Kreiskarte Lübbecke 1844, die heute kein Moorboden mehr sind. Heute Feuchtgebiete aus OpenStreetMap.",
+		attribution: `© GD NRW (dl-de/by-2-0), © LBEG Niedersachsen, © Land NRW, ${OSM}`,
+		opacity: 0.5,
+	},
+	{
+		id: WALD_LAYER,
+		kind: "timewald",
+		group: HISTORIC_GROUP,
+		label: "Wald",
+		note: "Um 1840 die Waldflächen der Preußischen Uraufnahme (Landesamt für Natur, Umwelt und Klima NRW, nur NRW). Heute Wald aus OpenStreetMap, dazu der Umriss von 1840: Wo beides zusammenfällt, liegen historisch alte Waldstandorte.",
+		attribution: `© LANUK NRW, ${OSM}`,
+		opacity: 0.55,
+	},
+	{
+		id: WEGE_LAYER,
+		kind: "timewege",
+		group: HISTORIC_GROUP,
+		label: "Hauptwege",
+		note: "Um 1840 die heutigen Bundes-, Landes- und Kreisstraßen, die die Uraufnahme schon als Weg zeigt, im alten Verlauf (aus der Karte gelesen, Feldgrenzen können mitlaufen). Heute die Straßen aus OpenStreetMap, darüber die Wege von 1840. Wege, die es heute nicht mehr gibt, fehlen.",
+		attribution: `${GEOBASIS_NRW}, ${OSM}`,
+		opacity: 0.9,
+	},
 ]
 
 function altkarteAttribution(m) {
@@ -369,7 +449,7 @@ let altkartenCheck
  */
 export function altkartenAvailable() {
 	altkartenCheck ??= ALTKARTEN.length
-		? fetch(`${BASE_PATH}/altkarten/${ALTKARTEN[0].id}/meta.json`, {
+		? fetch(assetUrl(`altkarten/${ALTKARTEN[0].id}/meta.json`), {
 				method: "HEAD",
 			})
 				.then((res) => res.ok)
@@ -392,22 +472,50 @@ function jumpToBounds([w, s, e, n], minzoom) {
 	return [(w + e) / 2, (s + n) / 2, Math.max(minzoom, fit)]
 }
 
+// WMS-Kacheln in 512 px: ein Viertel der Anfragen bei kaum längerer
+// Antwortzeit (gemessen 0,5 s für 256 px, 0,9 s für 512 px), und die
+// Dienste von NRW und LBEG sprechen nur HTTP/1.1 mit sechs Verbindungen
+const WMS_TILE = 512
+
 /** MapLibre-Rasterquelle für eine Kachel- oder WMS-Ebene bzw. einen Teil. */
 export function rasterSource(layer) {
+	const tileSize = layer.wms ? WMS_TILE : (layer.tileSize ?? 256)
 	const tiles = layer.wms
 		? [
-				`${layer.wms}${layer.wms.includes("?") ? "&" : "?"}SERVICE=WMS&REQUEST=GetMap&VERSION=1.3.0&LAYERS=${encodeURIComponent(layer.layers)}&STYLES=&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=256&HEIGHT=256&BBOX={bbox-epsg-3857}`,
+				`${layer.wms}${layer.wms.includes("?") ? "&" : "?"}SERVICE=WMS&REQUEST=GetMap&VERSION=1.3.0&LAYERS=${encodeURIComponent(layer.layers)}&STYLES=&FORMAT=image/png&TRANSPARENT=true&CRS=EPSG:3857&WIDTH=${tileSize}&HEIGHT=${tileSize}&BBOX={bbox-epsg-3857}`,
 			]
 		: layer.tiles
+	// Zoomgrenzen der Quelle gelten für Kachelstufen. Eine 512er-Kachel
+	// deckt die Fläche einer 256er-Kachel eine Stufe tiefer ab.
+	const shift = layer.wms ? Math.log2(tileSize / 256) : 0
 	return {
 		type: "raster",
 		tiles,
-		tileSize: layer.tileSize ?? 256,
+		tileSize,
 		attribution: layer.attribution,
-		minzoom: Math.floor(layer.minzoom ?? 0),
-		maxzoom: layer.maxzoom ?? 19,
+		minzoom: Math.max(0, Math.floor((layer.minzoom ?? 0) - shift)),
+		maxzoom: (layer.maxzoom ?? 19) - shift,
 		...(layer.bounds ? { bounds: layer.bounds } : {}),
 	}
+}
+
+/**
+ * URL einer Kachel, genau so, wie MapLibre sie anfragt (tile_id.ts), damit
+ * vorab geladene Kacheln im Cache wiedergefunden werden (src/lib/prefetch.js).
+ */
+export function tileUrl(template, z, x, y) {
+	if (template.startsWith("nw-dop://")) return nwDopUrl(z, x, y)
+	const half = Math.PI * 6378137
+	const res = (2 * half) / 256 / 2 ** z
+	const yy = 2 ** z - y - 1
+	const bbox = [x * 256, yy * 256, (x + 1) * 256, (yy + 1) * 256]
+		.map((v) => v * res - half)
+		.join(",")
+	return template
+		.replace(/{z}/g, String(z))
+		.replace(/{x}/g, String(x))
+		.replace(/{y}/g, String(y))
+		.replace(/{bbox-epsg-3857}/g, bbox)
 }
 
 /** Teile einer Ebene, eine einfache Ebene ist ihr eigener einziger Teil. */
@@ -422,6 +530,32 @@ export function styleLayersOf(layer) {
 		]
 	}
 	if (layer.kind === "water") return [{ id: layer.id, opacity: "line-opacity" }]
+	if (layer.kind === "timewege") {
+		return [
+			{ id: `${layer.id}-heute`, opacity: "line-opacity" },
+			{ id: `${layer.id}-ura-casing`, opacity: "line-opacity" },
+			{ id: `${layer.id}-ura`, opacity: "line-opacity" },
+		]
+	}
+	if (layer.kind === "timewald") {
+		return [
+			{ id: `${layer.id}-ura`, opacity: "fill-opacity" },
+			{ id: `${layer.id}-ura-line`, opacity: "line-opacity" },
+			{ id: `${layer.id}-heute`, opacity: "fill-opacity" },
+		]
+	}
+	if (layer.kind === "timemoor") {
+		return MOOR_PARTS.map(([suffix, prop]) => ({
+			id: `${layer.id}-${suffix}`,
+			opacity: prop,
+		}))
+	}
+	if (layer.kind === "timewater") {
+		return [
+			{ id: `${layer.id}-casing`, opacity: "line-opacity" },
+			{ id: layer.id, opacity: "line-opacity" },
+		]
+	}
 	if (layer.kind === "oldrivers") {
 		return [
 			{ id: `${layer.id}-casing`, opacity: "line-opacity" },
@@ -443,6 +577,10 @@ export function styleFor(layer) {
 		return { sources: {}, layers: [] }
 	}
 	if (layer.kind === "oldrivers") return oldRiverStyle(layer)
+	if (layer.kind === "timewater") return timeWaterStyle(layer)
+	if (layer.kind === "timemoor") return timeMoorStyle(layer)
+	if (layer.kind === "timewald") return timeWaldStyle(layer)
+	if (layer.kind === "timewege") return timeWegeStyle(layer)
 	if (layer.kind === "relief") {
 		return {
 			sources: {
@@ -549,6 +687,334 @@ export function styleFor(layer) {
 			paint: { "raster-opacity": layer.opacity ?? 1 },
 			...(part.minzoom ? { minzoom: part.minzoom } : {}),
 		})),
+	}
+}
+
+export const TIME_WATER_FILE = "precomputed/gewaesser-zeit.geojson"
+export const MOOR_FILE = "precomputed/moor-zeit.geojson"
+export const MOOR_1844_FILE = "precomputed/moor-1844.geojson"
+export const WALD_FILE = "precomputed/wald-zeit.geojson"
+export const WEGE_FILE = "precomputed/wege-zeit.geojson"
+export const MAIN_ROADS = ["trunk", "primary", "secondary", "tertiary"]
+
+/**
+ * Hauptwege um 1840 (scripts/altkarten/wege.py) und heutige Hauptstraßen
+ * (OSM). Welche Teile sichtbar sind, setzt die Karte je Stand (map-view.jsx).
+ */
+function timeWegeStyle(layer) {
+	const empty = { type: "FeatureCollection", features: [] }
+	const none = { visibility: "none", "line-cap": "round", "line-join": "round" }
+	const hidden = ["==", ["get", "kind"], "-"]
+	const width = (lo, hi) => ["interpolate", ["linear"], ["zoom"], 9, lo, 15, hi]
+	return {
+		sources: {
+			// Die Karte lädt die Datei erst beim Einschalten (map-view.jsx)
+			[layer.id]: {
+				type: "geojson",
+				data: empty,
+				attribution: layer.attribution,
+			},
+			[`${layer.id}-heute`]: {
+				type: "vector",
+				tiles: [VECTOR_TILES],
+				maxzoom: 14,
+			},
+		},
+		layers: [
+			{
+				id: `${layer.id}-heute`,
+				type: "line",
+				source: `${layer.id}-heute`,
+				"source-layer": "transportation",
+				minzoom: 8,
+				filter: hidden,
+				layout: none,
+				paint: {
+					"line-color": "#6d6d6d",
+					"line-opacity": layer.opacity,
+					"line-width": width(1, 3),
+				},
+			},
+			{
+				id: `${layer.id}-ura-casing`,
+				type: "line",
+				source: layer.id,
+				filter: hidden,
+				layout: none,
+				paint: {
+					"line-color": "#fff",
+					"line-opacity": layer.opacity,
+					"line-width": width(3, 7),
+				},
+			},
+			{
+				id: `${layer.id}-ura`,
+				type: "line",
+				source: layer.id,
+				filter: hidden,
+				layout: none,
+				paint: {
+					"line-color": "#a0522d",
+					"line-opacity": layer.opacity,
+					"line-width": width(1.6, 4),
+				},
+			},
+		],
+	}
+}
+
+/**
+ * Wald um 1840 (scripts/altkarten/wald.py) und heute (OSM). Um 1840 die
+ * Flächen, heute der OSM-Wald mit dem Umriss von 1840 darüber. Welche
+ * Teile sichtbar sind, setzt die Karte je Stand (map-view.jsx).
+ */
+function timeWaldStyle(layer) {
+	const empty = { type: "FeatureCollection", features: [] }
+	const none = { visibility: "none" }
+	const hidden = ["==", ["get", "kind"], "-"]
+	return {
+		sources: {
+			// Die Karte lädt die Datei erst beim Einschalten (map-view.jsx)
+			[layer.id]: {
+				type: "geojson",
+				data: empty,
+				attribution: layer.attribution,
+			},
+			[`${layer.id}-heute`]: {
+				type: "vector",
+				tiles: [VECTOR_TILES],
+				maxzoom: 14,
+			},
+		},
+		layers: [
+			{
+				id: `${layer.id}-heute`,
+				type: "fill",
+				source: `${layer.id}-heute`,
+				"source-layer": "landcover",
+				minzoom: 8,
+				filter: hidden,
+				layout: none,
+				paint: { "fill-color": "#2e7d32", "fill-opacity": layer.opacity },
+			},
+			{
+				id: `${layer.id}-ura`,
+				type: "fill",
+				source: layer.id,
+				filter: hidden,
+				layout: none,
+				paint: { "fill-color": "#1b5e20", "fill-opacity": layer.opacity },
+			},
+			{
+				id: `${layer.id}-ura-line`,
+				type: "line",
+				source: layer.id,
+				filter: hidden,
+				layout: none,
+				paint: {
+					"line-color": "#0d3b10",
+					"line-opacity": layer.opacity,
+					"line-width": 1.2,
+				},
+			},
+		],
+	}
+}
+
+// Teile der Moorebene: Suffix der Layer-ID und Eigenschaft der Deckkraft
+const MOOR_PARTS = [
+	["boden", "fill-opacity"],
+	["boden-line", "line-opacity"],
+	["nass", "fill-opacity"],
+	["1844", "fill-opacity"],
+	["1844-line", "line-opacity"],
+	["heute", "fill-opacity"],
+]
+const MOOR_COLORS = {
+	hochmoor: "#8a5a2b",
+	niedermoor: "#6f9a35",
+	nass: "#2f7bd6",
+	moor1844: "#5b3412",
+	heute: "#178a8a",
+}
+
+/**
+ * Moore und nasse Flächen (scripts/altkarten/moor.py, moor-1844.geojson
+ * aus scripts/altkarten/moor1844.py, heute OSM). Moorböden immer, die
+ * übrigen Teile setzt die Karte je Stand des Zeitstrahls (map-view.jsx).
+ */
+function timeMoorStyle(layer) {
+	const empty = { type: "FeatureCollection", features: [] }
+	const none = { visibility: "none" }
+	const soil = [
+		"match",
+		["get", "kind"],
+		"hochmoor",
+		MOOR_COLORS.hochmoor,
+		MOOR_COLORS.niedermoor,
+	]
+	return {
+		sources: {
+			// Die Karte lädt die Dateien erst beim Einschalten (map-view.jsx)
+			[layer.id]: {
+				type: "geojson",
+				data: empty,
+				attribution: layer.attribution,
+			},
+			[`${layer.id}-1844`]: { type: "geojson", data: empty },
+			[`${layer.id}-heute`]: {
+				type: "vector",
+				tiles: [VECTOR_TILES],
+				maxzoom: 14,
+			},
+		},
+		layers: [
+			{
+				id: `${layer.id}-boden`,
+				type: "fill",
+				source: layer.id,
+				filter: ["==", ["get", "slice"], "boden"],
+				layout: none,
+				paint: { "fill-color": soil, "fill-opacity": layer.opacity },
+			},
+			{
+				id: `${layer.id}-boden-line`,
+				type: "line",
+				source: layer.id,
+				filter: ["==", ["get", "slice"], "boden"],
+				layout: none,
+				paint: {
+					"line-color": soil,
+					"line-opacity": layer.opacity,
+					"line-width": 1,
+				},
+			},
+			{
+				id: `${layer.id}-nass`,
+				type: "fill",
+				source: layer.id,
+				filter: ["==", ["get", "slice"], ""],
+				layout: none,
+				paint: {
+					"fill-color": MOOR_COLORS.nass,
+					"fill-opacity": layer.opacity,
+				},
+			},
+			{
+				id: `${layer.id}-1844`,
+				type: "fill",
+				source: `${layer.id}-1844`,
+				filter: ["==", ["get", "kind"], "-"],
+				layout: none,
+				paint: {
+					"fill-color": MOOR_COLORS.moor1844,
+					"fill-opacity": layer.opacity,
+				},
+			},
+			{
+				id: `${layer.id}-1844-line`,
+				type: "line",
+				source: `${layer.id}-1844`,
+				filter: ["==", ["get", "kind"], "-"],
+				layout: none,
+				paint: {
+					"line-color": MOOR_COLORS.moor1844,
+					"line-opacity": layer.opacity,
+					"line-width": 1.5,
+					"line-dasharray": [3, 2],
+				},
+			},
+			{
+				id: `${layer.id}-heute`,
+				type: "fill",
+				source: `${layer.id}-heute`,
+				"source-layer": "landcover",
+				minzoom: 9,
+				filter: ["==", ["get", "kind"], "-"],
+				layout: none,
+				paint: {
+					"fill-color": MOOR_COLORS.heute,
+					"fill-opacity": layer.opacity,
+				},
+			},
+		],
+	}
+}
+
+/**
+ * Gewässer aus den historischen Karten (public/precomputed/gewaesser-zeit.geojson).
+ * Die Karte setzt den Filter auf den Stand des Zeitstrahls (map-view.jsx).
+ */
+function timeWaterStyle(layer) {
+	const width = (lo, hi) => ["interpolate", ["linear"], ["zoom"], 9, lo, 15, hi]
+	const kindWidth = (river, stream, ditch) =>
+		width(
+			[
+				"match",
+				["get", "kind"],
+				"river",
+				river[0],
+				"graben",
+				ditch[0],
+				stream[0],
+			],
+			[
+				"match",
+				["get", "kind"],
+				"river",
+				river[1],
+				"graben",
+				ditch[1],
+				stream[1],
+			],
+		)
+	const filter = ["==", ["get", "slice"], ""]
+	const layout = {
+		visibility: "none",
+		"line-cap": "round",
+		"line-join": "round",
+	}
+	return {
+		sources: {
+			// 2 MB, die Karte lädt sie erst beim Einschalten (map-view.jsx)
+			[layer.id]: {
+				type: "geojson",
+				data: { type: "FeatureCollection", features: [] },
+				attribution: layer.attribution,
+			},
+		},
+		layers: [
+			{
+				id: `${layer.id}-casing`,
+				type: "line",
+				source: layer.id,
+				filter,
+				layout,
+				paint: {
+					"line-color": "#fff",
+					"line-opacity": layer.opacity,
+					"line-width": kindWidth([4, 8], [2.5, 5], [1.5, 3]),
+				},
+			},
+			{
+				id: layer.id,
+				type: "line",
+				source: layer.id,
+				filter,
+				layout,
+				paint: {
+					"line-color": [
+						"match",
+						["get", "kind"],
+						"graben",
+						"#4f8fd6",
+						"#0b3d91",
+					],
+					"line-opacity": layer.opacity,
+					"line-width": kindWidth([2, 4.5], [1.2, 3], [0.6, 1.6]),
+				},
+			},
+		],
 	}
 }
 

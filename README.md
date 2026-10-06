@@ -29,7 +29,7 @@ Live: https://experiments.erleben.app/roemer/
 - Marschwege-Netz als Weg geringster Gehzeit zwischen den Lagern, mit Etappenhalten und Schiffsstrecke auf der Lippe
 - Gegenprobe des Modells, bei der je ein bekanntes Lager weggelassen wird
 - antike Textstellen (Tacitus, Velleius, Florus, Cassius Dio, Ps.-Hyginus, Vegetius) mit Übersetzung und Kartenbezug
-- Ebenen für Luftbild, Laserscan-Schummerung, Preußische Uraufnahme, Bodenkarten, Moore, Römerstraßen, alte Flussläufe und entzerrte Altkarten
+- Ebenen für Luftbild, Laserscan-Schummerung, Preußische Uraufnahme, Bodenkarten, Moore, Römerstraßen, alte Flussläufe und entzerrte Altkarten, Zeitstrahl über die historischen Karten mit den Gewässern der jeweiligen Zeit
 - Suche über Fundstellen, Texte, Ebenen und heutige Orte, eigene Karten per WMS, GeoJSON, KML oder Bild mit World-File
 
 Anstoß war der Vortrag von Dr. Bettina Tremmel (LWL-Archäologie für
@@ -109,6 +109,15 @@ liefert nur Dateien aus dem Ordner `out/` aus. Jeder Webserver genügt, der
 `.mjs` als JavaScript ausliefert ([deploy/nginx.conf](deploy/nginx.conf)
 zeigt eine passende nginx-Konfiguration).
 
+Damit wiederholte Besuche schnell laden, hängt der Build an Daten unter
+`public/` eine Prüfsumme (`?v=…`). Solche Dateien darf der Browser
+unbegrenzt cachen, die nginx-Konfiguration erlaubt das für `precomputed/`,
+`altkarten/`, `models/` und `csl/`. `bun run build` legt außerdem stark
+gepackte `.gz`-Fassungen an, die nginx per `gzip_static` ausliefert. Im
+Browser hält ein Service Worker ([public/sw.js](public/sw.js)) Kacheln
+fremder Dienste 14 Tage vor, weil viele amtliche WMS keine Cache-Header
+senden.
+
 ```bash
 BASE_PATH=/roemer bun run build   # Ergebnis in out/
 ```
@@ -125,8 +134,8 @@ experiments.erleben.app. Ihre Dateien (Compose-Dienst, nginx-Konfiguration,
 Einrichtungsskript, Einstellungen) liegen in [deploy/erleben/](deploy/erleben/).
 
 Die Kacheln der Altkarten sind nicht im Repository, weil sie aus Scans
-gerechnet werden (177 MB). Ohne sie blendet die App die Gruppe „Altkarten“
-aus. Wie man sie erzeugt, steht in [docs/daten.md](docs/daten.md#altkarten).
+gerechnet werden (177 MB). Ohne sie blendet die App diese Karten unter
+„Historische Karten“ und im Zeitstrahl aus. Wie man sie erzeugt, steht in [docs/daten.md](docs/daten.md#altkarten).
 
 ## Aufbau
 

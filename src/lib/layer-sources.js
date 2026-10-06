@@ -57,7 +57,7 @@ const SOURCES = {
 		],
 	},
 	model3d: {
-		own: "3D-Modell Römerlager Oberaden, am Grabungsplan eingepasst",
+		own: "3D-Modell Römerlager Oberaden, Maßstab nach Grabungsplan, Lage am erhaltenen Graben der Nordfront (DGM1)",
 		refs: ["bergkamen-oberaden", "kuehlborn2011"],
 	},
 	// Gelände
@@ -120,6 +120,26 @@ for (const m of ALTKARTEN) {
 		own: `Entzerrte Altkarte: ${m.short}`,
 		extra: () => [altkarteCsl(m)],
 	}
+}
+
+// Aus Uraufnahme und Karte des Deutschen Reiches gelesene Gewässer
+const KDR = ALTKARTEN.find((m) => m.id === "1904-kdr-luebbecke")
+SOURCES["wege-zeit"] = {
+	own: "Hauptwege um 1840 entlang heutiger Straßen, Kreis Minden-Lübbecke",
+	refs: ["geobasis-uraufnahme", "osm"],
+}
+SOURCES["wald-zeit"] = {
+	own: "Wald je Stand, Kreis Minden-Lübbecke",
+	refs: ["lanuk-wald-uraufnahme", "osm"],
+}
+SOURCES["moor-zeit"] = {
+	own: "Moore und nasse Flächen je Stand, Kreis Minden-Lübbecke",
+	refs: ["gd-bk50", "lbeg-gum50", "nrw-uesg", "osm"],
+}
+SOURCES["gewaesser-zeit"] = {
+	own: "Gewässer aus den historischen Karten, Kreis Minden-Lübbecke",
+	extra: () => (KDR ? [altkarteCsl(KDR)] : []),
+	refs: ["geobasis-uraufnahme", "osm"],
 }
 
 export function hasLayerSources(id) {

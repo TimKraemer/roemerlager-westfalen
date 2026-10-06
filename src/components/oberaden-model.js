@@ -1,5 +1,5 @@
 import * as maplibregl from "maplibre-gl"
-import { BASE_PATH } from "@/config"
+import { assetUrl, BASE_PATH } from "@/config"
 import { FONT } from "@/lib/layers"
 
 /**
@@ -7,12 +7,20 @@ import { FONT } from "@/lib/layers"
  * (erleben.app, Modell „Römerlager Grundriss“), als three.js-Layer auf der
  * Karte. three.js lädt erst, wenn das Modell zum ersten Mal sichtbar wird.
  *
- * Lage, Maßstab und Drehung sind am Gesamtplan der LWL-Archäologie
- * eingepasst (Römerlager in Westfalen, Heft 3, Abb. 20, Stand 2006). Dessen
- * Luftbild wurde per Kreuzkorrelation auf das DOP NRW registriert, die
- * Mauerlinie umschließt danach 55,9 ha (Literatur 56 ha). Modell-Mauer und
- * vier Tore per Ähnlichkeitstransformation (ICP) darauf: mittlere
- * Abweichung der Mauer 8,5 m, 90 % unter 14 m, Tore 10–25 m.
+ * Maßstab aus dem Gesamtplan der LWL-Archäologie (Römerlager in Westfalen,
+ * Heft 3, Abb. 20, Stand 2006): dessen Luftbild per Kreuzkorrelation auf
+ * das DOP NRW registriert, die Mauerlinie umschließt danach 55,9 ha
+ * (Literatur 56 ha), das Modell passt mit 377,3 m je Einheit darauf.
+ *
+ * Lage und Drehung richten sich nach dem Graben der Nordfront, der im
+ * Römerbergwald noch erhalten ist (DGM1 NRW, lokales Relief: 40–65 cm
+ * tiefe Senke auf rund 430 m, 10 m dahinter ein Wallrest, an der Tafel
+ * „Nördliche Lagerumwehrung“ des Lehrpfads). Er liegt bis zu 16 m
+ * innerhalb der Planlinie. Die Modellmauer steht 6 m hinter der
+ * Grabenmitte, mittlere Abweichung 5 m. An den übrigen Fronten ist im
+ * Höhenmodell nichts erhalten, dort weicht das Modell im Mittel 21 m, an
+ * einzelnen Stellen bis 40 m vom Plan ab.
+ * Allein am Plan eingepasst wäre es: [7.581621, 51.610942], −3,91°.
  * Im Modell zeigt +x nach Westen, +z nach Norden, +y nach oben.
  */
 
@@ -20,13 +28,13 @@ export const MODEL_LAYER = "oberaden-3d"
 // Erst nah heran, damit die Übersichtskarte frei bleibt
 export const MODEL_MIN_ZOOM = 15
 
-const URL_GLB = `${BASE_PATH}/models/oberaden.glb`
+const URL_GLB = assetUrl("models/oberaden.glb")
 const URL_DRACO = `${BASE_PATH}/draco/`
 
 // Modellursprung, Meter je Modelleinheit, Drehung gegen den Uhrzeigersinn
-const ORIGIN = [7.581621, 51.610942]
+const ORIGIN = [7.581695, 51.610676]
 const METERS_PER_UNIT = 377.3
-const ROTATION = (-3.91 * Math.PI) / 180
+const ROTATION = (-6.11 * Math.PI) / 180
 // Oberkante der Bodenplatte im Modell, kommt auf Kartenniveau
 const GROUND_Y = 0.05
 // Das Modell ist stark überhöht (Mauertürme sonst 17 m, Dächer 24 m)

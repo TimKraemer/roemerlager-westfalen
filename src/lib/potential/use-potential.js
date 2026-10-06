@@ -1,7 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef } from "react"
-import { BASE_PATH } from "@/config"
+import { loadAsset, loadLineaments } from "@/lib/preload"
 import { DEFAULT_REGION, NETWORK } from "@/lib/regions"
 import { campsFor, routeCamps, routeWaypoints } from "@/lib/sites"
 import { useMapStore } from "@/store/use-map-store"
@@ -28,17 +28,25 @@ function message(type, extra = {}) {
 }
 
 async function loadPrecomputed(region) {
-	const base = `${BASE_PATH}/${region.file}`
+	const [meta, bin] = await Promise.all([
+		loadAsset(`${region.file}.json`),
+		loadAsset(`${region.file}.bin`, "arrayBuffer"),
+	])
+	if (!meta || !bin) return null
 	try {
-		const [meta, bin] = await Promise.all([
-			fetch(`${base}.json`).then((r) => (r.ok ? r.json() : null)),
-			fetch(`${base}.bin`).then((r) => (r.ok ? r.arrayBuffer() : null)),
-		])
-		if (!meta || !bin) return null
 		return { ...unpack(meta, bin), precomputed: true }
 	} catch {
 		return null
 	}
+}
+
+/** Laserscan-Daten in den Store, sobald jemand sie braucht. */
+export function ensureLineaments() {
+	return loadLineaments().then((lineaments) => {
+		const store = useMapStore.getState()
+		if (lineaments && !store.lineaments) store.setLineaments(lineaments)
+		return lineaments
+	})
 }
 
 /**
@@ -88,19 +96,9 @@ export function usePotential(getMap) {
 	// Vorberechnetes Ergebnis der Standardregion und das Netz sofort anzeigen
 	useEffect(() => {
 		let cancelled = false
-		fetch(`${BASE_PATH}/${NETWORK.file}.json`)
-			.then((r) => (r.ok ? r.json() : null))
-			.then((network) => {
-				if (!cancelled && network) useMapStore.getState().setNetwork(network)
-			})
-			.catch(() => {})
-		fetch(`${BASE_PATH}/precomputed/lineaments.json`)
-			.then((r) => (r.ok ? r.json() : null))
-			.then((lineaments) => {
-				if (!cancelled && lineaments)
-					useMapStore.getState().setLineaments(lineaments)
-			})
-			.catch(() => {})
+		loadAsset(`${NETWORK.file}.json`).then((network) => {
+			if (!cancelled && network) useMapStore.getState().setNetwork(network)
+		})
 		loadPrecomputed(DEFAULT_REGION).then((result) => {
 			const store = useMapStore.getState()
 			if (cancelled || !result || store.result) return
@@ -121,7 +119,10 @@ export function usePotential(getMap) {
 			error: null,
 		})
 		workerReady.current = true
-		workerRef.current.postMessage(message("analyze", { bbox }))
+		// Die erkannten Strukturen zählen in der Bewertung mit
+		ensureLineaments().then(() =>
+			workerRef.current?.postMessage(message("analyze", { bbox })),
+		)
 	}, [])
 
 	const analyze = useCallback(() => {
