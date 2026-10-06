@@ -452,14 +452,8 @@ export default function SearchBox({ getMap, desktop }) {
 		}
 	}
 
-	const onChange = (_, o, reason) => {
-		if (!o) {
-			if (reason === "clear") {
-				useMapStore.getState().setSearchHit(null)
-				setFilter("all")
-			}
-			return
-		}
+	const onChange = (_, o) => {
+		if (!o) return
 		// Suchvorschläge setzen nur den Text, die Liste bleibt offen
 		if (o.kind === "query" || o.kind === "fix") {
 			keepOpen.current = true
@@ -479,7 +473,23 @@ export default function SearchBox({ getMap, desktop }) {
 		select(full)
 	}
 
+	// MUI leert nur bei gewähltem Wert, die Suche hält aber keinen
+	const clear = () => {
+		setInput("")
+		setFilter("all")
+		useMapStore.getState().setSearchHit(null)
+		document.getElementById(INPUT_ID)?.focus()
+		setOpen(true)
+	}
+
 	const onKeyDown = (e) => {
+		// Erstes Esc schließt die Liste (MUI), das zweite leert das Feld
+		if (e.key === "Escape" && !open && input) {
+			e.defaultMuiPrevented = true
+			clear()
+			setOpen(false)
+			return
+		}
 		const el = e.target
 		const atEnd = el.selectionStart === el.value.length
 		if (
@@ -542,9 +552,9 @@ export default function SearchBox({ getMap, desktop }) {
 				// Gleichnamige Orte gibt es oft, der Name taugt nicht als Schlüssel
 				getOptionKey={(o) => (o.history ? `hist:${o.key}` : o.key)}
 				isOptionEqualToValue={(a, b) => a.key === b.key}
-				autoHighlight
+				// Solange das Ortsverzeichnis lädt, nicht vorschnell mit Enter wählen
+				autoHighlight={!loading}
 				autoComplete
-				clearOnEscape
 				// Gewählter Name bleibt im Feld stehen
 				clearOnBlur={false}
 				blurOnSelect="touch"
@@ -606,7 +616,18 @@ export default function SearchBox({ getMap, desktop }) {
 												/
 											</Box>
 										)}
-										{params.slotProps.input.endAdornment}
+										{input && (
+											<IconButton
+												size="small"
+												aria-label="Suche leeren"
+												title="Suche leeren"
+												onMouseDown={(e) => e.preventDefault()}
+												onClick={clear}
+												sx={{ mr: 0.5, p: { xs: 0.75, md: 0.5 } }}
+											>
+												<CloseIcon fontSize="small" />
+											</IconButton>
+										)}
 									</>
 								),
 							},
