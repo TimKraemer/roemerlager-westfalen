@@ -86,8 +86,9 @@ export const CRITERIA_SOURCES = {
 			url: "https://escholarship.org/uc/item/05r820mz",
 		},
 		{
-			label: "Hoog Buurlo (NL): Marschlager über ein Routenmodell gefunden",
-			url: "https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2025/05/ontdekking-romeins-legerkamp-nabij-hoog-buurlo",
+			label:
+				"Omroep Gelderland 2024: Suche nach Marschlagern auf der Veluwe über Tagesmarsch-Abstände und Laserscan",
+			url: "https://www.gld.nl/nieuws/8107238/romeinen-op-de-veluwe-jazeker-en-veel-vaker-dan-we-dachten",
 		},
 		{
 			label:

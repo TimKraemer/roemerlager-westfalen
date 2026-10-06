@@ -357,13 +357,14 @@
 				"note": "Tagesmarsch etwa 20 km mit rund 48 kg Gepäck"
 			},
 			{
-				"label": "Hoog Buurlo (NL): Marschlager über ein Routenmodell gefunden",
+				"label": "Hoog Buurlo (NL): Marschlager 2025 mit LiDAR und Luftbildern entdeckt",
 				"url": "https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2025/05/ontdekking-romeins-legerkamp-nabij-hoog-buurlo",
-				"note": "Wohl 2. Jh., methodisch das nächste Vorbild"
+				"note": "Wohl 2. Jh."
 			},
 			{
 				"label": "Omroep Gelderland 2024: weitere Kandidaten auf der Veluwe",
-				"url": "https://www.gld.nl/nieuws/8107238/romeinen-op-de-veluwe-jazeker-en-veel-vaker-dan-we-dachten"
+				"url": "https://www.gld.nl/nieuws/8107238/romeinen-op-de-veluwe-jazeker-en-veel-vaker-dan-we-dachten",
+				"note": "Suche über Tagesmarsch-Abstände, Laserscan und Satellitendaten, methodisch das nächste Vorbild"
 			},
 			{
 				"label": "Lewis 2021: Probabilistic Modelling for Incorporating Uncertainty in Least Cost Path Results. A Postdictive Roman Road Case Study. Journal of Archaeological Method and Theory 28, S. 911–924",

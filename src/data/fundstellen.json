@@ -24,6 +24,14 @@
 					{
 						"label": "Hanel/Song 2007: Neue Ergebnisse der Luftbildarchäologie zu den römischen Militärlagern Vetera castra I auf dem Fürstenberg bei Xanten. Germania 85, S. 349–357",
 						"url": "https://doi.org/10.11588/ger.2007.61236"
+					},
+					{
+						"label": "Hanel 2015: Zwischen Agrippa und Drusus. Roms Intervention am Niederrhein in den Jahren 19 und 12 v. Chr. In: „Über die Alpen und über den Rhein …“, S. 165–176",
+						"url": "https://doi.org/10.1515/9783110408300-007"
+					},
+					{
+						"label": "LVR, KuLaDig: Römerlager Vetera castra auf dem Fürstenberg bei Xanten",
+						"url": "https://www.kuladig.de/Objektansicht/KLD-356519"
 					}
 				],
 				"status": "bestätigt",
@@ -834,7 +842,7 @@
 				"size_ha": "ca. 9",
 				"dating": "vermutlich 2. Jh. n. Chr., noch nicht gesichert",
 				"place": "Apeldoorn, Gelderland",
-				"description": "Über ein Routenmodell mit Tagesmarsch-Abständen und Laserscan gefunden, 2025 ausgegraben. Nach Staatsbosbeheer wohl aus dem 2. Jh., also nicht augusteisch. Methodisch das nächste Vorbild für diese Karte.",
+				"description": "2025 mit LiDAR-Höhendaten und Luftbildern entdeckt und ausgegraben. Nach Staatsbosbeheer wohl aus dem 2. Jh., also nicht augusteisch. Eine Studie zur Veluwe sucht weitere Lagerplätze über Tagesmarsch-Abstände und Laserscan, ein ähnlicher Ansatz wie diese Karte.",
 				"sources": [
 					{
 						"label": "Staatsbosbeheer 2025",
@@ -843,6 +851,10 @@
 					{
 						"label": "Oosterbaan 2026: Onderzoek naar tijdelijk gebruikte legerkampen in Hoog-Buurlo. Forschungsdatensatz, DANS Data Station Archaeology",
 						"url": "https://doi.org/10.17026/ar/gwim9t"
+					},
+					{
+						"label": "Omroep Gelderland 2024: Suche nach weiteren Lagerplätzen auf der Veluwe über Tagesmarsch-Abstände und Laserscan",
+						"url": "https://www.gld.nl/nieuws/8107238/romeinen-op-de-veluwe-jazeker-en-veel-vaker-dan-we-dachten"
 					}
 				],
 				"status": "bestätigt",
@@ -867,11 +879,19 @@
 				"size_ha": null,
 				"dating": "augusteisch (Hypothese)",
 				"place": "Löhne, Kreis Herford",
-				"description": "Auf halber Strecke Sennestadt–Barkhausen wird ein Zwischenlager vermutet, weil die Strecke zwei Tagesmärschen entspricht. Das Modell dieser Karte kommt unabhängig zum selben Ergebnis. Die zitierte Quelle (Kühlborn 2008) ist nicht im Original geprüft.",
+				"description": "Auf halber Strecke Sennestadt–Barkhausen vermutet Bettina Tremmel ein Zwischenlager, weil die Strecke zwei Tagesmärschen entspricht (Westfalen-Blatt 2019). Das Modell dieser Karte kommt unabhängig zum selben Ergebnis. Archäologisch ist nichts belegt.",
 				"sources": [
 					{
-						"label": "Wikipedia: Marschlager Bielefeld-Sennestadt (zitiert Kühlborn 2008)",
+						"label": "Wikipedia: Marschlager Bielefeld-Sennestadt",
 						"url": "https://de.wikipedia.org/wiki/Marschlager_Bielefeld-Sennestadt"
+					},
+					{
+						"label": "Westfalen-Blatt 10.09.2019: Spurensuche im römischen Marschlager (Zitat Tremmel zur Vermutung bei Löhne)",
+						"url": "https://www.westfalen-blatt.de/owl/bielefeld/spurensuche-im-romischen-marschlager-976015"
+					},
+					{
+						"label": "Tremmel/Schubert 2019: Marschlager in Bielefeld-Sennestadt. Archäologie in Westfalen-Lippe 2018 (2019), S. 86–89",
+						"url": "https://doi.org/10.11588/aiw.2019.0.76852"
 					}
 				]
 			},
@@ -1198,10 +1218,10 @@
 				"status": "bestätigt",
 				"inModel": false,
 				"precision": "Lagermitte, etwa ±200–300 m",
-				"size_ha": "14",
+				"size_ha": "Lager A mind. 9, Lager B etwa 360 × 500 m",
 				"dating": "2. Hälfte 1. Jh. oder Anfang 2. Jh. n. Chr. (C14 aus Lager A etwa 101 ± 25 n. Chr.)",
 				"place": "Bedburg-Hau, Kreis Kleve",
-				"description": "Lager mit drei parallelen Spitzgräben, 2015 im Luftbild entdeckt. Nicht augusteisch gesichert, deshalb nicht im Modell.",
+				"description": "Zwei Lager, 2015 im Luftbild entdeckt: Lager A mit zwei Gräben und mindestens 9 ha, Lager B mit vier bis fünf Gräben. Nicht augusteisch, deshalb nicht im Modell.",
 				"sources": [
 					{
 						"label": "Wikipedia: Legionslager bei Bedburg-Hau-Till",
@@ -1214,6 +1234,14 @@
 					{
 						"label": "Englert/Bödecker 2016: Erste Grabungsergebnisse zu den neu entdeckten Lagern bei Till. Der Limes 10, Heft 1, S. 4–7",
 						"url": "https://www.deutsche-limeskommission.de/fileadmin/user_upload/Der_Limes_2016_1.pdf"
+					},
+					{
+						"label": "Englert/Bödecker 2016: Erste Grabungsergebnisse zu den neu entdeckten Lagern bei Till, Kapitelshof. Archäologie im Rheinland 2015, S. 108–110",
+						"url": "https://nwbib.de/990213976630206441"
+					},
+					{
+						"label": "Burandt 2017: Neue Grabungsergebnisse zu den römischen Lagern bei Till, Kapitelshof. Archäologie im Rheinland 2016, S. 107–109",
+						"url": "https://nwbib.de/990219934210206441"
 					}
 				]
 			},
