@@ -169,21 +169,22 @@ Uraufnahme landen in `node_modules/.cache/uraufnahme`.
 
 ### Altkarten
 
-Die Altkarten (Minden und Lübbecke, 1650–1904) sind entzerrte Scans
-historischer Karten. Weder die Scans noch die daraus gerechneten Kacheln
+Die Altkarten (Kreiskarte Lübbecke 1844, Karte des Deutschen Reiches 1904)
+sind entzerrte Scans historischer Karten. Das Projekt führt nur Karten, aus
+denen das Modell Moore oder Gewässer liest. Dreizehn weitere Karten von 1650
+bis 1898 und die Ebenen TK25 1936–1945 und Luftbilder der 1950er stehen im
+Git-Tag `vor-trennung`. Weder die Scans noch die daraus gerechneten Kacheln
 liegen im Repository, nur die Passpunkte (`scripts/altkarten/gcp/`) und das
 Verzeichnis (`src/data/altkarten.json`). Ohne Kacheln blendet die App diese
 Karten in der Gruppe „Historische Karten“ und im Zeitstrahl aus.
 
 Bestandsnachweis und Rechteangabe je Scan stehen in
 `src/data/altkarten-quellen.json` und erscheinen in der Attribution der
-Karte. Sieben Blätter stammen aus der Deutschen Fotothek der SLUB Dresden
-(Public Domain Mark 1.0), sieben aus dem Landesarchiv NRW, Abteilung
-Westfalen, Bestand W 051 (CC BY-SA 4.0, Scans über das LWL-Portal
-„Westfälische Geschichte“). Die beiden Messtischblätter 3616 und 3617 in
-der Ausgabe von 1938 führt die SLUB als urheberrechtlich geschützt. Die
-Angaben wurden über die API der Deutschen Digitalen Bibliothek ermittelt,
-die Rechtehinweise auf den Seiten der Archive selbst sind noch von Hand zu
+Karte. Die Karte von 1904 stammt aus der Deutschen Fotothek der SLUB
+Dresden (Public Domain Mark 1.0), die Kreiskarte 1844 aus dem Landesarchiv
+NRW, Abteilung Westfalen, Bestand W 051 (CC BY-SA 4.0, Scan über das
+LWL-Portal „Westfälische Geschichte“). Die Angaben wurden über die API der
+Deutschen Digitalen Bibliothek ermittelt, die Rechtehinweise auf den Seiten der Archive selbst sind noch von Hand zu
 prüfen. Die gerechneten Kacheln übernehmen die Lizenz des jeweiligen Scans.
 
 Kacheln rechnen (Python über [uv](https://docs.astral.sh/uv/) mit numpy,
@@ -200,7 +201,7 @@ scripts/altkarten/alt.sh index                  # schreibt src/data/altkarten.js
 ### Zeitstrahl und Gewässer aus den Karten
 
 Der Zeitstrahl (`src/lib/zeitstrahl.js`) fasst die historischen Karten zu
-Ständen zusammen: um 1680, um 1800, um 1840, um 1900, um 1940 und heute.
+Ständen zusammen: um 1840, um 1900 und heute.
 Jeder Stand hat eine Leitkarte und weitere Karten derselben Zeit.
 
 `scripts/altkarten/gewaesser.sh` liest für den Kreis Minden-Lübbecke die

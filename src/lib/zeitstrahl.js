@@ -4,9 +4,9 @@
  * einer Karte auslesen ließen (scripts/altkarten/gewaesser.py), zeigt der
  * Stand sie als Linien über der Karte.
  *
- * Für Linien taugen nur die vermessenen Karten ab etwa 1840. Die Karten
- * des 17. und 18. Jahrhunderts liegen örtlich 0,5–1 km neben der heutigen
- * Lage, sie zeigen, was es gab, aber nicht genau, wo.
+ * Enthalten sind nur Karten, aus denen das Modell Gewässer oder Moore
+ * liest. Die älteren Karten und die Stände um 1680, 1800 und 1940 stecken
+ * im Tag vor-trennung.
  */
 
 export const TIME_WATER_LAYER = "gewaesser-zeit"
@@ -17,33 +17,9 @@ export const WEGE_LAYER = "wege-zeit"
 
 export const STANDS = [
 	{
-		id: "1680",
-		label: "um 1680",
-		maps: ["alt-1682-vogelschau-minden", "alt-1650-theatrum-minden"],
-		note: "Vogelschau der Stadt Minden, außerhalb der Wälle nur grob.",
-	},
-	{
-		id: "1800",
-		label: "um 1800",
-		maps: [
-			"alt-1797-fuerstentum-minden",
-			"alt-1805-lecoq-osnabrueck",
-			"alt-1766-belagerung-minden",
-			"alt-1759-schlacht-minden",
-			"alt-1750-minden-ravensberg",
-		],
-		note: "Handgezeichnete und gestochene Karten, örtlich 0,3–1 km neben der heutigen Lage. Gewässer sind daraus nicht ausgelesen.",
-	},
-	{
 		id: "1840",
 		label: "um 1840",
-		maps: [
-			"uraufnahme",
-			"alt-1844-kreis-luebbecke",
-			"alt-1838-rb-minden",
-			"alt-1825-reymann-minden",
-			"alt-1818-atlas-sect3",
-		],
+		maps: ["uraufnahme", "alt-1844-kreis-luebbecke"],
 		water: "ura",
 		moor: ["ura", "1844"],
 		wald: ["ura"],
@@ -53,21 +29,9 @@ export const STANDS = [
 	{
 		id: "1900",
 		label: "um 1900",
-		maps: [
-			"alt-1904-kdr-luebbecke",
-			"neuaufnahme",
-			"alt-1898-levern-luebbecke",
-			"alt-1891-wegekarte-luebbecke",
-			"alt-1890-dechen-luebbecke",
-		],
+		maps: ["alt-1904-kdr-luebbecke", "neuaufnahme"],
 		water: "kdr1904",
 		note: "Gewässer und Gräben aus der Karte des Deutschen Reiches 1904, nur Blatt Lübbecke (westlicher Kreis).",
-	},
-	{
-		id: "1940",
-		label: "um 1940",
-		maps: ["tk25-1936", "hist-dop"],
-		note: "TK25 der 1930er Jahre und Luftbilder der 1950er, nur NRW.",
 	},
 	{
 		id: "heute",
@@ -84,7 +48,8 @@ export const STANDS = [
 /** Alle Karten, die der Zeitstrahl schaltet. */
 export const STAND_MAPS = STANDS.flatMap((s) => s.maps)
 
-export const standById = (id) => STANDS.find((s) => s.id === id) ?? STANDS[2]
+export const standById = (id) =>
+	STANDS.find((s) => s.id === id) ?? STANDS.find((s) => s.id === "1840")
 
 /**
  * Sichtbarkeit der Ebenen für einen Stand: die gewählte Karte an, alle

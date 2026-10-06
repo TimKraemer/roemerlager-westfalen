@@ -2344,38 +2344,6 @@
 		"license": "Datenlizenz Deutschland – Zero – Version 2.0"
 	},
 	{
-		"id": "geobasis-tk25-1936",
-		"type": "dataset",
-		"author": [
-			{
-				"literal": "Bezirksregierung Köln, Geobasis NRW"
-			}
-		],
-		"title": "Topographische Karte 1:25 000, 1936–1945",
-		"URL": "https://www.wms.nrw.de/geobasis/wms_nw_tk25_1936-1945",
-		"accessed": {
-			"date-parts": [[2026, 10, 6]]
-		},
-		"genre": "WMS",
-		"license": "Datenlizenz Deutschland – Zero – Version 2.0"
-	},
-	{
-		"id": "geobasis-hist-dop",
-		"type": "dataset",
-		"author": [
-			{
-				"literal": "Bezirksregierung Köln, Geobasis NRW"
-			}
-		],
-		"title": "Historische Luftbilder 1951–1958",
-		"URL": "https://www.wms.nrw.de/geobasis/wms_nw_hist_dop",
-		"accessed": {
-			"date-parts": [[2026, 10, 6]]
-		},
-		"genre": "WMS",
-		"license": "Datenlizenz Deutschland – Zero – Version 2.0"
-	},
-	{
 		"id": "nrw-uesg",
 		"type": "dataset",
 		"author": [

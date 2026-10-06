@@ -137,7 +137,7 @@ export default function LayerPanel({ onFlyTo }) {
 							checked={timeline.open}
 							onChange={(open) => setTimeline({ open })}
 							label="Zeitstrahl"
-							note="Leiste über der Karte: Stände um 1680, 1800, 1840, 1900, 1940 und heute, je mit Leitkarte und den Gewässern dieser Zeit"
+							note="Leiste über der Karte: Stände um 1840, um 1900 und heute, je mit Leitkarte und den Gewässern dieser Zeit"
 						/>
 					)}
 					{inGroup(group).map((layer) => {

@@ -90,8 +90,6 @@ const SOURCES = {
 	// Historische Karten und Denkmäler
 	tranchot: { refs: ["geobasis-tranchot"] },
 	neuaufnahme: { refs: ["geobasis-neuaufnahme"] },
-	"tk25-1936": { refs: ["geobasis-tk25-1936"] },
-	"hist-dop": { refs: ["geobasis-hist-dop"] },
 	"bodendenkmal-nrw": { refs: ["nrw-bodendenkmal"] },
 }
 

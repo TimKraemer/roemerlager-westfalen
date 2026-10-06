@@ -510,13 +510,6 @@ function InspectCard({ data }) {
 						<Button
 							size="small"
 							variant="outlined"
-							onClick={() => setOverlay("hist-dop", { visible: true })}
-						>
-							Luftbild 1950er
-						</Button>
-						<Button
-							size="small"
-							variant="outlined"
 							onClick={() => setOverlay("lrm", { visible: true })}
 						>
 							Laserscan-Ansicht
