@@ -272,12 +272,19 @@ export default function SearchBox({ getMap, desktop }) {
 			return [...hist, ...EXAMPLES]
 		}
 		const fix = correction(query, [...local, ...places])
-		// Gruppen in der Reihenfolge ihres besten Treffers, Orte zuletzt,
-		// außer ein Ort heißt genau so wie gesucht
+		// Gruppen in der Reihenfolge ihres besten Treffers, Orte zuletzt.
+		// Heißt ein Ort genau so wie gesucht und trägt kein Fundort, Fluss
+		// oder keine Straße den Namen, kommen die Orte zuerst ("Minden",
+		// aber "Barkhausen" bleibt beim Lager).
 		const kinds = [...new Set(local.map((h) => h.kind))]
 		const typed = normalize(query).text
-		const same = (o) => normalize(o.label).text === typed
-		const placesFirst = places.some(same) && !local.some(same)
+		const onMap = local.some(
+			(h) =>
+				["site", "river", "road"].includes(h.kind) &&
+				normalize(h.label).text.includes(typed),
+		)
+		const placesFirst =
+			!onMap && places.some((o) => normalize(o.label).text === typed)
 		const grouped = kinds.flatMap((k) => local.filter((h) => h.kind === k))
 		return [
 			...(coord ? [coord] : []),
@@ -536,7 +543,10 @@ export default function SearchBox({ getMap, desktop }) {
 				}
 				slots={{ paper: FilterPaper }}
 				slotProps={{
-					listbox: { sx: { maxHeight: "min(65dvh, 520px)" } },
+					// Am Handy bleibt die Liste über der Bildschirmtastatur
+					listbox: {
+						sx: { maxHeight: { xs: "45dvh", md: "min(65dvh, 520px)" } },
+					},
 					paper: {
 						elevation: 6,
 						filter,
@@ -656,8 +666,13 @@ export default function SearchBox({ getMap, desktop }) {
 				)}
 			/>
 			{ghost && (
+				// Antippen übernimmt die Ergänzung, am Handy gibt es kein Tab
 				<Box
 					aria-hidden
+					onMouseDown={(e) => {
+						e.preventDefault()
+						setInput(completion.full)
+					}}
 					sx={{
 						position: "absolute",
 						left: ghost.left,
@@ -668,7 +683,7 @@ export default function SearchBox({ getMap, desktop }) {
 						font: ghost.font,
 						color: "text.disabled",
 						whiteSpace: "pre",
-						pointerEvents: "none",
+						cursor: "pointer",
 					}}
 				>
 					{ghost.text}
