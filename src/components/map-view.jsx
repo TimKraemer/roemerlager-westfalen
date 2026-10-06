@@ -608,6 +608,7 @@ export default function MapView({ onMapReady }) {
 	const showWaterways = useMapStore((s) => s.showWaterways)
 	const showRoutes = useMapStore((s) => s.showRoutes)
 	const showRoads = useMapStore((s) => s.showRoads)
+	const showCandidates = useMapStore((s) => s.showCandidates)
 	const ringSource = useMapStore((s) => s.ringSource)
 	const ringMean = useMapStore((s) => s.params.ringMean)
 	const ringSigma = useMapStore((s) => s.params.ringSigma)
@@ -836,6 +837,17 @@ export default function MapView({ onMapReady }) {
 		if (!alive(map)) return
 		map.setLayoutProperty("roads", "visibility", showRoads ? "visible" : "none")
 	}, [showRoads, map])
+
+	useEffect(() => {
+		if (!alive(map)) return
+		for (const id of ["candidates", "candidates-label"]) {
+			map.setLayoutProperty(
+				id,
+				"visibility",
+				showCandidates ? "visible" : "none",
+			)
+		}
+	}, [showCandidates, map])
 
 	// 3D-Lager Oberaden: three.js und Modell erst beim ersten Heranzoomen laden
 	const showModel = useMapStore((s) => s.showModel)

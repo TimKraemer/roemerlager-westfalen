@@ -171,6 +171,7 @@ export function EasyContent({ onFlyTo, heading = false }) {
 	const result = useMapStore((s) => s.result)
 	const setInspect = useMapStore((s) => s.setInspect)
 	const setSelectedSite = useMapStore((s) => s.setSelectedSite)
+	const setShowCandidates = useMapStore((s) => s.setShowCandidates)
 
 	const top = rankedCandidates(result)
 		.filter((c) => c.rank)
@@ -178,6 +179,8 @@ export function EasyContent({ onFlyTo, heading = false }) {
 
 	const open = (c, rank) => {
 		onFlyTo(c.lon, c.lat, 12.5)
+		// Punkt auf der Karte zeigen, auch wenn die Ebene aus ist
+		setShowCandidates(true)
 		setSelectedSite(null)
 		setInspect(inspectAt(c.lon, c.lat, { kind: "candidate", rank }))
 	}

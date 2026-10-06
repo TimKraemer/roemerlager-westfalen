@@ -48,6 +48,8 @@ export default function LayerPanel({ onFlyTo }) {
 	const showWaterways = useMapStore((s) => s.showWaterways)
 	const showRoutes = useMapStore((s) => s.showRoutes)
 	const setShowRoutes = useMapStore((s) => s.setShowRoutes)
+	const showCandidates = useMapStore((s) => s.showCandidates)
+	const setShowCandidates = useMapStore((s) => s.setShowCandidates)
 	const showRoads = useMapStore((s) => s.showRoads)
 	const showModel = useMapStore((s) => s.showModel)
 	const modelOpacity = useMapStore((s) => s.modelOpacity)
@@ -163,6 +165,12 @@ export default function LayerPanel({ onFlyTo }) {
 			</Stack>
 
 			<SectionTitle>Analyse und Wege</SectionTitle>
+			<HelperSwitch
+				checked={showCandidates}
+				onChange={setShowCandidates}
+				label="Vermutete Lagerplätze"
+				note="Am besten bewertete Stellen der Analyse, nummeriert nach Rang"
+			/>
 			<HelperSwitch
 				checked={showRings}
 				onChange={setShowRings}
