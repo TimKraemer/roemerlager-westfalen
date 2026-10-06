@@ -5,6 +5,7 @@ import texts from "@/data/texte.json"
 import { BASE_LAYERS, OVERLAYS } from "./layers"
 import { SITE_TYPE_BY_ID, SITES } from "./sites"
 import { hasTextGeo } from "./text-geo"
+import { utmToLonLat } from "./utm"
 
 /**
  * Globale Suche über alles, was die Karte kennt: Fundorte, Flüsse,
@@ -98,7 +99,70 @@ const field = (text, weight, snip = weight === 1) => ({
 	n: norm(text ?? ""),
 	weight,
 	snip,
+	// Unscharf nur in Namen und Titeln, in langen Texten gäbe es Fehltreffer
+	words: weight >= 2 ? wordsOf(text ?? "") : [],
 })
+
+/** Wörter eines Textes, normalisiert und im Original. */
+function wordsOf(text) {
+	const seen = new Map()
+	for (const [o] of text.matchAll(/[\p{L}\p{N}]+/gu)) {
+		const n = norm(o)
+		if (!seen.has(n)) seen.set(n, { n, o })
+	}
+	return [...seen.values()]
+}
+
+/** Damerau-Levenshtein (Vertauschung zählt als ein Fehler), Abbruch über max. */
+export function editDistance(a, b, max) {
+	if (Math.abs(a.length - b.length) > max) return max + 1
+	let prev2 = null
+	let prev = Array.from({ length: b.length + 1 }, (_, j) => j)
+	for (let i = 1; i <= a.length; i++) {
+		const cur = [i]
+		let rowMin = i
+		for (let j = 1; j <= b.length; j++) {
+			const cost = a[i - 1] === b[j - 1] ? 0 : 1
+			let v = Math.min(prev[j] + 1, cur[j - 1] + 1, prev[j - 1] + cost)
+			if (i > 1 && j > 1 && a[i - 1] === b[j - 2] && a[i - 2] === b[j - 1]) {
+				v = Math.min(v, prev2[j - 2] + 1)
+			}
+			cur.push(v)
+			if (v < rowMin) rowMin = v
+		}
+		if (rowMin > max) return max + 1
+		prev2 = prev
+		prev = cur
+	}
+	return prev[b.length]
+}
+
+// Erlaubte Tippfehler je Wortlänge
+const maxErrors = (len) => (len < 4 ? 0 : len < 7 ? 1 : 2)
+
+/**
+ * Bestes Wort mit höchstens maxErrors Fehlern zum Suchwort. Verglichen
+ * wird das ganze Wort und sein Anfang, man tippt ja oft noch.
+ */
+function fuzzyWord(tok, words) {
+	const max = maxErrors(tok.length)
+	if (!max) return null
+	let best = null
+	for (const w of words) {
+		if (w.n.length < tok.length - max) continue
+		// Erster oder zweiter Buchstabe stimmt fast immer, das spart Zeit
+		if (w.n[0] !== tok[0] && w.n[1] !== tok[1]) continue
+		let d = editDistance(tok, w.n, max)
+		if (d > max && w.n.length > tok.length) {
+			d = editDistance(tok, w.n.slice(0, tok.length), max)
+		}
+		if (d <= max && (!best || d < best.d)) {
+			best = { ...w, d }
+			if (d === 1) break
+		}
+	}
+	return best
+}
 
 function buildIndex() {
 	const entries = []
@@ -254,18 +318,26 @@ function snippet(entry, tokens) {
 
 const LIMITS = { site: 6, river: 4, road: 4, text: 6, layer: 4, source: 4 }
 
-/** Lokale Treffer, nach Relevanz sortiert und je Art begrenzt. */
-export function searchLocal(query) {
+/**
+ * Lokale Treffer, nach Relevanz sortiert und je Art begrenzt. Mit kinds
+ * nur diese Arten, dann mit höherem Limit. Unscharfe Treffer tragen
+ * fuzzy und in fix die vermutlich gemeinten Wörter.
+ */
+export function searchLocal(query, { kinds, limit } = {}) {
 	const tokens = tokenize(query)
 	if (!tokens.length) return []
 	INDEX ??= buildIndex()
 	const hits = []
 	for (const entry of INDEX) {
+		if (kinds && !kinds.includes(entry.kind)) continue
 		let score = 0
+		let fuzzy = false
 		const used = []
+		const fix = []
 		for (const tok of tokens) {
 			let s = tokenScore(entry, tok)
 			let t = tok
+			let f = null
 			// Lateinisches Wort, deutsch übersetzt: lupia -> lippe
 			if (!s && entry.kind === "text") {
 				const latin = Object.keys(LATIN_TERMS).find(
@@ -276,23 +348,57 @@ export function searchLocal(query) {
 					s = tokenScore(entry, t)
 				}
 			}
+			// Tippfehler: "Kalkrise" -> Kalkriese
+			if (!s) {
+				for (const fl of entry.fields) {
+					const w = fuzzyWord(tok, fl.words)
+					if (!w) continue
+					const ws = fl.weight * (w.d === 1 ? 0.5 : 0.3)
+					if (ws > s) {
+						s = ws
+						t = w.n
+						f = w.o
+					}
+				}
+				if (s) fuzzy = true
+			}
 			if (!s) {
 				score = 0
 				break
 			}
 			score += s
 			used.push(t)
+			fix.push(f)
 		}
-		if (score) hits.push({ ...entry, score, tokens: used })
+		if (score) hits.push({ ...entry, score, tokens: used, fuzzy, fix })
 	}
 	hits.sort((a, b) => b.score - a.score || a.label.localeCompare(b.label))
 	const count = {}
 	return hits
 		.filter((h) => {
 			count[h.kind] = (count[h.kind] ?? 0) + 1
-			return count[h.kind] <= LIMITS[h.kind]
+			return count[h.kind] <= (limit ?? LIMITS[h.kind])
 		})
 		.map((h) => ({ ...h, snippet: snippet(h, h.tokens) }))
+}
+
+/** Vollständiger Eintrag zu einem gespeicherten Treffer (Verlauf). */
+export function entryByKey(key) {
+	INDEX ??= buildIndex()
+	return INDEX.find((e) => e.key === key) ?? null
+}
+
+/**
+ * "Meinten Sie …": Sind alle Treffer unscharf, die Suche mit den
+ * vermutlich gemeinten Wörtern des besten Treffers.
+ */
+export function correction(query, hits) {
+	if (!hits.length || hits.some((h) => !h.fuzzy)) return null
+	const words = query.split(/[^\p{L}\p{N}]+/u).filter(Boolean)
+	const fix = hits[0].fix
+	if (words.length !== fix.length) return null
+	const fixed = words.map((w, i) => fix[i] ?? w).join(" ")
+	return norm(fixed) === norm(query) ? null : fixed
 }
 
 /** Suchwörter für das Hervorheben in der Trefferliste. */
@@ -334,6 +440,7 @@ export function loadPlaces() {
 				near: near[n],
 				n: norm(name),
 				alias: alias ? norm(alias) : null,
+				words: wordsOf(alias ? `${name} ${alias}` : name),
 			})),
 		)
 		.catch((e) => {
@@ -343,12 +450,15 @@ export function loadPlaces() {
 	return places
 }
 
-/** Orte, deren Name mit der Suche beginnt oder ein Suchwort enthält. */
-export function searchPlaces(index, query, center) {
+/**
+ * Orte, deren Name mit der Suche beginnt oder ein Suchwort enthält.
+ * Gibt es kaum genaue Treffer, auch Orte mit Tippfehlern.
+ */
+export function searchPlaces(index, query, center, limit = 6) {
 	const tokens = tokenize(query)
 	if (!tokens.length) return []
 	const q = tokens.join(" ")
-	const hits = []
+	let hits = []
 	for (const p of index) {
 		const names = p.alias ? [p.n, p.alias] : [p.n]
 		let score = 0
@@ -363,7 +473,10 @@ export function searchPlaces(index, query, center) {
 				score = Math.max(score, word ? 2 : 1)
 			}
 		}
-		if (score) hits.push({ p, score })
+		if (score) hits.push({ p, score, fix: tokens.map(() => null) })
+	}
+	if (hits.length < 3 && tokens.some((t) => maxErrors(t.length))) {
+		hits = hits.concat(fuzzyPlaces(index, tokens, hits))
 	}
 	const dist = (p) =>
 		center ? (p.lon - center.lng) ** 2 * 0.37 + (p.lat - center.lat) ** 2 : 0
@@ -373,8 +486,11 @@ export function searchPlaces(index, query, center) {
 			PLACE_RANK[a.p.cls] - PLACE_RANK[b.p.cls] ||
 			dist(a.p) - dist(b.p),
 	)
-	return hits.slice(0, 6).map(({ p }) => ({
+	return hits.slice(0, limit).map(({ p, score, fix }) => ({
 		kind: "place",
+		fuzzy: score < 1,
+		fix,
+		tokens: tokenize(fix.map((f, i) => f ?? tokens[i]).join(" ")),
 		key: `place:${p.name}:${p.lon}:${p.lat}`,
 		label: p.name,
 		secondary: [
@@ -388,4 +504,110 @@ export function searchPlaces(index, query, center) {
 		lat: p.lat,
 		zoom: p.cls === "c" ? 11 : p.cls === "t" ? 12 : p.cls === "n" ? 11 : 14,
 	}))
+}
+
+function fuzzyPlaces(index, tokens, exact) {
+	const have = new Set(exact.map((h) => h.p))
+	const out = []
+	for (const p of index) {
+		if (have.has(p)) continue
+		let d = 0
+		const fix = []
+		for (const t of tokens) {
+			const exactWord = p.words.find((w) => w.n.startsWith(t))
+			if (exactWord) {
+				fix.push(null)
+				continue
+			}
+			const w = fuzzyWord(t, p.words)
+			if (!w) {
+				d = -1
+				break
+			}
+			d += w.d
+			fix.push(w.o)
+		}
+		if (d > 0) out.push({ p, score: 0.5 / d, fix })
+	}
+	return out
+}
+
+const DIR = { n: 1, s: -1, e: 1, o: 1, w: -1 }
+
+/** Ein Wert in Grad, Minuten, Sekunden oder dezimal, mit Himmelsrichtung. */
+function parseAngle(part) {
+	const m = part
+		.trim()
+		.match(
+			/^([NSOEW])?\s*(-?\d+(?:[.,]\d+)?)\s*°?\s*(?:(\d+(?:[.,]\d+)?)\s*['′]\s*)?(?:(\d+(?:[.,]\d+)?)\s*["″]\s*)?([NSOEW])?$/i,
+		)
+	if (!m) return null
+	const num = (v) => Number((v ?? "0").replace(",", "."))
+	const value = num(m[2]) + num(m[3]) / 60 + num(m[4]) / 3600
+	const dir = (m[1] ?? m[5])?.toLowerCase()
+	return { value: dir ? Math.abs(value) * DIR[dir] : value, dir }
+}
+
+const fmtDeg = (v) =>
+	v.toLocaleString("de-DE", {
+		minimumFractionDigits: 4,
+		maximumFractionDigits: 4,
+	})
+
+/**
+ * Koordinaten aus der Suche: "52.2512, 8.9116", "52,2512 8,9116",
+ * "52°15'04\" N 8°54'41\" O" oder UTM Zone 32 "489000 5789000".
+ */
+export function parseCoordinates(query) {
+	const q = query.trim()
+	let lon
+	let lat
+	const utm = q.match(
+		/^(?:32\s*[A-Z]?\s*)?(\d{6}(?:[.,]\d+)?)\s*[,;\s]\s*(\d{7}(?:[.,]\d+)?)$/i,
+	)
+	const glued = q.match(
+		/^32(\d{6}(?:[.,]\d+)?)\s*[,;\s]\s*(\d{7}(?:[.,]\d+)?)$/,
+	)
+	const en = glued ?? utm
+	if (en) {
+		;[lon, lat] = utmToLonLat(
+			Number(en[1].replace(",", ".")),
+			Number(en[2].replace(",", ".")),
+		)
+	} else {
+		// Ohne Nachkommastellen, Grad oder Richtung sind es keine Koordinaten
+		if (!/[.,°'′NSOEW]/i.test(q)) return null
+		// Zwei Teile: an Semikolon, Komma mit Leerzeichen, Himmelsrichtung
+		// oder Leerzeichen trennen. "52,25 8,91" hat Dezimalkommas.
+		const parts =
+			q.match(/^(.+?[NS])\s*,?\s*(.+?[OEW])$/i)?.slice(1) ??
+			q.match(/^([NS].+?)\s*,?\s*([OEW].+)$/i)?.slice(1) ??
+			q.match(/^(.+?)\s*;\s*(.+)$/)?.slice(1) ??
+			q.match(/^(\S+?),\s+(\S+)$/)?.slice(1) ??
+			q.match(/^(-?\d+\.\d+),(-?\d+\.\d+)$/)?.slice(1) ??
+			q.match(/^(\S+)\s+(\S+)$/)?.slice(1) ??
+			(q.match(/°.*°/) ? q.split(/\s+(?=\d)/) : null)
+		if (parts?.length !== 2) return null
+		const a = parseAngle(parts[0])
+		const b = parseAngle(parts[1])
+		if (!a || !b) return null
+		// Himmelsrichtung entscheidet, sonst Breite zuerst wie üblich, außer
+		// die Werte passen nur andersherum nach Mitteleuropa
+		if (["o", "e", "w"].includes(a.dir)) [lon, lat] = [a.value, b.value]
+		else if (["n", "s"].includes(b.dir)) [lon, lat] = [a.value, b.value]
+		else if (Math.abs(a.value) <= 20 && b.value >= 45 && b.value <= 58)
+			[lon, lat] = [a.value, b.value]
+		else [lat, lon] = [a.value, b.value]
+	}
+	if (!(Math.abs(lat) <= 90 && Math.abs(lon) <= 180)) return null
+	const label = `${fmtDeg(Math.abs(lat))}° ${lat < 0 ? "S" : "N"}, ${fmtDeg(Math.abs(lon))}° ${lon < 0 ? "W" : "O"}`
+	return {
+		kind: "coord",
+		key: `coord:${lon.toFixed(5)}:${lat.toFixed(5)}`,
+		label,
+		secondary: "Koordinate anspringen",
+		lon,
+		lat,
+		zoom: 15,
+	}
 }
