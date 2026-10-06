@@ -7,11 +7,11 @@
 const KEY = "roemerlager:suchverlauf"
 const MAX = 8
 
-// Große oder abgeleitete Felder bleiben draußen
+// Große oder abgeleitete Felder bleiben draußen, die Ausdehnung bleibt,
+// damit ein Gebiet auch vor dem Laden des Verzeichnisses anspringbar ist
 const SKIP = new Set([
 	"fields",
 	"geometry",
-	"bounds",
 	"score",
 	"tokens",
 	"snippet",

@@ -1,5 +1,6 @@
 "use client"
 
+import BorderOuterIcon from "@mui/icons-material/BorderOuter"
 import CloseIcon from "@mui/icons-material/Close"
 import GpsFixedIcon from "@mui/icons-material/GpsFixed"
 import HistoryIcon from "@mui/icons-material/History"
@@ -11,6 +12,7 @@ import NorthWestIcon from "@mui/icons-material/NorthWest"
 import RouteIcon from "@mui/icons-material/Route"
 import SearchIcon from "@mui/icons-material/Search"
 import SpellcheckIcon from "@mui/icons-material/Spellcheck"
+import TerrainIcon from "@mui/icons-material/Terrain"
 import WavesIcon from "@mui/icons-material/Waves"
 import {
 	Autocomplete,
@@ -29,6 +31,7 @@ import {
 	loadPlaces,
 	normalize,
 	parseCoordinates,
+	placeOption,
 	queryTokens,
 	searchLocal,
 	searchPlaces,
@@ -53,13 +56,14 @@ const GROUPS = {
 	text: "Texte",
 	layer: "Ebenen",
 	source: "Quellen",
+	area: "Gebirge und Gebiete",
 	place: "Heutige Orte (OpenStreetMap)",
 	query: "Beispiele",
 	clear: "Zuletzt gesucht",
 }
 
 // Arten, deren Namen das Feld beim Tippen ergänzt
-const COMPLETES = ["site", "river", "road", "text", "layer", "place"]
+const COMPLETES = ["site", "river", "road", "text", "layer", "area", "place"]
 
 // Arten aus dem lokalen Index, ihre Geometrie kommt beim Wählen von dort
 const LOCAL_KINDS = ["site", "river", "road", "text", "layer", "source"]
@@ -67,7 +71,7 @@ const LOCAL_KINDS = ["site", "river", "road", "text", "layer", "source"]
 const FILTERS = [
 	{ id: "all", label: "Alle" },
 	{ id: "site", label: "Fundorte", kinds: ["site"] },
-	{ id: "place", label: "Orte", kinds: [] },
+	{ id: "place", label: "Orte, Gebiete", kinds: [] },
 	{ id: "text", label: "Texte", kinds: ["text"] },
 	{ id: "water", label: "Flüsse, Straßen", kinds: ["river", "road"] },
 	{ id: "layer", label: "Ebenen", kinds: ["layer"] },
@@ -114,6 +118,12 @@ function KindIcon({ option }) {
 			return <GpsFixedIcon sx={{ ...sx, color: "#e65100" }} />
 		case "fix":
 			return <SpellcheckIcon sx={sx} />
+		case "area":
+			return /Gebirge|Höhenzug/.test(option.secondary) ? (
+				<TerrainIcon sx={{ ...sx, color: "#6d4c41" }} />
+			) : (
+				<BorderOuterIcon sx={sx} />
+			)
 		case "query":
 		case "clear":
 			return <SearchIcon sx={sx} />
@@ -287,12 +297,19 @@ export default function SearchBox({ getMap, desktop }) {
 		const placesFirst =
 			!onMap && places.some((o) => normalize(o.label).text === typed)
 		const grouped = kinds.flatMap((k) => local.filter((h) => h.kind === k))
+		// Gebiete und Orte kommen gemischt, jede Gruppe nur einmal
+		const placeHits = [
+			...places.filter((p) => p.kind === "area"),
+			...places.filter((p) => p.kind === "place"),
+		]
 		return [
 			...(coord ? [coord] : []),
 			...(fix
 				? [{ kind: "fix", key: "fix", label: fix, secondary: "Meinten Sie" }]
 				: []),
-			...(placesFirst ? [...places, ...grouped] : [...grouped, ...places]),
+			...(placesFirst
+				? [...placeHits, ...grouped]
+				: [...grouped, ...placeHits]),
 		]
 	}, [query, history, local, places, coord])
 
@@ -437,6 +454,17 @@ export default function SearchBox({ getMap, desktop }) {
 				zoom: o.zoom,
 				offset: centerOffset(),
 			})
+		} else if (o.kind === "area") {
+			s.setSelectedSite(null)
+			// Höhenzüge und Grenzen als Linie, Gemeinden nur mit Ausdehnung
+			if (o.geometry) {
+				s.setSearchHit({
+					type: "Feature",
+					properties: { label: o.label },
+					geometry: o.geometry,
+				})
+			} else mark(o, [o.lon, o.lat])
+			fit(o.bounds, 13)
 		} else if (o.kind === "text") {
 			s.setSearchHit(null)
 			s.setSelectedSite(null)
@@ -467,7 +495,15 @@ export default function SearchBox({ getMap, desktop }) {
 			return
 		}
 		// Aus dem Verlauf: Geometrie und aktuelle Daten aus dem Index
-		const full = LOCAL_KINDS.includes(o.kind) ? entryByKey(o.key) : o
+		const area =
+			o.kind === "area" && !o.geometry
+				? placeIndex?.find((p) => p.key === o.key)
+				: null
+		const full = LOCAL_KINDS.includes(o.kind)
+			? entryByKey(o.key)
+			: area
+				? placeOption(area)
+				: o
 		if (!full) return
 		setHistory(addToHistory(full))
 		select(full)

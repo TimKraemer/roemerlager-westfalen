@@ -416,7 +416,18 @@ const PLACE_TYPES = {
 	n: "Schutzgebiet",
 }
 // Bei gleichem Treffer gehen Städte vor, sonst der nähere Ort
-const PLACE_RANK = { c: 0, t: 0, v: 1, s: 1, h: 1, p: 1, r: 1, n: 2, l: 2 }
+const PLACE_RANK = {
+	a: 0,
+	c: 0,
+	t: 0,
+	v: 1,
+	s: 1,
+	h: 1,
+	p: 1,
+	r: 1,
+	n: 2,
+	l: 2,
+}
 
 let places = null
 
@@ -426,28 +437,77 @@ let places = null
  * ersten Suchen geladen.
  */
 export function loadPlaces() {
-	places ??= fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/precomputed/orte.json`)
-		.then((r) => {
-			if (!r.ok) throw new Error(`Ortsindex: HTTP ${r.status}`)
-			return r.json()
+	const base = `${process.env.NEXT_PUBLIC_BASE_PATH}/precomputed`
+	const json = (file, required) =>
+		fetch(`${base}/${file}`).then((r) => {
+			if (r.ok) return r.json()
+			if (required) throw new Error(`${file}: HTTP ${r.status}`)
+			return null
 		})
-		.then(({ near, places: rows }) =>
-			rows.map(([name, cls, lon, lat, n, alias]) => ({
+	places ??= Promise.all([json("orte.json", true), json("gebiete.json")])
+		.then(([orte, gebiete]) => [
+			...orte.places.map(([name, cls, lon, lat, n, alias]) => ({
+				key: `place:${name}:${lon}:${lat}`,
 				name,
 				cls,
 				lon,
 				lat,
-				near: near[n],
+				near: orte.near[n],
 				n: norm(name),
 				alias: alias ? norm(alias) : null,
 				words: wordsOf(alias ? `${name} ${alias}` : name),
 			})),
-		)
+			// Gebirge, Höhenzüge, Länder, Kreise, Gemeinden (build-areas.mjs)
+			...(gebiete?.areas ?? []).map(([name, type, bounds, lines]) => ({
+				key: `area:${type}:${name}`,
+				name,
+				cls: "a",
+				type,
+				bounds,
+				lines,
+				lon: (bounds[0] + bounds[2]) / 2,
+				lat: (bounds[1] + bounds[3]) / 2,
+				n: norm(name),
+				alias: null,
+				words: wordsOf(name),
+			})),
+		])
 		.catch((e) => {
 			places = null
 			throw e
 		})
 	return places
+}
+
+/** Treffer aus einem Eintrag des Orts- und Gebietsverzeichnisses. */
+export function placeOption(p) {
+	if (p.cls === "a") {
+		return {
+			kind: "area",
+			key: p.key,
+			label: p.name,
+			secondary: p.type,
+			bounds: p.bounds,
+			lon: p.lon,
+			lat: p.lat,
+			geometry: p.lines && { type: "MultiLineString", coordinates: p.lines },
+		}
+	}
+	return {
+		kind: "place",
+		key: p.key,
+		label: p.name,
+		secondary: [
+			PLACE_TYPES[p.cls],
+			// Städte brauchen keinen Nachbarort
+			p.near && !"ct".includes(p.cls) ? `bei ${p.near}` : null,
+		]
+			.filter(Boolean)
+			.join(" "),
+		lon: p.lon,
+		lat: p.lat,
+		zoom: p.cls === "c" ? 11 : p.cls === "t" ? 12 : p.cls === "n" ? 11 : 14,
+	}
 }
 
 /**
@@ -487,22 +547,10 @@ export function searchPlaces(index, query, center, limit = 6) {
 			dist(a.p) - dist(b.p),
 	)
 	return hits.slice(0, limit).map(({ p, score, fix }) => ({
-		kind: "place",
+		...placeOption(p),
 		fuzzy: score < 1,
 		fix,
 		tokens: tokenize(fix.map((f, i) => f ?? tokens[i]).join(" ")),
-		key: `place:${p.name}:${p.lon}:${p.lat}`,
-		label: p.name,
-		secondary: [
-			PLACE_TYPES[p.cls],
-			// Städte brauchen keinen Nachbarort
-			p.near && !"ct".includes(p.cls) ? `bei ${p.near}` : null,
-		]
-			.filter(Boolean)
-			.join(" "),
-		lon: p.lon,
-		lat: p.lat,
-		zoom: p.cls === "c" ? 11 : p.cls === "t" ? 12 : p.cls === "n" ? 11 : 14,
 	}))
 }
 
