@@ -233,7 +233,7 @@ export default function EasyPanel({ onFlyTo }) {
 						component="p"
 						sx={{ mt: 1 }}
 					>
-						{SHORT_CREDIT}. Zitiervorschlag unter „Quellen“.
+						{SHORT_CREDIT}
 					</Typography>
 				</>
 			)}
