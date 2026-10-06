@@ -18,6 +18,7 @@ import {
 	ringFactor,
 	sampleElevation,
 } from "./model"
+import { burnOldRivers, OLD_RIVER_NAMES, oldRiverLines } from "./old-rivers"
 import {
 	computeRoutes,
 	costSurface,
@@ -134,6 +135,8 @@ function demWater(state, params) {
 		if (acc[i] >= params.streamKm2) streams[i] = 1
 		if (acc[i] >= params.riverKm2) rivers[i] = 1
 	}
+	if (params.oldRivers)
+		burnOldRivers(streams, rivers, raster, grid.zoom, gridBbox(grid))
 	const dW = distanceToMask(streams, width, height, meters)
 	const dR = distanceToMask(rivers, width, height, meters)
 	const n = grid.cols * grid.rows
@@ -193,9 +196,22 @@ async function waterFor(state, params, isStale) {
 			if (isStale()) return null
 		}
 		const { grid, osm } = state
+		// Alte Läufe ersetzen die heutigen Linien derselben Flüsse
+		const old = params.oldRivers ? oldRiverLines(gridBbox(grid)) : []
+		const kept = params.oldRivers
+			? {
+					...osm,
+					features: osm.features.filter(
+						(f) => !OLD_RIVER_NAMES.includes(f.properties.name),
+					),
+				}
+			: osm
 		return {
-			distWater: distanceToLines(grid, linesOf(osm, ["river", "stream"])),
-			distRiver: distanceToLines(grid, linesOf(osm, ["river"])),
+			distWater: distanceToLines(grid, [
+				...linesOf(kept, ["river", "stream"]),
+				...old,
+			]),
+			distRiver: distanceToLines(grid, [...linesOf(kept, ["river"]), ...old]),
 			// Die Karte zeigt OSM direkt aus den Vektorkacheln
 			streams: null,
 			crossings: null,
@@ -276,6 +292,7 @@ export async function evaluate(
 		params.waterSource,
 		params.streamKm2,
 		params.riverKm2,
+		params.oldRivers,
 	].join()
 	const waterChanged = state.waterKey !== waterKey
 	if (waterChanged) {

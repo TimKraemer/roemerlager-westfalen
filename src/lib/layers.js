@@ -6,6 +6,9 @@
  * NRW über Niedersachsen über Sentinel-2. Endpunkte am 05.10.2026 geprüft.
  */
 
+import { addProtocol } from "maplibre-gl"
+import ALTKARTEN from "@/data/altkarten.json"
+import RIVERS from "@/data/fluesse.json"
 import { VECTOR_TILES } from "./water"
 
 const GEOBASIS_NRW = "© Geobasis NRW (dl-de/zero-2-0)"
@@ -31,12 +34,25 @@ const DOP_NI = {
 	attribution: LGLN,
 	minzoom: 8,
 }
+// Im WMTS NRW heißen die Stufen der Matrix EPSG_3857_16 "00" bis "16",
+// "00" ist Web-Mercator-Zoom 5. Das Protokoll nw-dop:// rechnet um.
+const NW_DOP_WMTS =
+	"https://www.wmts.nrw.de/geobasis/wmts_nw_dop/tiles/nw_dop/EPSG_3857_16"
+addProtocol("nw-dop", async (params, abortController) => {
+	const [z, x, y] = params.url.slice("nw-dop://".length).split("/")
+	const matrix = String(Number(z) - 5).padStart(2, "0")
+	const res = await fetch(`${NW_DOP_WMTS}/${matrix}/${x}/${y}`, {
+		signal: abortController.signal,
+	})
+	if (!res.ok) throw new Error(`DOP NRW ${res.status}: ${params.url}`)
+	return { data: await res.arrayBuffer() }
+})
 const DOP_NRW = {
-	tiles: [
-		"https://www.wmts.nrw.de/geobasis/wmts_nw_dop/tiles/nw_dop/EPSG_3857_16/{z}/{x}/{y}",
-	],
+	tiles: ["nw-dop://{z}/{x}/{y}"],
 	attribution: GEOBASIS_NRW,
-	maxzoom: 16,
+	minzoom: 8,
+	// Stufe 14 entspricht Zoom 19, etwa 19 cm je Pixel auf 51,6° N
+	maxzoom: 19,
 }
 
 export const BASE_LAYERS = [
@@ -147,6 +163,15 @@ export const OVERLAYS = [
 		opacity: 0.9,
 	},
 	{
+		id: "alte-flusslaeufe",
+		kind: "oldrivers",
+		group: "Gewässer",
+		label: "Alte Flussläufe",
+		note: "Dunkelblau Rhein, Lippe, Ems und Weser in NRW wie in der Uraufnahme um 1840, rot gestrichelt der römerzeitliche Lauf bei Haltern und Xanten, hellblau der heutige, wo die Uraufnahme nichts hergibt oder außerhalb NRW.",
+		attribution: `${GEOBASIS_NRW}, ${OSM}`,
+		opacity: 0.9,
+	},
+	{
 		id: "uraufnahme",
 		group: "Gewässer",
 		label: "Preußische Uraufnahme (1836–1850)",
@@ -228,6 +253,17 @@ export const OVERLAYS = [
 		opacity: 0.9,
 	},
 	{
+		id: "tranchot",
+		group: "Historische Karten",
+		label: "Tranchot/v. Müffling (1801–1828)",
+		note: "Nur Rheinland, rechts des Rheins etwa bis Duisburg, Wuppertal und Siegen. Xanten liegt drin, die Lippelager und Bergkamen nicht. Ab Zoom 11.",
+		wms: "https://www.wms.nrw.de/geobasis/wms_nw_tranchot",
+		layers: "nw_tranchot",
+		attribution: GEOBASIS_NRW,
+		minzoom: 11,
+		opacity: 0.85,
+	},
+	{
 		id: "neuaufnahme",
 		group: "Historische Karten",
 		label: "Preußische Neuaufnahme (1891–1912)",
@@ -268,6 +304,24 @@ export const OVERLAYS = [
 		attribution: "© LWL / LVR, Denkmalbehörden NRW",
 		opacity: 0.9,
 	},
+	// Entzerrte Altkarten, Kacheln aus scripts/altkarten (Herkunft der Scans
+	// unbekannt, Angaben nur soweit auf dem Blatt oder im Dateinamen)
+	...ALTKARTEN.map((m) => ({
+		id: `alt-${m.id}`,
+		group: "Altkarten (entzerrt)",
+		label: `${m.year} ${m.short}`,
+		note: [m.author, m.accuracy && `Passpunkte: ${m.accuracy}`]
+			.filter(Boolean)
+			.join(". "),
+		tiles: [
+			`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/altkarten/${m.id}/{z}/{x}/{y}.webp`,
+		],
+		bounds: m.bounds,
+		minzoom: m.minzoom,
+		maxzoom: m.maxzoom,
+		attribution: `Altkarte ${m.year}${m.author ? `, ${m.author}` : ""}`,
+		opacity: 0.85,
+	})),
 ]
 
 /** MapLibre-Rasterquelle für eine Kachel- oder WMS-Ebene bzw. einen Teil. */
@@ -284,6 +338,7 @@ export function rasterSource(layer) {
 		attribution: layer.attribution,
 		minzoom: layer.minzoom ?? 0,
 		maxzoom: layer.maxzoom ?? 19,
+		...(layer.bounds ? { bounds: layer.bounds } : {}),
 	}
 }
 
@@ -299,6 +354,13 @@ export function styleLayersOf(layer) {
 		]
 	}
 	if (layer.kind === "water") return [{ id: layer.id, opacity: "line-opacity" }]
+	if (layer.kind === "oldrivers") {
+		return [
+			{ id: `${layer.id}-casing`, opacity: "line-opacity" },
+			{ id: layer.id, opacity: "line-opacity" },
+			{ id: `${layer.id}-roemisch`, opacity: "line-opacity" },
+		]
+	}
 	// Fenster-Bilder und Linien legt die Karte selbst an (map-view.jsx)
 	if (layer.kind === "lrm" || layer.kind === "lines") return []
 	return partsOf(layer).map((_, i) => ({
@@ -312,6 +374,7 @@ export function styleFor(layer) {
 	if (layer.kind === "lrm" || layer.kind === "lines") {
 		return { sources: {}, layers: [] }
 	}
+	if (layer.kind === "oldrivers") return oldRiverStyle(layer)
 	if (layer.kind === "relief") {
 		return {
 			sources: {
@@ -418,5 +481,86 @@ export function styleFor(layer) {
 			paint: { "raster-opacity": layer.opacity ?? 1 },
 			...(part.minzoom ? { minzoom: part.minzoom } : {}),
 		})),
+	}
+}
+
+/** Alte Flussläufe aus src/data/fluesse.json, je Teilstück nach Herkunft. */
+function oldRiverStyle(layer) {
+	const features = []
+	for (const [name, river] of Object.entries(RIVERS)) {
+		if (!river.parts) continue
+		for (const [from, to, kind] of river.parts) {
+			features.push({
+				type: "Feature",
+				properties: { name, kind },
+				geometry: {
+					type: "LineString",
+					coordinates: river.coords.slice(from, to + 1),
+				},
+			})
+		}
+	}
+	const width = (lo, hi) => ["interpolate", ["linear"], ["zoom"], 7, lo, 14, hi]
+	return {
+		sources: {
+			[layer.id]: {
+				type: "geojson",
+				data: { type: "FeatureCollection", features },
+				attribution: layer.attribution,
+			},
+		},
+		layers: [
+			{
+				id: `${layer.id}-casing`,
+				type: "line",
+				source: layer.id,
+				filter: ["!=", ["get", "kind"], "roemisch"],
+				layout: {
+					visibility: "none",
+					"line-cap": "round",
+					"line-join": "round",
+				},
+				paint: {
+					"line-color": "#fff",
+					"line-opacity": layer.opacity,
+					"line-width": width(3, 7),
+				},
+			},
+			{
+				id: layer.id,
+				type: "line",
+				source: layer.id,
+				filter: ["!=", ["get", "kind"], "roemisch"],
+				layout: {
+					visibility: "none",
+					"line-cap": "round",
+					"line-join": "round",
+				},
+				paint: {
+					"line-color": [
+						"match",
+						["get", "kind"],
+						"uraufnahme",
+						"#0d47a1",
+						"#7b9acc",
+					],
+					"line-opacity": layer.opacity,
+					"line-width": width(1.5, 4),
+				},
+			},
+			{
+				id: `${layer.id}-roemisch`,
+				type: "line",
+				source: layer.id,
+				filter: ["==", ["get", "kind"], "roemisch"],
+				layout: { visibility: "none", "line-join": "round" },
+				paint: {
+					"line-color": "#c62828",
+					"line-opacity": layer.opacity,
+					"line-width": width(2, 4.5),
+					"line-dasharray": [2, 1.5],
+				},
+			},
+		],
 	}
 }

@@ -1,4 +1,4 @@
-import rivers from "@/data/fluesse.json"
+import riverData from "@/data/fluesse.json"
 import roadData from "@/data/roemerstrassen.json"
 import { circlePolygon } from "./geo"
 import { SITES } from "./sites"
@@ -6,9 +6,17 @@ import { SITES } from "./sites"
 /**
  * Kartenbezug der antiken Texte: genannte Flüsse, Orte, Räume und
  * Bewegungsrichtungen. Unsichere Lagen und erschlossene Wege werden
- * gestrichelt gezeichnet. Flussverläufe sind heutige Verläufe aus
- * OpenStreetMap (scripts/build-rivers.mjs).
+ * gestrichelt gezeichnet. Flussverläufe sind die alten Läufe aus
+ * scripts/build-rivers.mjs: Uraufnahme um 1840, bei Haltern und Xanten
+ * römerzeitlich, sonst heute.
  */
+
+const rivers = Object.fromEntries(
+	Object.entries(riverData).map(([k, v]) => [
+		k,
+		Array.isArray(v) ? v : v.coords,
+	]),
+)
 
 const siteAt = (id) => {
 	const f = SITES.features.find((s) => s.properties.id === id)

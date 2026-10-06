@@ -47,12 +47,41 @@ Römerstraßen (Itiner-e und Hellweg vor dem Santforde) neu bauen:
 bun scripts/build-roads.mjs
 ```
 
-Flussverläufe für den Reiter „Texte“ (Lippe, Ems, Weser, Rhein, Elbe,
-Stever, Seseke, Alme aus den OSM-Kacheln) neu bauen:
+Alte Flussläufe (Lippe, Ems, Weser, Rhein, Elbe, Stever, Seseke, Alme)
+neu bauen. Sie dienen dem Reiter „Texte“, der Ebene „Alte
+Flussläufe“ und dem Flussabstand im Modell. In NRW greift das Skript den
+Lauf aus der Preußischen Uraufnahme ab, geführt am heutigen Lauf aus den
+OSM-Kacheln. Dazu wird je 6-km-Abschnitt der günstigste Weg über blau
+kolorierte Wasserflächen gesucht. Findet sich auf einem Blatt kein Blau
+(manche Blätter zeichnen Flüsse grau oder grün) oder folgt der Weg nur
+dünnen Linien wie Festungsgräben, gilt dort der heutige Lauf in voller
+Auflösung. Das gilt auch für Stever, Seseke und Alme, die die Uraufnahme
+meist als dünne schwarze Linie zeichnet. Bei Haltern und Xanten setzt es den
+römerzeitlichen Lauf nach der Literatur ein. Die Kacheln der Uraufnahme
+landen in `node_modules/.cache/uraufnahme`, ein voller Lauf dauert
+beim ersten Mal rund eine Stunde.
 
 ```bash
-bun scripts/build-rivers.mjs
+bun scripts/build-rivers.mjs            # alle Flüsse
+bun scripts/build-rivers.mjs Lippe Ems  # nur diese
+bun scripts/build-rivers.mjs --roemisch # nur die Römerzeit-Abschnitte neu einsetzen
 ```
+
+Altkarten (Scans ohne Georeferenz) entzerren und als Kacheln nach
+`public/altkarten/` legen. Die Passpunkte je Karte stehen in
+`scripts/altkarten/gcp/`, die Scans selbst liegen nicht im Repo
+(`ALTKARTEN_DIR`, Standard `~/Downloads/Historische Landkarten`). Die
+Kacheln sind ebenfalls nicht eingecheckt und müssen vor dem Deploy einmal
+gerechnet werden:
+
+```bash
+bun scripts/altkarten/orte.mjs          # Ortsverzeichnis für Passpunkte, einmalig
+scripts/altkarten/alt.sh fit 1844-kreis-luebbecke
+scripts/altkarten/alt.sh tiles 1844-kreis-luebbecke
+scripts/altkarten/alt.sh index          # schreibt src/data/altkarten.json
+```
+
+`alt.sh` startet Python über uv mit numpy, scipy, Pillow und pyproj.
 
 `bun test` prüft das Rechenmodell,
 `bun run lint` den Code (Biome).
@@ -85,7 +114,9 @@ sonst nicht ausliefert.
 | `scripts/build-roads.mjs` | Römerstraßen-Datensatz |
 | `src/data/texte.json` | Antike Textstellen mit Übersetzung und Kartenbezug |
 | `src/lib/text-geo.js` | Orte, Räume und Richtungen je Textstelle für die Karte |
-| `scripts/build-rivers.mjs` | Benannte Flussverläufe (`src/data/fluesse.json`) |
+| `scripts/build-rivers.mjs` | Alte Flussläufe (`src/data/fluesse.json`) aus Uraufnahme, OSM und Literatur |
+| `scripts/altkarten/` | Altkarten entzerren: Passpunkte, Thin-Plate-Spline, Kacheln |
+| `src/data/altkarten.json` | Verzeichnis der gekachelten Altkarten (aus `alt.sh index`) |
 | `src/components/` | Karte, Seitenleiste, Info-Karten |
 
 ## Potenzialmodell
@@ -110,6 +141,12 @@ natürlichen Talzügen und kennt keine Kanäle oder Begradigungen. Alternativ
 lassen sich die heutigen Gewässer aus OpenStreetMap laden. Die öffentlichen
 Overpass-Server sind aber oft überlastet. Scheitert die Abfrage, rechnet die
 App mit dem Höhenmodell weiter.
+
+Für die großen Flüsse (Lippe, Ems, Weser, Rhein und die übrigen in
+`src/data/fluesse.json`) gilt in beiden Fällen der alte Lauf. Abgeleitete
+Flusspixel, die näher als 1,5 km an einem alten Lauf liegen, werden als
+derselbe Fluss verworfen; kleinere Bäche bleiben. Abschaltbar unter
+„Alte Flussläufe“ im Reiter Analyse.
 
 Der Gesamtwert ist das gewichtete Mittel. Steiles Gelände (über 12°) wird
 abgewertet, das direkte Umfeld bekannter Lager ausgeblendet. Lokale Maxima

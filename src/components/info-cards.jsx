@@ -13,7 +13,7 @@ import {
 	Stack,
 	Typography,
 } from "@mui/material"
-import { useState } from "react"
+import { createContext, useContext, useState } from "react"
 import {
 	CRITERIA_SOURCES,
 	explain,
@@ -39,6 +39,23 @@ const cardSx = {
 	zIndex: 3,
 }
 
+// Im Sheet auf dem Handy ohne eigene Position und Schatten
+const embeddedSx = { px: 2, pt: 1.5, pb: 3 }
+const Embedded = createContext(false)
+
+function CardPaper({ children }) {
+	const embedded = useContext(Embedded)
+	return (
+		<Paper
+			elevation={embedded ? 0 : 4}
+			square={embedded}
+			sx={embedded ? embeddedSx : cardSx}
+		>
+			{children}
+		</Paper>
+	)
+}
+
 const fmtM = (m) =>
 	!Number.isFinite(m)
 		? "–"
@@ -46,13 +63,17 @@ const fmtM = (m) =>
 			? `${(m / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} km`
 			: `${Math.round(m)} m`
 
-export function InfoCards() {
+export function InfoCards({ embedded = false }) {
 	const selectedSite = useMapStore((s) => s.selectedSite)
 	const inspect = useMapStore((s) => s.inspect)
-	if (selectedSite) return <SiteCard id={selectedSite} />
-	if (inspect?.outside) return <OutsideCard data={inspect} />
-	if (inspect) return <InspectCard data={inspect} />
-	return null
+	const card = selectedSite ? (
+		<SiteCard id={selectedSite} />
+	) : inspect?.outside ? (
+		<OutsideCard data={inspect} />
+	) : inspect ? (
+		<InspectCard data={inspect} />
+	) : null
+	return <Embedded.Provider value={embedded}>{card}</Embedded.Provider>
 }
 
 function CardHeader({ title, onClose, children }) {
@@ -82,7 +103,7 @@ function SiteCard({ id }) {
 	const type = SITE_TYPE_BY_ID[p.type]
 	const [lon, lat] = feature.geometry.coordinates
 	return (
-		<Paper elevation={4} sx={cardSx}>
+		<CardPaper>
 			<CardHeader title={p.name} onClose={() => setSelectedSite(null)}>
 				<Stack
 					direction="row"
@@ -154,7 +175,7 @@ function SiteCard({ id }) {
 					))}
 				</Stack>
 			)}
-		</Paper>
+		</CardPaper>
 	)
 }
 
@@ -250,7 +271,7 @@ function OutsideCard({ data }) {
 	const setPanelOpen = useMapStore((s) => s.setPanelOpen)
 	const near = nearestSites(data.lon, data.lat, 3)
 	return (
-		<Paper elevation={4} sx={cardSx}>
+		<CardPaper>
 			<CardHeader
 				title={
 					data.kind === "stage"
@@ -308,7 +329,7 @@ function OutsideCard({ data }) {
 			>
 				Analyse öffnen
 			</Button>
-		</Paper>
+		</CardPaper>
 	)
 }
 
@@ -326,7 +347,7 @@ function InspectCard({ data }) {
 		FACTORS.find((f) => f.key === key)?.label ??
 		{ moor: "Kein Moor", wet: "Keine nasse Niederung" }[key]
 	return (
-		<Paper elevation={4} sx={cardSx}>
+		<CardPaper>
 			<CardHeader
 				title={inspectTitle(data, place)}
 				onClose={() => setInspect(null)}
@@ -479,6 +500,6 @@ function InspectCard({ data }) {
 					</Stack>
 				</Box>
 			)}
-		</Paper>
+		</CardPaper>
 	)
 }

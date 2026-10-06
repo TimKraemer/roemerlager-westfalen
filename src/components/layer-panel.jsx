@@ -29,7 +29,7 @@ export function SectionTitle({ children }) {
 	)
 }
 
-export default function LayerPanel() {
+export default function LayerPanel({ onFlyTo }) {
 	const baseLayer = useMapStore((s) => s.baseLayer)
 	const setBaseLayer = useMapStore((s) => s.setBaseLayer)
 	const overlays = useMapStore((s) => s.overlays)
@@ -91,7 +91,7 @@ export default function LayerPanel() {
 											}
 										/>
 									}
-									label={<LayerLabel layer={layer} />}
+									label={<LayerLabel layer={layer} onFlyTo={onFlyTo} />}
 									sx={{
 										alignItems: "flex-start",
 										"& .MuiSwitch-root": { mt: 0.25 },
@@ -155,13 +155,13 @@ export default function LayerPanel() {
 				checked={showWaterways}
 				onChange={setShowWaterways}
 				label="Natürliches Gewässernetz der Analyse"
-				note="Aus den Talzügen des Höhenmodells, ohne Kanäle"
+				note="Aus den Talzügen des Höhenmodells, ohne Kanäle. Große Flüsse im alten Lauf (Uraufnahme um 1840, bei Haltern und Xanten römerzeitlich)"
 			/>
 			<HelperSwitch
 				checked={showModel}
 				onChange={setShowModel}
 				label="3D-Modell Römerlager Oberaden"
-				note="Ab Zoomstufe 15, Modell aus der Bergkamen-App, an den vier Toren eingepasst"
+				note="Ab Zoomstufe 15, mit Beschriftungen und Link. Modell aus der Bergkamen-App, am Grabungsplan der LWL-Archäologie eingepasst"
 			/>
 		</Box>
 	)
@@ -187,13 +187,30 @@ function HelperSwitch({ checked, onChange, label, note }) {
 	)
 }
 
-function LayerLabel({ layer }) {
+function LayerLabel({ layer, onFlyTo }) {
 	return (
 		<Box sx={{ py: 0.25 }}>
 			<Typography variant="body2">{layer.label}</Typography>
 			{layer.note && (
 				<Typography variant="caption" color="text.secondary" component="div">
 					{layer.note}
+					{layer.bounds && onFlyTo && (
+						<>
+							{" "}
+							<Link
+								component="button"
+								variant="caption"
+								sx={{ verticalAlign: "baseline" }}
+								onClick={(e) => {
+									e.preventDefault()
+									const [w, s, e2, n] = layer.bounds
+									onFlyTo((w + e2) / 2, (s + n) / 2, layer.minzoom + 1)
+								}}
+							>
+								Hinzoomen
+							</Link>
+						</>
+					)}
 					{layer.info && (
 						<>
 							{" "}

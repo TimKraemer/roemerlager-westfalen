@@ -241,6 +241,24 @@ export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
 					? "Gewässernetz aus den Talzügen berechnet, ohne Kanäle und Begradigungen. Unter „Ebenen“ einblendbar."
 					: "Heutige Bäche und Flüsse aus OSM. Die Overpass-Server sind oft langsam oder überlastet."}
 			</Typography>
+			<Stack direction="row" sx={{ alignItems: "center" }}>
+				<Switch
+					size="small"
+					checked={params.oldRivers}
+					onChange={(e) => setParams({ oldRivers: e.target.checked })}
+				/>
+				<Typography variant="body2">Alte Flussläufe</Typography>
+			</Stack>
+			<Typography
+				variant="caption"
+				color="text.secondary"
+				component="p"
+				sx={{ mt: 0, mb: 1 }}
+			>
+				Rhein, Lippe, Ems und Weser in NRW im Lauf der Uraufnahme um 1840, bei
+				Haltern und Xanten im römerzeitlichen Lauf. Ersetzt den aus dem Gelände
+				abgeleiteten Lauf dieser Flüsse.
+			</Typography>
 			{params.waterSource === "dem" && (
 				<>
 					<LabeledSlider

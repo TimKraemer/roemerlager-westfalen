@@ -1,0 +1,20 @@
+[
+	{
+		"id": "1898-levern",
+		"year": 1898,
+		"title": "Meßtischblatt 3616 Levern, 1:25 000",
+		"short": "Meßtischblatt Levern",
+		"author": "Preußische Landesaufnahme 1898, Reichsamt für Landesaufnahme, einzelne Nachträge 1938 (Ausgabe F)",
+		"provenance": "Händlerstempel Grasmück & Karnahl, Leipzig",
+		"accuracy": "Gradecken, Potsdam-Datum",
+		"showFrom": 11,
+		"bounds": [
+			8.33234,
+			52.29854,
+			8.49905,
+			52.39862
+		],
+		"minzoom": 11,
+		"maxzoom": 16
+	}
+]

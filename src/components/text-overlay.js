@@ -1,5 +1,6 @@
 import * as maplibregl from "maplibre-gl"
 import { metersPerPixel } from "@/lib/geo"
+import { isMobile, mapInsets } from "@/lib/sheet"
 
 /**
  * Kartenbezug der antiken Texte: Ebenen, Kamerafahrt und Animation.
@@ -380,9 +381,18 @@ function bubble(f, delay) {
 		k.textContent = kicker
 		el.append(k)
 	}
-	const t = document.createElement("span")
-	t.textContent = label
-	el.append(t)
+	// „Name, Erläuterung“: Erläuterung leiser, in Kästen auf eigener Zeile
+	const cut = label.indexOf(", ")
+	const main = document.createElement("span")
+	main.className = "tg-main"
+	main.textContent = cut > 0 ? label.slice(0, cut) : label
+	el.append(main)
+	if (cut > 0) {
+		const sub = document.createElement("span")
+		sub.className = "tg-sub"
+		sub.textContent = label.slice(cut + 2)
+		el.append(sub)
+	}
 	wrap.append(el)
 	return {
 		element: wrap,
@@ -397,7 +407,7 @@ function bubble(f, delay) {
 					? [0, -10]
 					: of === "ring"
 						? [0, -4]
-						: [12, 0],
+						: [15, 0],
 	}
 }
 
@@ -427,12 +437,14 @@ function placeBubbles(map, items) {
 		const options =
 			it.of === "point"
 				? [
-						[12, 0],
-						[-(w + 12), 0],
-						[-w / 2, -(h / 2 + 14)],
-						[-w / 2, h / 2 + 14],
+						[15, 0],
+						[-(w + 15), 0],
+						[-w / 2, -(h / 2 + 16)],
+						[-w / 2, h / 2 + 16],
 					]
 				: [it.offset]
+		// Seite der Ortsblase, an der ihre Spitze zum Punkt zeigt
+		const sides = ["left", "right", "bottom", "top"]
 		let chosen = null
 		for (const off of options) {
 			// Rechteck je nach Anker: links mittig, oben oder unten mittig
@@ -445,12 +457,13 @@ function placeBubbles(map, items) {
 						? { x: x - w / 2, y, w, h }
 						: { x: x - w / 2, y: y - h, w, h }
 			if (!hits(r)) {
-				chosen = { off, r }
+				chosen = { off, r, side: sides[options.indexOf(off)] }
 				break
 			}
 		}
 		el.classList.toggle("tg-hidden", !chosen)
 		if (chosen) {
+			if (it.of === "point") el.firstChild.dataset.side = chosen.side
 			it.marker.setOffset(chosen.off)
 			placed.push(chosen.r)
 		}
@@ -510,7 +523,14 @@ export function showText(map, geo) {
 				[e, n],
 			],
 			{
-				padding: { top: 110, bottom: 60, left: 70, right: 190 },
+				padding: isMobile()
+					? {
+							top: mapInsets().top + 56,
+							bottom: mapInsets().bottom + 24,
+							left: 40,
+							right: 90,
+						}
+					: { top: 110, bottom: 60, left: 70, right: 190 },
 				maxZoom: 11,
 				duration: reduced ? 0 : 1400,
 			},
@@ -545,6 +565,8 @@ export function showText(map, geo) {
 	}
 	markers.sort((a, b) => PRIORITY[a.of] - PRIORITY[b.of])
 	place()
+	// Breiten stimmen erst mit geladener Schrift
+	document.fonts?.ready.then(place)
 	map.on("moveend", place)
 
 	const arrows = features

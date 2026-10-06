@@ -22,6 +22,13 @@ import { BASE_LAYERS, OVERLAYS } from "@/lib/layers"
 import { DEFAULT_PARAMS } from "@/lib/potential/model"
 import { SITE_TYPES } from "@/lib/sites"
 
+// Auf dem Handy erscheinen Infokarten im Sheet, das dafür weit genug aufgeht.
+// Schon hier, damit Kamerafahrten die neue Sheethöhe kennen.
+const showCard = (s) =>
+	typeof window !== "undefined" && window.innerWidth < 900
+		? { panelOpen: true, sheetFrac: Math.max(s.sheetFrac, 0.42) }
+		: null
+
 export const useMapStore = create((set) => ({
 	baseLayer: BASE_LAYERS[0].id,
 	overlays: Object.fromEntries(
@@ -34,10 +41,16 @@ export const useMapStore = create((set) => ({
 	showRings: true,
 	showWaterways: true,
 	showRoutes: true,
-	// Seitenleiste mit Einstellungen und Quellen, anfangs eingeklappt
+	// Seitenleiste mit Einstellungen und Quellen, anfangs eingeklappt.
+	// Auf dem Handy ist es das Sheet am unteren Rand.
 	panelOpen: false,
-	// Offener Reiter der Seitenleiste
-	panelTab: "layers",
+	// Offener Reiter, auf dem Handy zuerst die Übersicht
+	panelTab:
+		typeof window !== "undefined" && window.innerWidth < 900
+			? "start"
+			: "layers",
+	// Höhe des aufgeklappten Sheets als Anteil der Fensterhöhe (Handy)
+	sheetFrac: 0.5,
 	showRoads: true,
 	// 3D-Rekonstruktion des Lagers Oberaden, sichtbar ab Zoom 15
 	showModel: true,
@@ -85,6 +98,7 @@ export const useMapStore = create((set) => ({
 	setShowRoutes: (showRoutes) => set({ showRoutes }),
 	setPanelOpen: (panelOpen) => set({ panelOpen }),
 	setPanelTab: (panelTab) => set({ panelTab }),
+	setSheetFrac: (sheetFrac) => set({ sheetFrac }),
 	setShowRoads: (showRoads) => set({ showRoads }),
 	setShowModel: (showModel) => set({ showModel }),
 	setParams: (patch) => set((s) => ({ params: { ...s.params, ...patch } })),
@@ -125,8 +139,10 @@ export const useMapStore = create((set) => ({
 			saveServices(customLayers)
 			return { customLayers }
 		}),
-	setSelectedSite: (selectedSite) => set({ selectedSite }),
-	setInspect: (inspect) => set({ inspect }),
+	setSelectedSite: (selectedSite) =>
+		set((s) => ({ selectedSite, ...(selectedSite && showCard(s)) })),
+	setInspect: (inspect) =>
+		set((s) => ({ inspect, ...(inspect && showCard(s)) })),
 	setSelectedText: (selectedText) => set({ selectedText }),
 	setSearchHit: (searchHit) => set({ searchHit }),
 }))

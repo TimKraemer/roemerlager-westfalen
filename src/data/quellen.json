@@ -253,6 +253,21 @@
 				"url": "https://de.wikipedia.org/wiki/Staustufe_Schl%C3%BCsselburg"
 			},
 			{
+				"label": "Preußische Uraufnahme 1836–1850 (WMS Geobasis NRW)",
+				"url": "https://www.wms.nrw.de/geobasis/wms_nw_uraufnahme?SERVICE=WMS&REQUEST=GetCapabilities",
+				"note": "Quelle der alten Flussläufe in NRW; Linien automatisch aus der Kolorierung abgegriffen"
+			},
+			{
+				"label": "Gerlach, Meurers-Balke & Kalis 2022: The Lower Rhine in Late Antiquity",
+				"url": "https://doi.org/10.1017/njg.2022.11",
+				"note": "Römerzeitlicher Rheinlauf an Vetera und an der Ostmauer der CUT"
+			},
+			{
+				"label": "LWL: Lippe am Fuß der Hofestatt in Haltern bis 1547/48",
+				"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=56865",
+				"note": "Römerzeitlicher Lippelauf bei Haltern, rund 900 m nördlich der Uraufnahme"
+			},
+			{
 				"label": "Überschwemmungsgebiete NRW, darunter die Aue nach preußischer Aufnahme (WMS)",
 				"url": "https://www.wms.nrw.de/umwelt/wasser/uesg?SERVICE=WMS&REQUEST=GetCapabilities"
 			},

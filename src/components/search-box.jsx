@@ -39,6 +39,7 @@ import {
 	loadHistory,
 	removeFromHistory,
 } from "@/lib/search-history"
+import { centerOffset, mapInsets } from "@/lib/sheet"
 import { useMapStore } from "@/store/use-map-store"
 
 const INPUT_ID = "globale-suche"
@@ -380,7 +381,12 @@ export default function SearchBox({ getMap, desktop }) {
 			{
 				padding: desktop
 					? { top: 90, bottom: 60, left: 400, right: 60 }
-					: { top: 80, bottom: 40, left: 30, right: 30 },
+					: {
+							top: mapInsets().top + 16,
+							bottom: mapInsets().bottom + 24,
+							left: 30,
+							right: 30,
+						},
 				maxZoom,
 				duration: 1400,
 			},
@@ -403,11 +409,17 @@ export default function SearchBox({ getMap, desktop }) {
 			s.setSearchHit(null)
 			s.setInspect(null)
 			if (!s.siteTypes[o.type]) s.toggleSiteType(o.type)
-			// Gleiche Auswahl löst in der Karte keine neue Kamerafahrt aus
-			if (s.selectedSite === o.id) {
-				map?.flyTo({ center: o.coordinates, zoom: 13 })
-			}
+			// Gleiche Auswahl löst in der Karte keine neue Kamerafahrt aus.
+			// Erst auswählen, damit der Versatz die Sheethöhe kennt.
+			const same = s.selectedSite === o.id
 			s.setSelectedSite(o.id)
+			if (same) {
+				map?.flyTo({
+					center: o.coordinates,
+					zoom: 13,
+					offset: centerOffset(),
+				})
+			}
 		} else if (o.kind === "river" || o.kind === "road") {
 			s.setSelectedSite(null)
 			if (o.kind === "road" && !s.showRoads) s.setShowRoads(true)
@@ -420,7 +432,11 @@ export default function SearchBox({ getMap, desktop }) {
 		} else if (o.kind === "place" || o.kind === "coord") {
 			s.setSelectedSite(null)
 			mark(o, [o.lon, o.lat])
-			map?.flyTo({ center: [o.lon, o.lat], zoom: o.zoom })
+			map?.flyTo({
+				center: [o.lon, o.lat],
+				zoom: o.zoom,
+				offset: centerOffset(),
+			})
 		} else if (o.kind === "text") {
 			s.setSearchHit(null)
 			s.setSelectedSite(null)
@@ -489,9 +505,9 @@ export default function SearchBox({ getMap, desktop }) {
 			elevation={4}
 			sx={{
 				position: "absolute",
-				top: { xs: 12, md: 16 },
-				left: { xs: 12, md: 16 },
-				right: { xs: 12, md: "auto" },
+				top: { xs: "calc(12px + env(safe-area-inset-top))", md: 16 },
+				left: { xs: "calc(12px + env(safe-area-inset-left))", md: 16 },
+				right: { xs: "calc(12px + env(safe-area-inset-right))", md: "auto" },
 				width: { md: 340 },
 				zIndex: 4,
 				borderRadius: 2,

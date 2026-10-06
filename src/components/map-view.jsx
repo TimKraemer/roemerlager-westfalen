@@ -4,6 +4,7 @@ import "maplibre-gl/dist/maplibre-gl.css"
 import * as maplibregl from "maplibre-gl"
 import { useEffect, useRef, useState } from "react"
 import roads from "@/data/roemerstrassen.json"
+import { throughGates } from "@/lib/camp-gates"
 import { SHORT_CREDIT } from "@/lib/citation"
 import { circlePolygon } from "@/lib/geo"
 import {
@@ -16,16 +17,20 @@ import {
 } from "@/lib/layers"
 import maplibreVersion from "@/lib/maplibre-version.json"
 import { rankedCandidates } from "@/lib/potential/candidates"
+import { oldRiverFeatures, withoutOldRivers } from "@/lib/potential/old-rivers"
 import { renderHeatmap } from "@/lib/potential/render"
 import { inspectAt } from "@/lib/potential/use-potential"
 import { DEFAULT_REGION } from "@/lib/regions"
+import { centerOffset, isMobile, mapInsets } from "@/lib/sheet"
 import { campsFor, SITE_TYPES, SITES } from "@/lib/sites"
 import { textGeo } from "@/lib/text-geo"
 import { useMapStore } from "@/store/use-map-store"
 import {
+	addModelAnnotations,
 	MODEL_LAYER,
 	MODEL_MIN_ZOOM,
 	oberadenModelLayer,
+	showModelAnnotations,
 } from "./oberaden-model"
 import { addTextLayers, showText } from "./text-overlay"
 
@@ -37,12 +42,12 @@ function initialView() {
 	}
 	return {
 		bounds: DEFAULT_REGION.view.bounds,
-		// Links Platz für die Startkarte lassen, auf dem Handy nicht
+		// Links Platz für die Startkarte lassen, auf dem Handy oben für die
+		// Suchleiste und unten für das eingeklappte Sheet
 		fitBoundsOptions: {
-			padding:
-				window.innerWidth >= 900
-					? { top: 40, bottom: 40, left: 380, right: 40 }
-					: 20,
+			padding: isMobile()
+				? { ...mapInsets(), left: 16, right: 16 }
+				: { top: 40, bottom: 40, left: 380, right: 40 },
 		},
 	}
 }
@@ -469,6 +474,18 @@ const MAP_CANDIDATES = 12
 const CLICKABLE = ["sites", "candidates", "stages", "routes", "roads"]
 
 function handleClick(map, e) {
+	pickAt(map, e)
+	// Auf dem Handy geht für die Infokarte das Sheet auf. Liegt der getippte
+	// Punkt dann darunter, rückt die Karte ihn in den freien Teil.
+	if (!isMobile() || !useMapStore.getState().inspect) return
+	const { top, bottom } = mapInsets()
+	const h = map.getContainer().clientHeight
+	if (e.point.y > h - bottom - 24 || e.point.y < top) {
+		map.easeTo({ center: e.lngLat, offset: centerOffset() })
+	}
+}
+
+function pickAt(map, e) {
 	const store = useMapStore.getState()
 	const hits = map.queryRenderedFeatures(e.point, { layers: CLICKABLE })
 	const pick = (id) => hits.find((f) => f.layer.id === id)
@@ -507,7 +524,7 @@ function handleClick(map, e) {
 			hypothetisch: "Hypothese",
 		}
 		const box = document.createElement("div")
-		box.style.font = "13px system-ui, sans-serif"
+		box.style.font = "14px / 1.4 var(--font-sans), system-ui, sans-serif"
 		const title = document.createElement("b")
 		title.textContent = p.name
 		const meta = document.createElement("div")
@@ -588,6 +605,14 @@ export default function MapView({ onMapReady }) {
 		)
 
 		map.on("load", () => {
+			// Auf dem Handy die Quellenangabe zugeklappt starten, ausgeklappt
+			// verdeckt sie über dem Sheet zu viel Karte. Das (i) öffnet sie.
+			if (isMobile()) {
+				map
+					.getContainer()
+					.querySelector(".maplibregl-compact-show")
+					?.classList.remove("maplibregl-compact-show")
+			}
 			addAnalysisLayers(map)
 			addTextLayers(map)
 			addSearchLayers(map)
@@ -745,6 +770,8 @@ export default function MapView({ onMapReady }) {
 	const showModel = useMapStore((s) => s.showModel)
 	useEffect(() => {
 		if (!alive(map)) return
+		if (!map.getSource("oberaden-poi")) addModelAnnotations(map)
+		showModelAnnotations(map, showModel)
 		if (!showModel) {
 			if (map.getLayer(MODEL_LAYER)) map.removeLayer(MODEL_LAYER)
 			return
@@ -761,14 +788,19 @@ export default function MapView({ onMapReady }) {
 	// Gewässer der Analyse: abgeleitetes Netz als Linien, OSM direkt aus den
 	// Vektorkacheln (Ebene "osm-gewaesser")
 	const waterSource = result?.waterSource
+	const oldRivers = useMapStore((s) => s.params.oldRivers)
 	useEffect(() => {
 		if (!alive(map)) return
 		const dem = waterSource !== "osm"
-		// Natürliche Flussläufe: große Flüsse aus dem Netz, Bäche im Kreis
-		const features = [
+		// Natürliche Flussläufe: große Flüsse aus dem Netz, Bäche im Kreis.
+		// Lippe, Weser usw. im alten Lauf statt grob aus dem Höhenmodell.
+		const derived = [
 			...(network?.rivers.features ?? []),
 			...(dem && derivedWaterways ? derivedWaterways.features : []),
 		]
+		const features = oldRivers
+			? [...withoutOldRivers(derived), ...oldRiverFeatures()]
+			: derived
 		map.getSource("waterways").setData({ type: "FeatureCollection", features })
 		for (const id of ["waterways", "waterways-casing"]) {
 			map.setLayoutProperty(
@@ -780,11 +812,11 @@ export default function MapView({ onMapReady }) {
 		if (showWaterways && !dem) {
 			useMapStore.getState().setOverlay("osm-gewaesser", { visible: true })
 		}
-	}, [derivedWaterways, network, showWaterways, waterSource, map])
+	}, [derivedWaterways, network, showWaterways, waterSource, oldRivers, map])
 
 	useEffect(() => {
 		if (!alive(map)) return
-		map.getSource("routes").setData(routes ?? EMPTY)
+		map.getSource("routes").setData(routes ? throughGates(routes) : EMPTY)
 		for (const id of [
 			"routes",
 			"routes-casing",
@@ -870,6 +902,7 @@ export default function MapView({ onMapReady }) {
 			map.flyTo({
 				center: f.geometry.coordinates,
 				zoom: Math.max(map.getZoom(), 13),
+				offset: centerOffset(),
 			})
 		}
 	}, [selectedSite, map])

@@ -1,0 +1,173 @@
+{
+	"id": "1682-vogelschau-minden",
+	"file": "Vogelschauplan_Minden_1682.jpg",
+	"year": 1682,
+	"title": "Minda : Saxoniae inferioris ad Visurgim nobilissima, à conditoribus suis Witekindo et Carolo Magno antiquissima.",
+	"short": "Minden, Vogelschau",
+	"provenance": "Signaturzettel „Tab. geogr. B / Germ. urb. 10765“, Zettel „Adelung.“, Bleistift unter dem Titel „Jans. Waesb. 683“ und „df_dk_0010400“",
+	"accuracy": "8 Bauwerke (Dom, 5 Kirchen, Markt, Weserbrücke), Median-LOO etwa 17 m, perspektivische Ansicht, außerhalb der Wälle grob",
+	"method": "tps",
+	"smooth": 0,
+	"minzoom": 13,
+	"maxzoom": 17,
+	"mask": [
+		[
+			3093,
+			4525
+		],
+		[
+			3995,
+			3262
+		],
+		[
+			5157,
+			2326
+		],
+		[
+			6453,
+			1915
+		],
+		[
+			7813,
+			1832
+		],
+		[
+			8399,
+			2418
+		],
+		[
+			9441,
+			2932
+		],
+		[
+			9573,
+			3787
+		],
+		[
+			8672,
+			4983
+		],
+		[
+			8097,
+			6571
+		],
+		[
+			7776,
+			7103
+		],
+		[
+			7256,
+			6911
+		],
+		[
+			5179,
+			6608
+		],
+		[
+			4338,
+			6947
+		],
+		[
+			3171,
+			6831
+		],
+		[
+			3231,
+			6105
+		],
+		[
+			3485,
+			5048
+		]
+	],
+	"gcps": [
+		{
+			"name": "Dom",
+			"px": [
+				5190,
+				4440
+			],
+			"lonlat": [
+				8.91921,
+				52.28885
+			]
+		},
+		{
+			"name": "St. Martini",
+			"px": [
+				6783,
+				4290
+			],
+			"lonlat": [
+				8.91523,
+				52.28815
+			]
+		},
+		{
+			"name": "St. Marien",
+			"px": [
+				6540,
+				6070
+			],
+			"lonlat": [
+				8.91566,
+				52.29106
+			]
+		},
+		{
+			"name": "St. Simeon",
+			"px": [
+				7845,
+				3045
+			],
+			"lonlat": [
+				8.91299,
+				52.2858
+			]
+		},
+		{
+			"name": "St. Johannis",
+			"px": [
+				4817,
+				5674
+			],
+			"lonlat": [
+				8.9208,
+				52.291
+			]
+		},
+		{
+			"name": "Markt",
+			"px": [
+				6100,
+				4150
+			],
+			"lonlat": [
+				8.9169,
+				52.288
+			]
+		},
+		{
+			"name": "Weserbrücke Westende",
+			"px": [
+				3995,
+				4805
+			],
+			"lonlat": [
+				8.92285,
+				52.28976
+			]
+		},
+		{
+			"name": "Weserbrücke Ostende (Weserturm)",
+			"px": [
+				3246,
+				4660
+			],
+			"lonlat": [
+				8.9251,
+				52.28956
+			]
+		}
+	]
+}

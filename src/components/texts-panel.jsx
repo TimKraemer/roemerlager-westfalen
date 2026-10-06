@@ -439,7 +439,7 @@ export function TextChip() {
 			sx={{
 				position: "absolute",
 				// Handy: unter der Suchleiste, sonst mittig im Platz rechts davon
-				top: { xs: 64, md: 16 },
+				top: { xs: "calc(64px + env(safe-area-inset-top))", md: 16 },
 				left: { xs: "50%", md: "calc(50% + 186px)" },
 				transform: "translateX(-50%)",
 				zIndex: 2,

@@ -1,6 +1,7 @@
 "use client"
 
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
+import ExploreIcon from "@mui/icons-material/Explore"
 import HistoryEduIcon from "@mui/icons-material/HistoryEdu"
 import LayersIcon from "@mui/icons-material/Layers"
 import MenuBookIcon from "@mui/icons-material/MenuBook"
@@ -18,9 +19,11 @@ import {
 import dynamic from "next/dynamic"
 import { useCallback, useRef } from "react"
 import { usePotential } from "@/lib/potential/use-potential"
+import { centerOffset, DESKTOP_QUERY } from "@/lib/sheet"
 import { useMapStore } from "@/store/use-map-store"
 import AnalysisPanel from "./analysis-panel"
-import EasyPanel from "./easy-panel"
+import BottomSheet from "./bottom-sheet"
+import EasyPanel, { EasyContent } from "./easy-panel"
 import { InfoCards } from "./info-cards"
 import LayerPanel from "./layer-panel"
 import SearchBox from "./search-box"
@@ -43,15 +46,53 @@ const TABS = [
 	{ id: "sources", label: "Quellen", icon: <MenuBookIcon fontSize="small" /> },
 ]
 
+// Auf dem Handy gibt es keine schwebende Startkarte, sie wird zum ersten Reiter
+const MOBILE_TABS = [
+	{ id: "start", label: "Start", icon: <ExploreIcon fontSize="small" /> },
+	...TABS,
+]
+
+function PanelTabs({ tabs, value, onSelect }) {
+	return (
+		<Tabs
+			value={tabs.some((t) => t.id === value) ? value : false}
+			variant="fullWidth"
+			sx={{ borderBottom: 1, borderColor: "divider", minHeight: 56 }}
+		>
+			{tabs.map((t) => (
+				<Tab
+					key={t.id}
+					value={t.id}
+					icon={t.icon}
+					label={t.label}
+					// onClick statt onChange, damit auch der aktive Reiter reagiert
+					onClick={() => onSelect(t.id)}
+					sx={{
+						minHeight: 56,
+						minWidth: 0,
+						px: 0.5,
+						fontSize: 11,
+						textTransform: "none",
+						py: 0.5,
+					}}
+				/>
+			))}
+		</Tabs>
+	)
+}
+
 export default function AppShell() {
 	const mapRef = useRef(null)
 	const tab = useMapStore((s) => s.panelTab)
 	const setTab = useMapStore((s) => s.setPanelTab)
-	const desktop = useMediaQuery("(min-width: 900px)", { noSsr: true })
+	const desktop = useMediaQuery(DESKTOP_QUERY, { noSsr: true })
 	const open = useMapStore((s) => s.panelOpen)
 	const setOpen = useMapStore((s) => s.setPanelOpen)
+	const sheetFrac = useMapStore((s) => s.sheetFrac)
+	const setSheetFrac = useMapStore((s) => s.setSheetFrac)
 	// Solange eine Textstelle gezeigt wird, hat sie die Karte für sich
 	const textShown = useMapStore((s) => Boolean(s.selectedText))
+	const hasCard = useMapStore((s) => Boolean(s.selectedSite || s.inspect))
 
 	const onMapReady = useCallback((map) => {
 		mapRef.current = map
@@ -61,98 +102,142 @@ export default function AppShell() {
 
 	const flyTo = useCallback(
 		(lon, lat, zoom = 14) => {
-			mapRef.current?.flyTo({ center: [lon, lat], zoom })
-			if (!desktop) setOpen(false)
+			// Auf dem Handy das Sheet so weit senken, dass das Ziel zu sehen ist
+			if (!desktop) {
+				const s = useMapStore.getState()
+				if (s.sheetFrac > 0.45) s.setSheetFrac(0.45)
+			}
+			mapRef.current?.flyTo({
+				center: [lon, lat],
+				zoom,
+				offset: centerOffset(),
+			})
 		},
-		[desktop, setOpen],
+		[desktop],
 	)
 
-	const panel = (
-		<Box
-			sx={{
-				width: desktop ? WIDTH : "min(92vw, 380px)",
-				display: "flex",
-				flexDirection: "column",
-				height: "100%",
-			}}
-		>
-			<Box
-				sx={{ px: 2, pt: 2, pb: 1, display: "flex", alignItems: "flex-start" }}
-			>
-				<Box sx={{ flex: 1 }}>
-					<Typography variant="h6" sx={{ lineHeight: 1.2 }}>
-						Römerlager in Westfalen
-					</Typography>
-					<Typography variant="caption" color="text.secondary">
-						Ebenen, Modell-Einstellungen und Quellen
-					</Typography>
-				</Box>
-				<IconButton
-					size="small"
-					onClick={() => setOpen(false)}
-					aria-label="Seitenleiste einklappen"
-				>
-					<ChevronLeftIcon />
-				</IconButton>
-			</Box>
-			<Tabs
-				value={tab}
-				onChange={(_, v) => setTab(v)}
-				variant="fullWidth"
-				sx={{ borderBottom: 1, borderColor: "divider", minHeight: 56 }}
-			>
-				{TABS.map((t) => (
-					<Tab
-						key={t.id}
-						value={t.id}
-						icon={t.icon}
-						label={t.label}
-						sx={{
-							minHeight: 56,
-							minWidth: 0,
-							fontSize: 11,
-							textTransform: "none",
-							py: 0.5,
-						}}
-					/>
-				))}
-			</Tabs>
-			<Box
-				sx={{ flex: 1, overflowY: "auto", overflowX: "hidden", px: 2, pb: 3 }}
-			>
-				{tab === "layers" && <LayerPanel />}
-				{tab === "sites" && <SitesPanel />}
-				{tab === "analysis" && (
-					<AnalysisPanel onAnalyze={analyze} onFlyTo={flyTo} />
-				)}
-				{tab === "texts" && <TextsPanel />}
-				{tab === "sources" && <SourcesPanel />}
-			</Box>
-		</Box>
+	const content = (id) => (
+		<>
+			{id === "start" && <EasyContent onFlyTo={flyTo} heading />}
+			{id === "layers" && <LayerPanel onFlyTo={flyTo} />}
+			{id === "sites" && <SitesPanel />}
+			{id === "analysis" && (
+				<AnalysisPanel onAnalyze={analyze} onFlyTo={flyTo} />
+			)}
+			{id === "texts" && <TextsPanel />}
+			{id === "sources" && <SourcesPanel />}
+		</>
 	)
 
+	const select = (id) => {
+		// Auf dem Handy macht eine offene Infokarte dem gewählten Reiter Platz
+		if (hasCard) {
+			const s = useMapStore.getState()
+			s.setSelectedSite(null)
+			s.setInspect(null)
+		}
+		setTab(id)
+		setOpen(true)
+	}
+
+	// Die Übersicht ist am Desktop die schwebende Karte, kein Reiter
+	const deskTab = tab === "start" ? "layers" : tab
+
+	// Karte bleibt beim Wechsel zwischen Handy- und Desktopansicht dasselbe
+	// Element, sonst würde sie neu aufgebaut
 	return (
 		<Box sx={{ display: "flex", height: "100dvh" }}>
-			<Drawer
-				variant={desktop ? "persistent" : "temporary"}
-				open={open}
-				onClose={() => setOpen(false)}
-				ModalProps={desktop ? undefined : { keepMounted: true }}
-				sx={{
-					width: desktop && open ? WIDTH : 0,
-					flexShrink: 0,
-					transition: "width 200ms ease-out",
-					"& .MuiDrawer-paper": { width: desktop ? WIDTH : "auto" },
-				}}
+			{desktop && (
+				<Drawer
+					variant="persistent"
+					open={open}
+					sx={{
+						width: open ? WIDTH : 0,
+						flexShrink: 0,
+						transition: "width 200ms ease-out",
+						"& .MuiDrawer-paper": { width: WIDTH },
+					}}
+				>
+					<Box
+						sx={{
+							width: WIDTH,
+							display: "flex",
+							flexDirection: "column",
+							height: "100%",
+						}}
+					>
+						<Box
+							sx={{
+								px: 2,
+								pt: 2,
+								pb: 1,
+								display: "flex",
+								alignItems: "flex-start",
+							}}
+						>
+							<Box sx={{ flex: 1 }}>
+								<Typography variant="h6" sx={{ lineHeight: 1.2 }}>
+									Römerlager in Westfalen
+								</Typography>
+								<Typography variant="caption" color="text.secondary">
+									Ebenen, Modell-Einstellungen und Quellen
+								</Typography>
+							</Box>
+							<IconButton
+								size="small"
+								onClick={() => setOpen(false)}
+								aria-label="Seitenleiste einklappen"
+							>
+								<ChevronLeftIcon />
+							</IconButton>
+						</Box>
+						<PanelTabs tabs={TABS} value={deskTab} onSelect={setTab} />
+						<Box
+							sx={{
+								flex: 1,
+								overflowY: "auto",
+								overflowX: "hidden",
+								px: 2,
+								pb: 3,
+							}}
+						>
+							{content(deskTab)}
+						</Box>
+					</Box>
+				</Drawer>
+			)}
+			<Box
+				component="main"
+				sx={{ position: "relative", flex: 1, minWidth: 0, overflow: "hidden" }}
 			>
-				{panel}
-			</Drawer>
-			<Box component="main" sx={{ position: "relative", flex: 1, minWidth: 0 }}>
 				<MapView onMapReady={onMapReady} />
 				<SearchBox getMap={getMap} desktop={desktop} />
-				{!open && !textShown && <EasyPanel onFlyTo={flyTo} />}
-				<InfoCards />
+				{desktop && !open && !textShown && <EasyPanel onFlyTo={flyTo} />}
+				{desktop && <InfoCards />}
 				<TextChip />
+				{!desktop && (
+					<BottomSheet
+						open={open}
+						frac={sheetFrac}
+						onChange={(next) => {
+							setSheetFrac(next.frac)
+							setOpen(next.open)
+						}}
+						header={
+							<PanelTabs
+								tabs={MOBILE_TABS}
+								value={hasCard ? false : tab}
+								onSelect={select}
+							/>
+						}
+					>
+						{hasCard ? (
+							<InfoCards embedded />
+						) : (
+							<Box sx={{ px: 2, pb: 3 }}>{content(tab)}</Box>
+						)}
+					</BottomSheet>
+				)}
 			</Box>
 		</Box>
 	)

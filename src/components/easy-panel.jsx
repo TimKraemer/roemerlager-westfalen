@@ -14,7 +14,6 @@ import {
 	Skeleton,
 	Stack,
 	Typography,
-	useMediaQuery,
 } from "@mui/material"
 import { useState } from "react"
 import { SHORT_CREDIT } from "@/lib/citation"
@@ -106,7 +105,7 @@ function Legend() {
 						outline: "1px solid #fff",
 					}}
 				/>,
-				"Natürlicher Flusslauf (aus dem Gelände, ohne Kanäle)",
+				"Flusslauf vor der Begradigung (Lippe, Weser und Ems wie um 1840, sonst aus dem Gelände)",
 			)}
 			{item(
 				<Box sx={{ width: 22, borderTop: "2px dashed #6a1b9a" }} />,
@@ -116,14 +115,11 @@ function Legend() {
 	)
 }
 
-export default function EasyPanel({ onFlyTo }) {
+/** Erklärung, Legende und die wahrscheinlichsten Orte. */
+export function EasyContent({ onFlyTo, heading = false }) {
 	const result = useMapStore((s) => s.result)
-	const setPanelOpen = useMapStore((s) => s.setPanelOpen)
 	const setInspect = useMapStore((s) => s.setInspect)
 	const setSelectedSite = useMapStore((s) => s.setSelectedSite)
-	// Auf dem Handy eingeklappt starten, damit die Karte sichtbar bleibt
-	const desktop = useMediaQuery("(min-width: 900px)", { noSsr: true })
-	const [collapsed, setCollapsed] = useState(!desktop)
 
 	const top = rankedCandidates(result)
 		.filter((c) => c.rank)
@@ -136,15 +132,105 @@ export default function EasyPanel({ onFlyTo }) {
 	}
 
 	return (
+		<>
+			{heading && (
+				<Box sx={{ pt: 1.5 }}>
+					<Typography variant="h6" sx={{ lineHeight: 1.2 }}>
+						Mögliche Marschlager-Positionen
+					</Typography>
+					<Typography variant="caption" color="text.secondary">
+						Errechnete Werte für den {DEFAULT_REGION.label}
+					</Typography>
+				</Box>
+			)}
+			<Typography variant="body2" sx={{ mt: 1 }}>
+				Auf ihren Feldzügen bauten die römischen Legionen nach jedem Tagesmarsch
+				ein befestigtes Nachtlager, etwa alle 20 km, meist etwas erhöht und nahe
+				am Wasser. Im Kreis ist bisher nur eines bekannt, in Porta
+				Westfalica-Barkhausen. Die Karte zeigt, wo weitere gelegen haben
+				könnten.
+			</Typography>
+
+			<Legend />
+
+			<Typography
+				variant="overline"
+				color="text.secondary"
+				component="div"
+				sx={{ mt: 1.5 }}
+			>
+				Die wahrscheinlichsten Orte
+			</Typography>
+			{!result ? (
+				<Stack spacing={0.5}>
+					{[0, 1, 2].map((i) => (
+						<Skeleton key={i} height={36} />
+					))}
+				</Stack>
+			) : (
+				<List dense disablePadding>
+					{top.map((c) => (
+						<ListItemButton
+							key={c.index}
+							onClick={() => open(c, c.rank)}
+							sx={{ borderRadius: 1, px: 1 }}
+						>
+							<Box
+								sx={{
+									width: 22,
+									height: 22,
+									mr: 1.5,
+									flexShrink: 0,
+									borderRadius: "50%",
+									border: "2px solid #d84315",
+									color: "#d84315",
+									fontSize: 12,
+									fontWeight: 700,
+									display: "flex",
+									alignItems: "center",
+									justifyContent: "center",
+								}}
+							>
+								{c.rank}
+							</Box>
+							<ListItemText
+								primary={
+									placeLabel(result.places, c.lon, c.lat) ?? `Ort ${c.rank}`
+								}
+								secondary={`Wahrscheinlichkeit ${level(c.score)}`}
+							/>
+						</ListItemButton>
+					))}
+				</List>
+			)}
+
+			<Typography
+				variant="caption"
+				color="text.secondary"
+				component="p"
+				sx={{ mt: 1 }}
+			>
+				{SHORT_CREDIT}
+			</Typography>
+		</>
+	)
+}
+
+/** Schwebende Startkarte am Desktop. */
+export default function EasyPanel({ onFlyTo }) {
+	const setPanelOpen = useMapStore((s) => s.setPanelOpen)
+	const [collapsed, setCollapsed] = useState(false)
+
+	return (
 		<Paper
 			elevation={4}
 			sx={{
 				position: "absolute",
-				left: { xs: 12, md: 16 },
+				left: 16,
 				// Unter der Suchleiste
-				top: { xs: 64, md: 72 },
+				top: 72,
 				width: 340,
-				maxWidth: { xs: "calc(100vw - 24px)", md: "calc(100vw - 32px)" },
+				maxWidth: "calc(100vw - 32px)",
 				maxHeight: "calc(100dvh - 176px)",
 				overflow: "auto",
 				p: 2,
@@ -169,79 +255,7 @@ export default function EasyPanel({ onFlyTo }) {
 				</IconButton>
 			</Stack>
 
-			{!collapsed && (
-				<>
-					<Typography variant="body2" sx={{ mt: 1 }}>
-						Auf ihren Feldzügen bauten die römischen Legionen nach jedem
-						Tagesmarsch ein befestigtes Nachtlager, etwa alle 20 km, meist etwas
-						erhöht und nahe am Wasser. Im Kreis ist bisher nur eines bekannt, in
-						Porta Westfalica-Barkhausen. Die Karte zeigt, wo weitere gelegen
-						haben könnten.
-					</Typography>
-
-					<Legend />
-
-					<Typography
-						variant="overline"
-						color="text.secondary"
-						component="div"
-						sx={{ mt: 1.5 }}
-					>
-						Die wahrscheinlichsten Orte
-					</Typography>
-					{!result ? (
-						<Stack spacing={0.5}>
-							{[0, 1, 2].map((i) => (
-								<Skeleton key={i} height={36} />
-							))}
-						</Stack>
-					) : (
-						<List dense disablePadding>
-							{top.map((c) => (
-								<ListItemButton
-									key={c.index}
-									onClick={() => open(c, c.rank)}
-									sx={{ borderRadius: 1, px: 1 }}
-								>
-									<Box
-										sx={{
-											width: 22,
-											height: 22,
-											mr: 1.5,
-											flexShrink: 0,
-											borderRadius: "50%",
-											border: "2px solid #d84315",
-											color: "#d84315",
-											fontSize: 12,
-											fontWeight: 700,
-											display: "flex",
-											alignItems: "center",
-											justifyContent: "center",
-										}}
-									>
-										{c.rank}
-									</Box>
-									<ListItemText
-										primary={
-											placeLabel(result.places, c.lon, c.lat) ?? `Ort ${c.rank}`
-										}
-										secondary={`Wahrscheinlichkeit ${level(c.score)}`}
-									/>
-								</ListItemButton>
-							))}
-						</List>
-					)}
-
-					<Typography
-						variant="caption"
-						color="text.secondary"
-						component="p"
-						sx={{ mt: 1 }}
-					>
-						{SHORT_CREDIT}
-					</Typography>
-				</>
-			)}
+			{!collapsed && <EasyContent onFlyTo={onFlyTo} />}
 
 			<Button
 				fullWidth

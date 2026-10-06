@@ -1,0 +1,74 @@
+{
+	"id": "1891-wegekarte-luebbecke",
+	"file": "1891.png",
+	"year": 1891,
+	"title": "Wegekarte der Provinz Westfalen, Blatt 15: Regierungs-Bezirk Minden, Kreis Lübbecke",
+	"short": "Wegekarte Kreis Lübbecke",
+	"author": "Verlag von Max Pasch, Berlin SW; Geogr. lith. Inst. u. Steindr. v. Wilhelm Greve, Kgl. Hoflith., Berlin; Maßstab 1:80 000, 2te Auflage",
+	"accuracy": "Gradnetz (Länge östlich Ferro), 4 Schnittpunkte, Ortszeichen meist innerhalb etwa 50–100 m",
+	"method": "poly1",
+	"mask": [
+		[
+			188,
+			283
+		],
+		[
+			4948,
+			271
+		],
+		[
+			4960,
+			5432
+		],
+		[
+			200,
+			5445
+		]
+	],
+	"gcps": [
+		{
+			"name": "Gradnetz 26° 52°30' Ferro",
+			"px": [
+				563.5,
+				867.5
+			],
+			"ferro": [
+				26.0,
+				52.5
+			]
+		},
+		{
+			"name": "Gradnetz 26°15' 52°30' Ferro",
+			"px": [
+				3179,
+				857
+			],
+			"ferro": [
+				26.25,
+				52.5
+			]
+		},
+		{
+			"name": "Gradnetz 26° 52°20' Ferro",
+			"px": [
+				568.5,
+				3706
+			],
+			"ferro": [
+				26.0,
+				52.333333
+			]
+		},
+		{
+			"name": "Gradnetz 26°15' 52°20' Ferro",
+			"px": [
+				3184.5,
+				3702.5
+			],
+			"ferro": [
+				26.25,
+				52.333333
+			]
+		}
+	]
+}

@@ -52,6 +52,8 @@ export const DEFAULT_PARAMS = {
 	cellMeters: 200,
 	// "dem": Gewässernetz aus dem Höhenmodell, "osm": OpenStreetMap
 	waterSource: "dem",
+	// Lippe, Rhein, Ems usw. im alten Lauf (Uraufnahme, römerzeitlich) statt heute
+	oldRivers: true,
 	streamKm2: 2,
 	riverKm2: 150,
 	ringMean: 19000,
