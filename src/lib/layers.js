@@ -390,7 +390,7 @@ export const OVERLAYS = [
 		kind: "timewald",
 		group: HISTORIC_GROUP,
 		label: "Wald",
-		note: "Um 1840 die Waldflächen der Preußischen Uraufnahme (Landesamt für Natur, Umwelt und Klima NRW, nur NRW). Heute Wald aus OpenStreetMap, dazu der Umriss von 1840: Wo beides zusammenfällt, liegen historisch alte Waldstandorte.",
+		note: "Um 1840 die Waldflächen der Preußischen Uraufnahme (Landesamt für Natur, Umwelt und Klima NRW, nur NRW). Um 1900 dieselben Flächen unverändert, weil es für diese Zeit keine Walddaten gibt, der damalige Wald ist also unklar. Heute Wald aus OpenStreetMap, dazu der Umriss von 1840: Wo beides zusammenfällt, liegen historisch alte Waldstandorte.",
 		attribution: `© LANUK NRW, ${OSM}`,
 		opacity: 0.55,
 	},

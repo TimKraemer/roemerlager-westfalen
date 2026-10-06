@@ -240,7 +240,10 @@ Wald um 1840 kommt aus dem Datensatz „Waldflächen in Nordrhein-Westfalen
 während der Preußischen Uraufnahme“ des Landesamts für Natur, Umwelt und
 Klima (`scripts/altkarten/wald.sh` lädt das GeoPackage und schneidet es
 zu), heute aus OpenStreetMap. Im Stand „heute“ liegen die Umrisse von 1840
-über dem heutigen Wald. Orte um 1840 gibt es nicht als amtliche Daten, und
+über dem heutigen Wald. Für die Zeit um 1900 gibt es keinen solchen
+Datensatz, der Stand „um 1900“ zeigt deshalb die Flächen von 1840
+unverändert. Wie viel Wald bis 1900 gerodet oder aufgeforstet wurde, ist
+damit offen. Orte um 1840 gibt es nicht als amtliche Daten, und
 die Uraufnahme färbt Häuser je Blatt anders (teils rot, teils schwarz), eine
 automatische Erkennung war nicht verlässlich.
 

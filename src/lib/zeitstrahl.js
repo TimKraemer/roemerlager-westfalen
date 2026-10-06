@@ -31,7 +31,9 @@ export const STANDS = [
 		label: "um 1900",
 		maps: ["alt-1904-kdr-luebbecke", "neuaufnahme"],
 		water: "kdr1904",
-		note: "Gewässer und Gräben aus der Karte des Deutschen Reiches 1904, nur Blatt Lübbecke (westlicher Kreis).",
+		// Für 1900 gibt es keine Walddaten, die Flächen von 1840 stehen ein
+		wald: ["ura"],
+		note: "Gewässer und Gräben aus der Karte des Deutschen Reiches 1904, nur Blatt Lübbecke (westlicher Kreis). Der Wald ist unverändert aus der Uraufnahme um 1840 übernommen, weil es für die Zeit um 1900 keine Walddaten gibt. Wo damals wirklich Wald stand, ist unklar.",
 	},
 	{
 		id: "heute",
