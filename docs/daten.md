@@ -172,8 +172,7 @@ Uraufnahme landen in `node_modules/.cache/uraufnahme`.
 Die Altkarten (Kreiskarte Lübbecke 1844, Karte des Deutschen Reiches 1904)
 sind entzerrte Scans historischer Karten. Das Projekt führt nur Karten, aus
 denen das Modell Moore oder Gewässer liest. Dreizehn weitere Karten von 1650
-bis 1898 und die Ebenen TK25 1936–1945 und Luftbilder der 1950er stehen im
-Git-Tag `vor-trennung`. Weder die Scans noch die daraus gerechneten Kacheln
+bis 1898 und die Ebene TK25 1936–1945 stehen im Git-Tag `vor-trennung`. Weder die Scans noch die daraus gerechneten Kacheln
 liegen im Repository, nur die Passpunkte (`scripts/altkarten/gcp/`) und das
 Verzeichnis (`src/data/altkarten.json`). Ohne Kacheln blendet die App diese
 Karten in der Gruppe „Historische Karten“ und im Zeitstrahl aus.

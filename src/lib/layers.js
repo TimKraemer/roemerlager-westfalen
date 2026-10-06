@@ -330,6 +330,21 @@ export const OVERLAYS = [
 		minzoom: 10.5,
 	},
 	{
+		id: "hist-dop",
+		bounds: NRW,
+		jump: [7.62, 51.96, 13],
+		group: HISTORIC_GROUP,
+		year: 1951,
+		label: "Luftbilder der 1950er (NRW)",
+		note: "Befliegungen 1951–1958, Bewuchsmerkmale vor der Bebauung",
+		wms: "https://www.wms.nrw.de/geobasis/wms_nw_hist_dop",
+		layers: [1958, 1957, 1956, 1955, 1954, 1953, 1952, 1951]
+			.map((y) => `nw_hist_dop_${y}`)
+			.join(","),
+		attribution: GEOBASIS_NRW,
+		opacity: 1,
+	},
+	{
 		id: "bodendenkmal-nrw",
 		bounds: NRW,
 		jump: [6.45, 51.66, 12],
