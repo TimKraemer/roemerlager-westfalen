@@ -136,7 +136,8 @@ zustand, Bun und Biome. JavaScript ohne TypeScript.
 | Pfad | Inhalt |
 |------|--------|
 | `src/config.js` | Unterpfad, Kacheldienste, Zitierangaben |
-| `src/data/` | Fundstellen, Quellen, Texte, Römerstraßen, alte Flussläufe, Altkarten |
+| `src/data/` | Fundstellen, Quellen, Literatur (CSL-JSON), Texte, Römerstraßen, alte Flussläufe, Altkarten |
+| `src/lib/literature.js`, `cite.js`, `layer-sources.js` | Literaturverweise auflösen, Zitierstile und Exporte, Quellen je Kartenebene |
 | `src/lib/potential/` | Rechenmodell (`model.js`), Rechenkette (`pipeline.js`), Gewässernetz, Routen, Linienerkennung, Web Worker |
 | `src/lib/layers.js` | Grundkarten und zuschaltbare Ebenen |
 | `src/lib/regions.js` | Vorberechnete Regionen und Marschwege-Netz |
@@ -144,6 +145,7 @@ zustand, Bun und Biome. JavaScript ohne TypeScript.
 | `src/components/` | Karte, Seitenleiste, Info-Karten, Suche |
 | `scripts/` | Vorberechnung, Gegenprobe und Bau der Datensätze |
 | `public/precomputed/` | Vorberechnete Ergebnisse |
+| `public/csl/` | Zitierstile (Citation Style Language) |
 | `deploy/` | Deploy-Skript, nginx-Konfiguration, Beispielserver |
 | `docs/` | Methode ([modell.md](docs/modell.md)) sowie Daten, Herkunft und Lizenzen ([daten.md](docs/daten.md)) |
 
@@ -161,11 +163,37 @@ Grenzen stehen in [docs/modell.md](docs/modell.md).
 
 ## Zitieren
 
-Krämer, Tim (2026): Römerlager in Westfalen. Potenzialkarte für unentdeckte
-Marschlager. Online: https://experiments.erleben.app/roemer/ (abgerufen am
-…). Quelltext: https://github.com/TimKraemer/roemerlager-westfalen
+Der Reiter „Quellen“ zeigt den Zitiervorschlag in den Stilen des Deutschen
+Archäologischen Instituts (DAI), DIN 1505-2, APA 7, Chicago und Harvard und
+liefert ihn als BibTeX, BibLaTeX, RIS und CSL-JSON. Beim Kopieren bleibt die
+Kursivschrift erhalten, wenn man in Word oder LibreOffice einfügt. Jede
+Kartenebene hat unter „Quellen und zitieren“ eigene Angaben. Ebenen, die die
+Anwendung selbst erzeugt (Potenzialkarte, Marschwege, entzerrte Altkarten
+usw.), werden als Teil dieses Werks zitiert, zusammen mit den Daten und
+Methoden, aus denen sie entstehen. Fremde Kartendienste nennen ihren
+Anbieter. Das ganze Literaturverzeichnis lässt sich dort als `.bib` oder
+`.ris` herunterladen.
 
-Maschinenlesbar in [CITATION.cff](CITATION.cff). GitHub zeigt dazu rechts
+APA 7:
+
+> Krämer, T. (2026). Römerlager in Westfalen. Potenzialkarte für unentdeckte
+> Marschlager (Version 0.1.0) [Software]. https://experiments.erleben.app/roemer/
+
+BibLaTeX (mit biber):
+
+```bibtex
+@software{kraemer2026roemerlager,
+	author = {Krämer, Tim},
+	date = {2026},
+	title = {Römerlager in {Westfalen}. {Potenzialkarte} für unentdeckte {Marschlager}},
+	version = {0.1.0},
+	url = {https://experiments.erleben.app/roemer/},
+	urldate = {2026-10-06},
+}
+```
+
+Quelltext: https://github.com/TimKraemer/roemerlager-westfalen.
+Maschinenlesbar in [CITATION.cff](CITATION.cff), GitHub zeigt dazu rechts
 „Cite this repository“.
 
 ## Lizenz
@@ -175,6 +203,7 @@ Maschinenlesbar in [CITATION.cff](CITATION.cff). GitHub zeigt dazu rechts
 - Daten aus OpenStreetMap (Ortsverzeichnis, Gebiete, Flussläufe, Kreisgrenze): [ODbL 1.0](https://opendatacommons.org/licenses/odbl/), © OpenStreetMap-Mitwirkende
 - Altkarten-Scans: je nach Archiv Public Domain Mark oder CC BY-SA 4.0
 - 3D-Modell Oberaden: © erleben.app, alle Rechte vorbehalten
+- Zitierstile in `public/csl/` aus dem CSL-Projekt: [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/deed.de), DAI-Stil angepasst
 
 Die Aufstellung je Datei steht in [docs/daten.md](docs/daten.md).
 

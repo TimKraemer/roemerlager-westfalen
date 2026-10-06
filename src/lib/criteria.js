@@ -12,12 +12,12 @@ export const CRITERIA_SOURCES = {
 		{
 			label:
 				"LWL 2023: Marschlager im Abstand von Tagesmärschen (rund 20 km), Paderborn",
-			url: "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=57212",
+			ref: "lwl2023paderborn",
 		},
 		{
 			label:
 				"LWL-Blog 2022 (Jüngerich): etwa 20 km am Tag mit rund 48 kg Gepäck, Lager an der Lippe je einen Tagesmarsch auseinander",
-			url: "https://zeitmaschine.lwl.org/de/blog-neues-wissen-uber-alte-dinge/das-grosse-graben/",
+			ref: "juengerich2022",
 		},
 		{
 			label:
@@ -29,7 +29,7 @@ export const CRITERIA_SOURCES = {
 		{
 			label:
 				"Kaye 2013: 307 Marschlager in Britannien, 60 % bis 100 m und 90 % bis 300 m vom Fluss",
-			url: "https://zenodo.org/records/839026",
+			ref: "kaye2013",
 		},
 		{
 			label:
@@ -72,23 +72,23 @@ export const CRITERIA_SOURCES = {
 	slope: [
 		{
 			label: "Kaye 2013: Hangneigung und Geländeform als Standortfaktoren",
-			url: "https://zenodo.org/records/839026",
+			ref: "kaye2013",
 		},
 		{
 			label: "Jones 2011: Roman Camps in Scotland (frei verfügbar)",
-			url: "https://books.socantscot.org/digital-books/catalog/book/26",
+			ref: "jones2011",
 		},
 	],
 	route: [
 		{
 			label:
 				"Tobler 1993: Wanderfunktion, Gehgeschwindigkeit über Hangneigung (NCGIA TR 93-1)",
-			url: "https://escholarship.org/uc/item/05r820mz",
+			ref: "tobler1993",
 		},
 		{
 			label:
 				"Omroep Gelderland 2024: Suche nach Marschlagern auf der Veluwe über Tagesmarsch-Abstände und Laserscan",
-			url: "https://www.gld.nl/nieuws/8107238/romeinen-op-de-veluwe-jazeker-en-veel-vaker-dan-we-dachten",
+			ref: "gld2024",
 		},
 		{
 			label:
@@ -99,11 +99,11 @@ export const CRITERIA_SOURCES = {
 	moor: [
 		{
 			label: "GD NRW: Bodenkarte BK50, Bodentyp (Hoch- und Niedermoor)",
-			url: "https://www.wms.nrw.de/gd/bk050?SERVICE=WMS&REQUEST=GetCapabilities",
+			ref: "gd-bk50",
 		},
 		{
 			label: "LBEG: GUM50, ursprüngliche Moorverbreitung in Niedersachsen",
-			url: "https://nibis.lbeg.de/cardomap3/",
+			ref: "lbeg-gum50",
 		},
 		{
 			label: "Tacitus, Annalen 1,61–63: Bohlenwege (pontes longi) durch Moore",
@@ -113,11 +113,11 @@ export const CRITERIA_SOURCES = {
 	wet: [
 		{
 			label: "Beven & Kirkby 1979: Topographischer Feuchteindex (TWI)",
-			url: "https://doi.org/10.1080/02626667909491834",
+			ref: "beven1979",
 		},
 		{
 			label: "Kaye 2013: SAGA Wetness Index als Standortfaktor für Marschlager",
-			url: "https://zenodo.org/records/839026",
+			ref: "kaye2013",
 		},
 		{
 			label: "Vegetius 1,22: kein Feld, das von Wildbächen überschwemmt wird",

@@ -21,7 +21,7 @@ import { FACTORS } from "@/lib/potential/model"
 import { MAX_AREA_KM } from "@/lib/potential/use-potential"
 import { RING_SOURCES } from "@/lib/sites"
 import { useMapStore } from "@/store/use-map-store"
-import { SectionTitle } from "./layer-panel"
+import { SectionTitle, SourcesLink } from "./layer-panel"
 
 const km = (m) =>
 	`${(m / 1000).toLocaleString("de-DE", { maximumFractionDigits: 1 })} km`
@@ -86,6 +86,9 @@ export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
 				/>
 				<Typography variant="body2">Potenzialkarte anzeigen</Typography>
 			</Stack>
+			<Typography variant="caption" color="text.secondary" component="div">
+				<SourcesLink id="heatmap" label="Potenzialkarte" />
+			</Typography>
 			<LabeledSlider
 				label="Schwelle"
 				value={heatmap.threshold}

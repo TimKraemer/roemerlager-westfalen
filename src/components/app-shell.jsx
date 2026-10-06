@@ -23,6 +23,7 @@ import { centerOffset, DESKTOP_QUERY } from "@/lib/sheet"
 import { useMapStore } from "@/store/use-map-store"
 import AnalysisPanel from "./analysis-panel"
 import BottomSheet from "./bottom-sheet"
+import CiteDialog from "./cite-dialog"
 import EasyPanel, { EasyContent } from "./easy-panel"
 import { InfoCards } from "./info-cards"
 import LayerPanel from "./layer-panel"
@@ -239,6 +240,7 @@ export default function AppShell() {
 					</BottomSheet>
 				)}
 			</Box>
+			<CiteDialog />
 		</Box>
 	)
 }

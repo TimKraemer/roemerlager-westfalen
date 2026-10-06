@@ -38,13 +38,16 @@ export const TILES = {
 
 /**
  * Zitiervorschlag für Karte und Quellen-Reiter. Bei Änderungen auch
- * CITATION.cff anpassen. Ein Fork mit eigener Instanz setzt
+ * CITATION.cff und die Version in package.json anpassen. Ein Fork mit eigener Instanz setzt
  * NEXT_PUBLIC_SITE_URL und trägt sich hier als Autor ein.
  */
 export const CITATION = {
 	author: "Tim Krämer",
 	authorInverted: "Krämer, Tim",
+	family: "Krämer",
+	given: "Tim",
 	year: 2026,
+	version: "0.1.0",
 	title: "Römerlager in Westfalen. Potenzialkarte für unentdeckte Marschlager",
 	url: pick(
 		process.env.NEXT_PUBLIC_SITE_URL,

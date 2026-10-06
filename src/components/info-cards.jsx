@@ -21,9 +21,11 @@ import {
 	nearestSites,
 	placeLabel,
 } from "@/lib/criteria"
+import { cslOf, resolveSource } from "@/lib/literature"
 import { FACTORS } from "@/lib/potential/model"
 import { SITE_TYPE_BY_ID, SITES } from "@/lib/sites"
 import { useMapStore } from "@/store/use-map-store"
+import { openCite } from "./cite-dialog"
 
 // Desktop rechts oben, auf dem Handy als Panel am unteren Rand
 const cardSx = {
@@ -162,7 +164,7 @@ function SiteCard({ id }) {
 			</Typography>
 			{p.sources?.length > 0 && (
 				<Stack sx={{ mt: 1 }} spacing={0.25}>
-					{p.sources.map((s) => (
+					{p.sources.map(resolveSource).map((s) => (
 						<Link
 							key={s.url}
 							href={s.url}
@@ -173,6 +175,23 @@ function SiteCard({ id }) {
 							{s.label}
 						</Link>
 					))}
+					{p.sources.some((s) => s.ref) && (
+						<Link
+							component="button"
+							variant="caption"
+							sx={{ alignSelf: "flex-start" }}
+							onClick={() =>
+								openCite({
+									title: "Literatur zitieren",
+									intro: p.name,
+									items: cslOf(p.sources),
+									base: `literatur-${p.id}`,
+								})
+							}
+						>
+							Literatur zitieren (DAI, APA, BibTeX …)
+						</Link>
+					)}
 				</Stack>
 			)}
 		</CardPaper>
@@ -415,7 +434,7 @@ function InspectCard({ data }) {
 								<Stack
 									sx={{ mt: 0.5, pl: 1, borderLeft: 2, borderColor: "divider" }}
 								>
-									{CRITERIA_SOURCES[item.key].map((src) => (
+									{CRITERIA_SOURCES[item.key].map(resolveSource).map((src) => (
 										<Link
 											key={src.url + src.label}
 											href={src.url}

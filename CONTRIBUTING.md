@@ -83,8 +83,16 @@ für die Kartendarstellung kommen in `src/lib/text-geo.js` unter derselben
 
 ### Quelle für den Reiter „Quellen“
 
-Eintrag in die passende Gruppe in `src/data/quellen.json` (`label`, `url`,
-optional `note`).
+Fachliteratur, Presse und Datendienste kommen einmal nach
+`src/data/literatur.json` (CSL-JSON, Schema in [docs/daten.md](docs/daten.md#literatur)),
+am einfachsten per DOI. `https://doi.org/<DOI>` liefert mit dem Header
+`Accept: application/vnd.citationstyles.csl+json` fertiges CSL-JSON, das
+nur noch auf die Felder im Schema gekürzt wird. In `src/data/quellen.json`,
+bei einer Fundstelle oder in `src/lib/criteria.js` verweist dann
+`{ "ref": "<id>" }` darauf, optional mit `note`. Wikipedia und Projektseiten
+ohne bibliographische Angaben bekommen direkt `label` und `url`. Eine neue
+Kartenebene braucht einen Eintrag in `src/lib/layer-sources.js`, sonst
+schlägt `bun test` fehl.
 
 ### Modell ändern
 

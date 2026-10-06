@@ -18,16 +18,13 @@
 						"url": "https://de.wikipedia.org/wiki/Vetera"
 					},
 					{
-						"label": "Hanel 1995: Vetera I. Die Funde aus den römischen Lagern auf dem Fürstenberg bei Xanten. Rheinische Ausgrabungen 35",
-						"url": "https://d-nb.info/944626157"
+						"ref": "hanel1995"
 					},
 					{
-						"label": "Hanel/Song 2007: Neue Ergebnisse der Luftbildarchäologie zu den römischen Militärlagern Vetera castra I auf dem Fürstenberg bei Xanten. Germania 85, S. 349–357",
-						"url": "https://doi.org/10.11588/ger.2007.61236"
+						"ref": "hanel2007"
 					},
 					{
-						"label": "Hanel 2015: Zwischen Agrippa und Drusus. Roms Intervention am Niederrhein in den Jahren 19 und 12 v. Chr. In: „Über die Alpen und über den Rhein …“, S. 165–176",
-						"url": "https://doi.org/10.1515/9783110408300-007"
+						"ref": "hanel2015"
 					},
 					{
 						"label": "LVR, KuLaDig: Römerlager Vetera castra auf dem Fürstenberg bei Xanten",
@@ -59,16 +56,13 @@
 						"url": "https://de.wikipedia.org/wiki/Marschlager_Holsterhausen"
 					},
 					{
-						"label": "Ebel-Zepezauer 2014: Holsterhausen, Stadt Dorsten, Kreis Recklinghausen. Römerlager in Westfalen 2, 2. Aufl. (PDF)",
-						"url": "https://www.altertumskommission.lwl.org/media/filer_public/f1/f6/f1f6b8f9-6c43-4338-90a9-f6b51e812aae/rw_2_2014.pdf"
+						"ref": "ebelzepezauer2014"
 					},
 					{
-						"label": "Ebel-Zepezauer u. a. 2009: Augusteische Marschlager und Siedlungen des 1. bis 9. Jahrhunderts in Dorsten-Holsterhausen. Die Ausgrabungen 1999 bis 2002. Bodenaltertümer Westfalens 47 (Digitalisat 2023)",
-						"url": "https://doi.org/10.11588/propylaeum.1237"
+						"ref": "ebelzepezauer2009"
 					},
 					{
-						"label": "Ebel-Zepezauer 2003: Die augusteischen Marschlager in Dorsten-Holsterhausen. Germania 81, S. 539–555",
-						"url": "https://doi.org/10.11588/ger.2003.92922"
+						"ref": "ebelzepezauer2003"
 					}
 				],
 				"status": "bestätigt",
@@ -96,20 +90,16 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Haltern"
 					},
 					{
-						"label": "Aßkamp 2010: Haltern, Stadt Haltern am See, Kreis Recklinghausen. Römerlager in Westfalen 5 (PDF)",
-						"url": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
+						"ref": "asskamp2010"
 					},
 					{
-						"label": "Tremmel 2013: Die westliche Umwehrung des augusteischen Hauptlagers von Haltern. Archäologie in Westfalen-Lippe 2012 (2013), S. 62–66",
-						"url": "https://doi.org/10.11588/aiw.0.0.25988"
+						"ref": "tremmel2013"
 					},
 					{
-						"label": "von Schnurbein 1974: Die römischen Militäranlagen bei Haltern. Bericht über die Forschungen seit 1899. Bodenaltertümer Westfalens 14",
-						"url": "https://d-nb.info/750049839"
+						"ref": "schnurbein1974"
 					},
 					{
-						"label": "von Schnurbein 1981: Untersuchungen zur Geschichte der römischen Militärlager an der Lippe. Bericht der Römisch-Germanischen Kommission 62, S. 5–101",
-						"url": "https://doi.org/10.11588/berrgk.1981.1.108180"
+						"ref": "schnurbein1981"
 					}
 				],
 				"status": "bestätigt",
@@ -137,8 +127,7 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Haltern"
 					},
 					{
-						"label": "Aßkamp 2010: Haltern, Stadt Haltern am See, Kreis Recklinghausen. Römerlager in Westfalen 5 (PDF)",
-						"url": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
+						"ref": "asskamp2010"
 					}
 				],
 				"status": "bestätigt",
@@ -162,12 +151,10 @@
 				"description": "2021 über Bewuchsmerkmale und Magnetik nachgewiesen. Liegt nördlich des LWL-Römermuseums und überlappt das Hauptlager. Lage geschätzt.",
 				"sources": [
 					{
-						"label": "LWL-Pressemitteilung 06.10.2021",
-						"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=53541"
+						"ref": "lwl2021haltern"
 					},
 					{
-						"label": "Tremmel 2022: Ein neu entdecktes Marschlager der Drususfeldzüge in Haltern am See. Archäologie in Westfalen-Lippe 2021 (2022), S. 88–92",
-						"url": "https://doi.org/10.11588/aiw.2022.101086"
+						"ref": "tremmel2022"
 					}
 				],
 				"status": "bestätigt",
@@ -195,12 +182,10 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Haltern"
 					},
 					{
-						"label": "LWL-Pressemitteilung Vortrag Annaberg 2024",
-						"url": "https://www.lwl.org/pressemitteilungen/mitteilung.php?urlID=59236"
+						"ref": "lwl2024annaberg"
 					},
 					{
-						"label": "Aßkamp 2010: Haltern, Stadt Haltern am See, Kreis Recklinghausen. Römerlager in Westfalen 5 (PDF)",
-						"url": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
+						"ref": "asskamp2010"
 					}
 				],
 				"status": "bestätigt",
@@ -228,8 +213,7 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Haltern"
 					},
 					{
-						"label": "Aßkamp 2010: Haltern, Stadt Haltern am See, Kreis Recklinghausen. Römerlager in Westfalen 5 (PDF)",
-						"url": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
+						"ref": "asskamp2010"
 					}
 				],
 				"status": "bestätigt",
@@ -253,12 +237,10 @@
 				"description": "Marschlager östlich des Hauptlagers. Punkt über den Straßennamen ermittelt.",
 				"sources": [
 					{
-						"label": "Tremmel 2012: Prospektionen im augusteischen Marschlager Haltern „In der Borg“ (Ostlager). Archäologie in Westfalen-Lippe 2011 (2012), S. 89–92",
-						"url": "https://doi.org/10.11588/aiw.0.0.25120"
+						"ref": "tremmel2012c"
 					},
 					{
-						"label": "Aßkamp 2010: Haltern, Stadt Haltern am See, Kreis Recklinghausen. Römerlager in Westfalen 5 (PDF)",
-						"url": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
+						"ref": "asskamp2010"
 					}
 				],
 				"status": "bestätigt",
@@ -286,8 +268,7 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Olfen"
 					},
 					{
-						"label": "Tremmel 2012: Olfen-Sülsen. Ein neues Römerlager aus der Zeit der Drususfeldzüge. Archäologie in Westfalen-Lippe 2011 (2012), S. 86–89",
-						"url": "https://doi.org/10.11588/aiw.0.0.25119"
+						"ref": "tremmel2012b"
 					}
 				],
 				"status": "bestätigt",
@@ -315,8 +296,7 @@
 						"url": "https://de.wikipedia.org/wiki/Uferkastell_Beckinghausen"
 					},
 					{
-						"label": "Kühlborn 2011: Oberaden, Stadt Bergkamen, Kreis Unna, und Beckinghausen, Stadt Lünen, Kreis Unna. Römerlager in Westfalen 3, 2. Aufl. (PDF)",
-						"url": "https://www.altertumskommission.lwl.org/media/filer_public/c3/3f/c33f9e97-a2b3-4908-8f84-c485c50b030a/rw_32_2011.pdf"
+						"ref": "kuehlborn2011"
 					}
 				],
 				"status": "bestätigt",
@@ -344,16 +324,13 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Oberaden"
 					},
 					{
-						"label": "Kühlborn 2011: Oberaden, Stadt Bergkamen, Kreis Unna, und Beckinghausen, Stadt Lünen, Kreis Unna. Römerlager in Westfalen 3, 2. Aufl. (PDF)",
-						"url": "https://www.altertumskommission.lwl.org/media/filer_public/c3/3f/c33f9e97-a2b3-4908-8f84-c485c50b030a/rw_32_2011.pdf"
+						"ref": "kuehlborn2011"
 					},
 					{
-						"label": "Tremmel 2011: Ausgrabungen am Nordtor des Römerlagers Bergkamen-Oberaden. Archäologie in Westfalen-Lippe 2010 (2011), S. 76–78",
-						"url": "https://doi.org/10.11588/aiw.0.0.25925"
+						"ref": "tremmel2011b"
 					},
 					{
-						"label": "Kühlborn 1992: Das Römerlager in Oberaden III. Die Ausgrabungen im nordwestlichen Lagerbereich und weitere Baustellenuntersuchungen der Jahre 1962–1988. Bodenaltertümer Westfalens 27",
-						"url": "https://nwbib.de/HT004482171"
+						"ref": "kuehlborn1992"
 					}
 				],
 				"status": "bestätigt",
@@ -381,12 +358,10 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Kneblinghausen"
 					},
 					{
-						"label": "Rudnick 2014: Kneblinghausen, Stadt Rüthen, Kreis Soest. Römerlager in Westfalen 1, 2. Aufl. (PDF)",
-						"url": "https://www.altertumskommission.lwl.org/media/filer_public/f1/1a/f11a8f4c-7152-44fd-8989-20395113ad02/rw_1_2014.pdf"
+						"ref": "rudnick2014"
 					},
 					{
-						"label": "Coolen/Schmidt 2022: Von abgefahren zu abgehoben. Geomagnetik am „Römerlager“ Rüthen-Kneblinghausen. Archäologie in Westfalen-Lippe 2020 (2021), S. 255–258",
-						"url": "https://doi.org/10.11588/aiw.2021.91427"
+						"ref": "coolen2021"
 					}
 				],
 				"status": "bestätigt",
@@ -414,12 +389,10 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Anreppen"
 					},
 					{
-						"label": "Kühlborn 2014: Anreppen, Stadt Delbrück, Kreis Paderborn. Römerlager in Westfalen 4, 2. Aufl. (PDF)",
-						"url": "https://www.altertumskommission.lwl.org/media/filer_public/cd/40/cd4074b6-60d5-4bf2-a90a-9d1b6812c556/rw_4_2014.pdf"
+						"ref": "kuehlborn2014"
 					},
 					{
-						"label": "Kühlborn 2008: Die Lippetrasse. Zum Stand der archäologischen Forschungen während der Jahre 1996 bis 2006 in den augusteischen Lippelagern. In: Rom auf dem Weg nach Germanien. Bodenaltertümer Westfalens 45, S. 7–35",
-						"url": "https://nwbib.de/HT015740580"
+						"ref": "kuehlborn2008"
 					}
 				],
 				"status": "bestätigt",
@@ -443,21 +416,17 @@
 				"description": "Feldbacköfen und Amphorenscherben auf einer flachen Kuppe zwischen Pader und Riemeke, C14-datiert um Christi Geburt. Der LWL nennt es eine gut begründete Hypothese und verweist auf Tagesmärsche von rund 20 km.",
 				"sources": [
 					{
-						"label": "LWL-Pressemitteilung 23.06.2023",
-						"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=57212"
+						"ref": "lwl2023paderborn"
 					},
 					{
-						"label": "LWL-Pressemitteilung Paderborn",
-						"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=56091"
+						"ref": "lwl2023johannisstift"
 					},
 					{
-						"label": "Süße 2023: Von den Römern bis zu den Preußen. Ein multiepochaler Fundplatz in Paderborn. Archäologie in Westfalen-Lippe 2022 (2023), S. 223–227",
-						"url": "https://doi.org/10.11588/aiw.2023.108358",
+						"ref": "suesse2023",
 						"note": "Grabungsbericht des Ausgräbers"
 					},
 					{
-						"label": "Albert/Süße 2025: Geschanzt, gebacken, geschleift. Neue Befunde aus dem römischen Marschlager in Paderborn. Archäologie in Westfalen-Lippe 2024 (2025), S. 103–107",
-						"url": "https://nwbib.de/HT031404286"
+						"ref": "albert2025"
 					}
 				],
 				"status": "Verdacht mit guten Indizien",
@@ -485,12 +454,10 @@
 						"url": "https://de.wikipedia.org/wiki/Marschlager_Bielefeld-Sennestadt"
 					},
 					{
-						"label": "Tremmel/Schubert 2019: Ein neu entdecktes augusteisches Marschlager in Bielefeld-Sennestadt. Archäologie in Westfalen-Lippe 2018 (2019), S. 86–89",
-						"url": "https://doi.org/10.11588/aiw.2019.0.76852"
+						"ref": "tremmel2019"
 					},
 					{
-						"label": "LWL-Pressemitteilung 08.05.2019",
-						"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=47898"
+						"ref": "lwl2019bielefeld"
 					}
 				],
 				"status": "bestätigt",
@@ -518,8 +485,7 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6mische_Kreisgrabenanlage_auf_der_Sparrenberger_Egge"
 					},
 					{
-						"label": "Bérenger 2011: Wachtposten auf der Sparrenberger Egge, kreisfreie Stadt Bielefeld. Römerlager in Westfalen 6 (PDF)",
-						"url": "https://www.altertumskommission.lwl.org/media/filer_public/be/5e/be5e344d-ce46-49a1-a09a-6dff26620a7e/rw_6_2011.pdf"
+						"ref": "berenger2011"
 					}
 				],
 				"status": "bestätigt",
@@ -547,16 +513,13 @@
 						"url": "https://de.wikipedia.org/wiki/Marschlager_Porta_Westfalica"
 					},
 					{
-						"label": "Tremmel 2011: Augusteische Marschlager in Porta Westfalica-Barkhausen „Auf der Lake“. Archäologie in Westfalen-Lippe 2010 (2011), S. 79–81",
-						"url": "https://doi.org/10.11588/aiw.0.0.25926"
+						"ref": "tremmel2011a"
 					},
 					{
-						"label": "Tremmel 2012: Die Römer an der Weser. Das Marschlager von Porta Westfalica-Barkhausen, Mitt. Mindener Geschichtsverein 84, S. 25–33",
-						"url": "https://nwbib.de/HT018555379"
+						"ref": "tremmel2012a"
 					},
 					{
-						"label": "Tremmel 2010: Augusteische Marschlager in Porta Westfalica-Barkhausen. Archäologie in Westfalen-Lippe 2009 (2010), S. 45–47",
-						"url": "https://doi.org/10.11588/aiw.0.0.25034"
+						"ref": "tremmel2010"
 					}
 				],
 				"status": "bestätigt",
@@ -584,12 +547,10 @@
 						"url": "https://de.wikipedia.org/wiki/Fundregion_Kalkriese"
 					},
 					{
-						"label": "Härtling u. a. 2025: Germanic Rampart or Roman Encampment? New Geoarchaeological Evidence at the Roman Conflict Site at Kalkriese (NW-Germany). Geoarchaeology 40, e22031",
-						"url": "https://doi.org/10.1002/gea.22031"
+						"ref": "haertling2025"
 					},
 					{
-						"label": "Wilbers-Rost u. a. 2007: Kalkriese 3. Interdisziplinäre Untersuchungen auf dem Oberesch in Kalkriese. Römisch-Germanische Forschungen 65",
-						"url": "https://d-nb.info/985580305"
+						"ref": "wilbersrost2007"
 					}
 				],
 				"status": "bestätigt",
@@ -619,16 +580,13 @@
 						"url": "https://de.wikipedia.org/wiki/Marschlager_von_Wilkenburg"
 					},
 					{
-						"label": "Haßmann/Ortisi/Wulf 2016: Römer vor Hannover. Das augusteische Marschlager von Wilkenburg. Berichte zur Denkmalpflege in Niedersachsen 36, Heft 4, S. 190–193",
-						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=874953308"
+						"ref": "hassmann2016"
 					},
 					{
-						"label": "Berger/Wulf 2021: Zu den Funden römischer Münzen und keltischer Kleinerze aus dem augusteischen Marschlager Wilkenburg, Stadt Hemmingen. Nachrichten aus Niedersachsens Urgeschichte 90, S. 277–298",
-						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1794002367"
+						"ref": "berger2021"
 					},
 					{
-						"label": "Werz 2018: Die Kleingeldversorgung augusteischer Zeit in Gallien und Germanien. Überlegungen zu den Kleinerzen aus dem römischen Marschlager von Wilkenburg. Nachrichten aus Niedersachsens Urgeschichte 87, S. 167–182",
-						"url": "https://doi.org/10.11588/nnu.2018.1.83217"
+						"ref": "werz2018"
 					}
 				],
 				"status": "bestätigt",
@@ -656,20 +614,16 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Hedem%C3%BCnden"
 					},
 					{
-						"label": "Grote 2012: Römerlager Hedemünden. Der augusteische Stützpunkt, seine Außenanlagen, seine Funde und Befunde. Veröffentlichungen der Archäologischen Sammlungen des Landesmuseums Hannover 53",
-						"url": "https://d-nb.info/1025768752"
+						"ref": "grote2012"
 					},
 					{
-						"label": "Grote 2006: Das Römerlager im Werratal bei Hedemünden (Ldkr. Göttingen). Germania 84, S. 27–59",
-						"url": "https://doi.org/10.11588/ger.2006.76460"
+						"ref": "grote2006"
 					},
 					{
-						"label": "Grote 2007: Die Römerlager Hedemünden (Werra). Göttinger Jahrbuch 55, S. 5–17",
-						"url": "https://doi.org/10.62013/55-001"
+						"ref": "grote2007"
 					},
 					{
-						"label": "Grote 2014: Hedemünden (Lkr. Göttingen), mehr als nur ein römisches Militärlager. Archäologisches Korrespondenzblatt 44, S. 239–258",
-						"url": "https://doi.org/10.11588/ak.2014.2.28107"
+						"ref": "grote2014"
 					}
 				],
 				"status": "bestätigt",
@@ -697,20 +651,16 @@
 						"url": "https://de.wikipedia.org/wiki/Fundplatz_Bentumersiel"
 					},
 					{
-						"label": "Strahl 2011: Neue Forschungen zum germanischen „Stapelplatz“ von Bentumersiel an der unteren Ems. Siedlungs- und Küstenforschung im südlichen Nordseegebiet 34, S. 293–306",
-						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1044562315"
+						"ref": "strahl2011"
 					},
 					{
-						"label": "Siegmüller 2025: Bentumersiel an der Ems. Zusammenfassende Einordnung einer mehrphasigen Fundstelle im Landkreis Leer. Siedlungs- und Küstenforschung im südlichen Nordseegebiet 48, S. 87–164",
-						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1947834282"
+						"ref": "siegmueller2025"
 					},
 					{
-						"label": "Lau/Rau 2025: Zu einigen Fundkategorien aus dem vermeintlich römischen Landeplatz von Bentumersiel, Ldkr. Leer. Siedlungs- und Küstenforschung im südlichen Nordseegebiet 48, S. 165–272",
-						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1947836617"
+						"ref": "lau2025"
 					},
 					{
-						"label": "Ulbert 1977: Die römischen Funde von Bentumersiel. Probleme der Küstenforschung im südlichen Nordseegebiet 12, S. 33–65",
-						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=607690186"
+						"ref": "ulbert1977"
 					},
 					{
 						"label": "Niedersächsisches Institut für historische Küstenforschung: Römer und Germanen in Bentumersiel (Projektseite)",
@@ -742,20 +692,16 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6misches_Forum_Lahnau-Waldgirmes"
 					},
 					{
-						"label": "Becker/Rasbach 2015: Waldgirmes. Die Ausgrabungen in der spätaugusteischen Siedlung von Lahnau-Waldgirmes (1993–2009). 1. Befunde und Funde. Römisch-Germanische Forschungen 71",
-						"url": "https://d-nb.info/1104289040"
+						"ref": "becker2015"
 					},
 					{
-						"label": "Rasbach 2016: Waldgirmes, Deutschland. Abschluss der Arbeiten und Publikation. e-Forschungsberichte des DAI 2016, Faszikel 2, S. 28–30",
-						"url": "https://publications.dainst.org/journals/efb/article/view/1570/4469"
+						"ref": "rasbach2016"
 					},
 					{
-						"label": "von Schnurbein 2003: Augustus in Germania and his new ‘town’ at Waldgirmes east of the Rhine. Journal of Roman Archaeology 16, S. 93–107",
-						"url": "https://doi.org/10.1017/s1047759400013015"
+						"ref": "schnurbein2003"
 					},
 					{
-						"label": "Rasbach 2024: Von Bergleuten, Händlern und römischem Militär im Lahntal (D). In: H. van Enckevort u. a. (Hrsg.), Supplying the Roman Empire. Proceedings of the 25th International Congress of Roman Frontier Studies 4, S. 191–200",
-						"url": "https://doi.org/10.59641/mm723py"
+						"ref": "rasbach2024"
 					}
 				],
 				"status": "bestätigt",
@@ -783,12 +729,10 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Lahnau-Dorlar"
 					},
 					{
-						"label": "von Schnurbein/Köhler 1994: Dorlar. Ein augusteisches Römerlager im Lahntal. Germania 72, S. 193–203",
-						"url": "https://zenon.dainst.org/Record/001185913"
+						"ref": "schnurbein1994"
 					},
 					{
-						"label": "Rasbach 2024: Von Bergleuten, Händlern und römischem Militär im Lahntal (D). In: H. van Enckevort u. a. (Hrsg.), Supplying the Roman Empire. Proceedings of the 25th International Congress of Roman Frontier Studies 4, S. 191–200",
-						"url": "https://doi.org/10.59641/mm723py"
+						"ref": "rasbach2024"
 					}
 				],
 				"status": "bestätigt",
@@ -816,12 +760,10 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_R%C3%B6dgen"
 					},
 					{
-						"label": "Schönberger/Simon 1976: Römerlager Rödgen. Limesforschungen 15",
-						"url": "https://d-nb.info/760286124"
+						"ref": "schoenberger1976"
 					},
 					{
-						"label": "Schönberger 1967: Das augusteische Römerlager in Rödgen. Vorbericht über die Grabungen in den Jahren 1961 bis 1966. Germania 45, S. 84–95",
-						"url": "https://zenon.dainst.org/Record/000501108"
+						"ref": "schoenberger1967"
 					}
 				],
 				"status": "bestätigt",
@@ -845,16 +787,14 @@
 				"description": "2025 mit LiDAR-Höhendaten und Luftbildern entdeckt und ausgegraben. Nach Staatsbosbeheer wohl aus dem 2. Jh., also nicht augusteisch. Eine Studie zur Veluwe sucht weitere Lagerplätze über Tagesmarsch-Abstände und Laserscan, ein ähnlicher Ansatz wie diese Karte.",
 				"sources": [
 					{
-						"label": "Staatsbosbeheer 2025",
-						"url": "https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2025/05/ontdekking-romeins-legerkamp-nabij-hoog-buurlo"
+						"ref": "staatsbosbeheer2025"
 					},
 					{
-						"label": "Oosterbaan 2026: Onderzoek naar tijdelijk gebruikte legerkampen in Hoog-Buurlo. Forschungsdatensatz, DANS Data Station Archaeology",
-						"url": "https://doi.org/10.17026/ar/gwim9t"
+						"ref": "oosterbaan2026"
 					},
 					{
-						"label": "Omroep Gelderland 2024: Suche nach weiteren Lagerplätzen auf der Veluwe über Tagesmarsch-Abstände und Laserscan",
-						"url": "https://www.gld.nl/nieuws/8107238/romeinen-op-de-veluwe-jazeker-en-veel-vaker-dan-we-dachten"
+						"ref": "gld2024",
+						"note": "Suche nach weiteren Lagerplätzen auf der Veluwe über Tagesmarsch-Abstände und Laserscan"
 					}
 				],
 				"status": "bestätigt",
@@ -886,12 +826,11 @@
 						"url": "https://de.wikipedia.org/wiki/Marschlager_Bielefeld-Sennestadt"
 					},
 					{
-						"label": "Westfalen-Blatt 10.09.2019: Spurensuche im römischen Marschlager (Zitat Tremmel zur Vermutung bei Löhne)",
-						"url": "https://www.westfalen-blatt.de/owl/bielefeld/spurensuche-im-romischen-marschlager-976015"
+						"ref": "bollig2019",
+						"note": "Zitat Tremmel zur Vermutung bei Löhne"
 					},
 					{
-						"label": "Tremmel/Schubert 2019: Marschlager in Bielefeld-Sennestadt. Archäologie in Westfalen-Lippe 2018 (2019), S. 86–89",
-						"url": "https://doi.org/10.11588/aiw.2019.0.76852"
+						"ref": "tremmel2019"
 					}
 				]
 			},
@@ -919,8 +858,7 @@
 						"url": "https://de.wikipedia.org/wiki/Schatzfund_von_Gehrden"
 					},
 					{
-						"label": "Lehmann 2019: Der Schatzfund von Gehrden und das Römerlager Wilkenburg. In: Schatzfunde, Fundmünzen. Hannoversche Numismatische Beiträge 3, S. 239–252",
-						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1691329002"
+						"ref": "lehmann2019"
 					}
 				],
 				"waypoint": true
@@ -974,12 +912,10 @@
 						"url": "https://www.roemerfreunde-weser.info/dokumentation-r%C3%B6mischer-fundm%C3%BCnzen-aus-der-region-weserbergland.pdf"
 					},
 					{
-						"label": "Zelle 2005: Augustus' Legionen in Lippe. Lippische Mitteilungen aus Geschichte und Landeskunde 74, S. 241–279",
-						"url": "https://nwbib.de/HT014656588"
+						"ref": "zelle2005"
 					},
 					{
-						"label": "Korzus 1973: Die Fundmünzen der römischen Zeit in Deutschland VI. Nordrhein-Westfalen 6. Detmold",
-						"url": "https://d-nb.info/740081950"
+						"ref": "korzus1973"
 					}
 				],
 				"waypoint": true
@@ -1004,12 +940,10 @@
 				"description": "Solidus des Constantius II, drei Denare und ein Sesterz aus einem Citizen-Science-Projekt. Kein augusteischer Bezug.",
 				"sources": [
 					{
-						"label": "Gesellschaft zur Förderung der Bodendenkmalpflege",
-						"url": "https://www.gefbdml.de/roemische-goldmuenze-bei-costedt-gefunden-ein-spaetantiker-solidus-aus-porta-westfalica/"
+						"ref": "gefbdml-costedt"
 					},
 					{
-						"label": "Gesellschaft zur Förderung der Bodendenkmalpflege im Kreis Minden-Lübbecke 2024: Erneut römische Goldmünze bei Costedt gefunden",
-						"url": "https://www.gefbdml.de/erneut-roemische-goldmuenze-bei-costedt-gefunden-ein-spaetantiker-solidus-aus-porta-westfalica/"
+						"ref": "gefbdml2024"
 					}
 				]
 			},
@@ -1037,8 +971,7 @@
 						"url": "https://de.wikipedia.org/wiki/Idistaviso"
 					},
 					{
-						"label": "Mommsen 1885: Römische Geschichte 5, Achtes Buch, Kap. 1, Anm. 22 (Text bei zeno.org)",
-						"url": "http://www.zeno.org/Geschichte/M/Mommsen,+Theodor/R%C3%B6mische+Geschichte/F%C3%BCnfter+Band/Achtes+Buch.+L%C3%A4nder+und+Leute+von+Caesar+bis+Diocletian/Fu%C3%9Fnoten"
+						"ref": "mommsen1885"
 					}
 				]
 			},
@@ -1066,12 +999,10 @@
 						"url": "https://de.wikipedia.org/wiki/Angrivarierwall"
 					},
 					{
-						"label": "Bersu/Heimbs/Lange/Schuchhardt 1926: Der Angrivarisch-Cheruskische Grenzwall und die beiden Schlachten des Jahres 16 nach Chr. zwischen Arminius und Germanicus. Prähistorische Zeitschrift 17, S. 100–131",
-						"url": "https://doi.org/10.1515/prhz.1926.17.1.100"
+						"ref": "bersu1926"
 					},
 					{
-						"label": "Freese 1997: Neues vom Angrivarier-Wall. Berichte zur Denkmalpflege in Niedersachsen 17, Heft 3, S. 138–141",
-						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=473914557"
+						"ref": "freese1997"
 					}
 				]
 			},
@@ -1099,16 +1030,13 @@
 						"url": "https://de.wikipedia.org/wiki/Moorweg_im_Aschener_Moor_Pr_VI"
 					},
 					{
-						"label": "Fansa/Schneider 1997: Der eisenzeitliche Bohlenweg VI (Pr) im Großen Moor am Dümmer. Archäologische Mitteilungen aus Nordwestdeutschland 20, S. 41–75",
-						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=47391395X"
+						"ref": "fansa1997"
 					},
 					{
-						"label": "Heumüller/Abbentheren 2023: 2000 Jahre altes Großbauprojekt. Neue Ausgrabungen am Bohlenweg Pr VI in der Diepholzer Moorniederung. Oldenburger Münsterland 72, S. 142–155",
-						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1832805018"
+						"ref": "heumueller2023"
 					},
 					{
-						"label": "Niedersächsisches Landesamt für Denkmalpflege 2021: Eröffnung des Infopfades zum Bohlenweg Pr VI",
-						"url": "https://denkmalpflege.niedersachsen.de/aktuelles/nachrichten/eroffnung-des-infopfades-zum-bohlenweg-pr-vi-im-naturschutzgebiet-aschener-heeder-moor-204628.html"
+						"ref": "nld2021"
 					}
 				]
 			},
@@ -1136,8 +1064,7 @@
 						"url": "https://de.wikipedia.org/wiki/Kring_(Kaufunger_Wald)"
 					},
 					{
-						"label": "Grote 2012: Das augusteische Kleinlager Kring bei Oberode. In: Römerlager Hedemünden. Veröffentlichungen der Archäologischen Sammlungen des Landesmuseums Hannover 53, S. 208–217",
-						"url": "https://d-nb.info/1025768752"
+						"ref": "grote2012kring"
 					}
 				]
 			},
@@ -1165,16 +1092,13 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Oberbrechen"
 					},
 					{
-						"label": "Herrmann 2004: Numismatik und Archäologie. Vorbericht über ein neu entdecktes römisches Lager bei Oberbrechen (Kreis Limburg-Weilburg). In: R. Cunz (Hrsg.), Fundamenta historiae. Festschrift für Niklot Klüßendorf, S. 435–445",
-						"url": "https://zenon.dainst.org/Record/001030380"
+						"ref": "herrmann2004"
 					},
 					{
-						"label": "Posluschny/Schade-Lindig/Szédeli 2018: Archäologische Ausgrabung im Vorfeld der „Alteburg“ in Villmar-Weyer. hessenARCHÄOLOGIE 2017, S. 84–88",
-						"url": "https://zenon.dainst.org/Record/001563197"
+						"ref": "posluschny2018"
 					},
 					{
-						"label": "Rasbach 2024: Von Bergleuten, Händlern und römischem Militär im Lahntal (D). In: H. van Enckevort u. a. (Hrsg.), Supplying the Roman Empire. Proceedings of the 25th International Congress of Roman Frontier Studies 4, S. 191–200",
-						"url": "https://doi.org/10.59641/mm723py"
+						"ref": "rasbach2024"
 					}
 				]
 			},
@@ -1202,20 +1126,16 @@
 						"url": "https://de.wikipedia.org/wiki/Legionslager_bei_Bedburg-Hau-Till"
 					},
 					{
-						"label": "Bödecker/Held/Rung 2015: Ein temporäres Legionslager bei Till, Kapitelshof? Archäologie im Rheinland 2014 (2015), S. 98–101",
-						"url": "https://doi.org/10.11588/air.2014.0.111894"
+						"ref": "boedecker2015"
 					},
 					{
-						"label": "Englert/Bödecker 2016: Erste Grabungsergebnisse zu den neu entdeckten Lagern bei Till. Der Limes 10, Heft 1, S. 4–7",
-						"url": "https://www.deutsche-limeskommission.de/fileadmin/user_upload/Der_Limes_2016_1.pdf"
+						"ref": "englert2016a"
 					},
 					{
-						"label": "Englert/Bödecker 2016: Erste Grabungsergebnisse zu den neu entdeckten Lagern bei Till, Kapitelshof. Archäologie im Rheinland 2015, S. 108–110",
-						"url": "https://nwbib.de/990213976630206441"
+						"ref": "englert2016b"
 					},
 					{
-						"label": "Burandt 2017: Neue Grabungsergebnisse zu den römischen Lagern bei Till, Kapitelshof. Archäologie im Rheinland 2016, S. 107–109",
-						"url": "https://nwbib.de/990219934210206441"
+						"ref": "burandt2017"
 					}
 				]
 			},
@@ -1243,12 +1163,10 @@
 						"url": "https://www.romeinen.nl/weten/nederland-in-de-romeinse-tijd/gelderland-in-de-romeinse-tijd/ermelo-marskamp"
 					},
 					{
-						"label": "Hulst 2007: Het onderzoek van het Romeinse marskamp bij Ermelo-Leuvenum, Nederland. Rapportage Archeologische Monumentenzorg 146",
-						"url": "https://doi.org/10.17026/dans-xde-s9pw"
+						"ref": "hulst2007"
 					},
 					{
-						"label": "Driessen/Verschoof-van der Vaart 2024: A new Roman camp north of the Lower German Limes at Ermelo (the Netherlands). In: Supplying the Roman Empire. Proceedings of the 25th International Congress of Roman Frontier Studies 4, S. 173–180",
-						"url": "https://doi.org/10.59641/mm723py"
+						"ref": "driessen2024"
 					}
 				]
 			},
@@ -1276,12 +1194,10 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6misches_Marschlager_bei_Hachelbich"
 					},
 					{
-						"label": "Küßner 2014: Truppen in Thüringen. Nordöstlichste römische Militäranlage entdeckt. Archäologie in Deutschland 30, Heft 3, S. 6",
-						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=785789022"
+						"ref": "kuessner2014"
 					},
 					{
-						"label": "Hellwing 2016: Römische Präsenz im Südharz. Beiträge zur Geschichte aus Stadt und Landkreis Nordhausen 41, S. 21–34",
-						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=875857329"
+						"ref": "hellwing2016"
 					}
 				]
 			},
@@ -1309,12 +1225,10 @@
 						"url": "https://de.wikipedia.org/wiki/Harzhornereignis"
 					},
 					{
-						"label": "Pöppelmann u. a. (Hrsg.) 2013: Roms vergessener Feldzug. Die Schlacht am Harzhorn. Veröffentlichungen des Braunschweigischen Landesmuseums 115",
-						"url": "https://d-nb.info/1034377809"
+						"ref": "poeppelmann2013"
 					},
 					{
-						"label": "Geschwinde/Meyer/Lönne/Schatte 2025: Harzhorn. Die Archäologie eines germanisch-römischen Kampfplatzes des 3. Jahrhunderts n. Chr. Römisch-Germanische Forschungen 77",
-						"url": "https://d-nb.info/1418259640"
+						"ref": "geschwinde2025"
 					}
 				]
 			},

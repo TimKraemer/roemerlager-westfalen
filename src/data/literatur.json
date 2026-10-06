@@ -1,0 +1,2546 @@
+[
+	{
+		"id": "tremmel2010",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Tremmel",
+				"given": "Bettina"
+			}
+		],
+		"issued": {
+			"date-parts": [[2010]]
+		},
+		"title": "Augusteische Marschlager in Porta Westfalica-Barkhausen",
+		"container-title": "Archäologie in Westfalen-Lippe",
+		"volume": "2009",
+		"page": "45-47",
+		"DOI": "10.11588/aiw.0.0.25034"
+	},
+	{
+		"id": "tremmel2011a",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Tremmel",
+				"given": "Bettina"
+			}
+		],
+		"issued": {
+			"date-parts": [[2011]]
+		},
+		"title": "Augusteische Marschlager in Porta Westfalica-Barkhausen „Auf der Lake“",
+		"container-title": "Archäologie in Westfalen-Lippe",
+		"volume": "2010",
+		"page": "79-81",
+		"DOI": "10.11588/aiw.0.0.25926"
+	},
+	{
+		"id": "tremmel2011b",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Tremmel",
+				"given": "Bettina"
+			}
+		],
+		"issued": {
+			"date-parts": [[2011]]
+		},
+		"title": "Ausgrabungen am Nordtor des Römerlagers Bergkamen-Oberaden",
+		"container-title": "Archäologie in Westfalen-Lippe",
+		"volume": "2010",
+		"page": "76-78",
+		"DOI": "10.11588/aiw.0.0.25925"
+	},
+	{
+		"id": "tremmel2012a",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Tremmel",
+				"given": "Bettina"
+			}
+		],
+		"issued": {
+			"date-parts": [[2012]]
+		},
+		"title": "Die Römer an der Weser. Das Marschlager von Porta Westfalica-Barkhausen",
+		"container-title": "Mitteilungen des Mindener Geschichtsvereins",
+		"volume": "84",
+		"page": "25-33",
+		"URL": "https://nwbib.de/HT018555379"
+	},
+	{
+		"id": "tremmel2012b",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Tremmel",
+				"given": "Bettina"
+			}
+		],
+		"issued": {
+			"date-parts": [[2012]]
+		},
+		"title": "Olfen-Sülsen. Ein neues Römerlager aus der Zeit der Drususfeldzüge",
+		"container-title": "Archäologie in Westfalen-Lippe",
+		"volume": "2011",
+		"page": "86-89",
+		"DOI": "10.11588/aiw.0.0.25119"
+	},
+	{
+		"id": "tremmel2012c",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Tremmel",
+				"given": "Bettina"
+			}
+		],
+		"issued": {
+			"date-parts": [[2012]]
+		},
+		"title": "Prospektionen im augusteischen Marschlager Haltern „In der Borg“ (Ostlager)",
+		"container-title": "Archäologie in Westfalen-Lippe",
+		"volume": "2011",
+		"page": "89-92",
+		"DOI": "10.11588/aiw.0.0.25120"
+	},
+	{
+		"id": "tremmel2013",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Tremmel",
+				"given": "Bettina"
+			}
+		],
+		"issued": {
+			"date-parts": [[2013]]
+		},
+		"title": "Die westliche Umwehrung des augusteischen Hauptlagers von Haltern",
+		"container-title": "Archäologie in Westfalen-Lippe",
+		"volume": "2012",
+		"page": "62-66",
+		"DOI": "10.11588/aiw.0.0.25988"
+	},
+	{
+		"id": "tremmel2019",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Tremmel",
+				"given": "Bettina"
+			},
+			{
+				"family": "Schubert",
+				"given": "Jens"
+			}
+		],
+		"issued": {
+			"date-parts": [[2019]]
+		},
+		"title": "Ein neu entdecktes augusteisches Marschlager in Bielefeld-Sennestadt",
+		"container-title": "Archäologie in Westfalen-Lippe",
+		"volume": "2018",
+		"page": "86-89",
+		"DOI": "10.11588/aiw.2019.0.76852"
+	},
+	{
+		"id": "tremmel2022",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Tremmel",
+				"given": "Bettina"
+			}
+		],
+		"issued": {
+			"date-parts": [[2022]]
+		},
+		"title": "Ein neu entdecktes Marschlager der Drususfeldzüge in Haltern am See",
+		"container-title": "Archäologie in Westfalen-Lippe",
+		"volume": "2021",
+		"page": "88-92",
+		"DOI": "10.11588/aiw.2022.101086"
+	},
+	{
+		"id": "coolen2021",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Coolen",
+				"given": "Joris"
+			},
+			{
+				"family": "Schmidt",
+				"given": "Volkmar"
+			}
+		],
+		"issued": {
+			"date-parts": [[2021]]
+		},
+		"title": "Von abgefahren zu abgehoben. Geomagnetik am „Römerlager“ Rüthen-Kneblinghausen",
+		"container-title": "Archäologie in Westfalen-Lippe",
+		"volume": "2020",
+		"page": "255-258",
+		"DOI": "10.11588/aiw.2021.91427"
+	},
+	{
+		"id": "suesse2023",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Süße",
+				"given": "Robert"
+			}
+		],
+		"issued": {
+			"date-parts": [[2023]]
+		},
+		"title": "Von den Römern bis zu den Preußen. Ein multiepochaler Fundplatz in Paderborn",
+		"container-title": "Archäologie in Westfalen-Lippe",
+		"volume": "2022",
+		"page": "223-227",
+		"DOI": "10.11588/aiw.2023.108358"
+	},
+	{
+		"id": "albert2025",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Albert",
+				"given": "Patrick"
+			},
+			{
+				"family": "Süße",
+				"given": "Robert"
+			}
+		],
+		"issued": {
+			"date-parts": [[2025]]
+		},
+		"title": "Geschanzt, gebacken, geschleift. Neue Befunde aus dem römischen Marschlager in Paderborn",
+		"container-title": "Archäologie in Westfalen-Lippe",
+		"volume": "2024",
+		"page": "103-107",
+		"URL": "https://nwbib.de/HT031404286"
+	},
+	{
+		"id": "rudnick2014",
+		"type": "book",
+		"author": [
+			{
+				"family": "Rudnick",
+				"given": "Bernhard"
+			}
+		],
+		"issued": {
+			"date-parts": [[2014]]
+		},
+		"title": "Kneblinghausen, Stadt Rüthen, Kreis Soest",
+		"collection-title": "Römerlager in Westfalen",
+		"collection-number": "1",
+		"edition": "2",
+		"publisher": "Altertumskommission für Westfalen",
+		"publisher-place": "Münster",
+		"URL": "https://www.altertumskommission.lwl.org/media/filer_public/f1/1a/f11a8f4c-7152-44fd-8989-20395113ad02/rw_1_2014.pdf"
+	},
+	{
+		"id": "ebelzepezauer2014",
+		"type": "book",
+		"author": [
+			{
+				"family": "Ebel-Zepezauer",
+				"given": "Wolfgang"
+			}
+		],
+		"issued": {
+			"date-parts": [[2014]]
+		},
+		"title": "Holsterhausen, Stadt Dorsten, Kreis Recklinghausen",
+		"collection-title": "Römerlager in Westfalen",
+		"collection-number": "2",
+		"edition": "2",
+		"publisher": "Altertumskommission für Westfalen",
+		"publisher-place": "Münster",
+		"URL": "https://www.altertumskommission.lwl.org/media/filer_public/f1/f6/f1f6b8f9-6c43-4338-90a9-f6b51e812aae/rw_2_2014.pdf"
+	},
+	{
+		"id": "kuehlborn2011",
+		"type": "book",
+		"author": [
+			{
+				"family": "Kühlborn",
+				"given": "Johann-Sebastian"
+			}
+		],
+		"issued": {
+			"date-parts": [[2011]]
+		},
+		"title": "Oberaden, Stadt Bergkamen, Kreis Unna, und Beckinghausen, Stadt Lünen, Kreis Unna",
+		"collection-title": "Römerlager in Westfalen",
+		"collection-number": "3",
+		"edition": "2",
+		"publisher": "Altertumskommission für Westfalen",
+		"publisher-place": "Münster",
+		"URL": "https://www.altertumskommission.lwl.org/media/filer_public/c3/3f/c33f9e97-a2b3-4908-8f84-c485c50b030a/rw_32_2011.pdf"
+	},
+	{
+		"id": "kuehlborn2014",
+		"type": "book",
+		"author": [
+			{
+				"family": "Kühlborn",
+				"given": "Johann-Sebastian"
+			}
+		],
+		"issued": {
+			"date-parts": [[2014]]
+		},
+		"title": "Anreppen, Stadt Delbrück, Kreis Paderborn",
+		"collection-title": "Römerlager in Westfalen",
+		"collection-number": "4",
+		"edition": "2",
+		"publisher": "Altertumskommission für Westfalen",
+		"publisher-place": "Münster",
+		"URL": "https://www.altertumskommission.lwl.org/media/filer_public/cd/40/cd4074b6-60d5-4bf2-a90a-9d1b6812c556/rw_4_2014.pdf"
+	},
+	{
+		"id": "asskamp2010",
+		"type": "book",
+		"author": [
+			{
+				"family": "Aßkamp",
+				"given": "Rudolf"
+			}
+		],
+		"issued": {
+			"date-parts": [[2010]]
+		},
+		"title": "Haltern, Stadt Haltern am See, Kreis Recklinghausen",
+		"collection-title": "Römerlager in Westfalen",
+		"collection-number": "5",
+		"publisher": "Altertumskommission für Westfalen",
+		"publisher-place": "Münster",
+		"URL": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
+	},
+	{
+		"id": "berenger2011",
+		"type": "book",
+		"author": [
+			{
+				"family": "Bérenger",
+				"given": "Daniel"
+			}
+		],
+		"issued": {
+			"date-parts": [[2011]]
+		},
+		"title": "Wachtposten auf der Sparrenberger Egge, kreisfreie Stadt Bielefeld",
+		"collection-title": "Römerlager in Westfalen",
+		"collection-number": "6",
+		"publisher": "Altertumskommission für Westfalen",
+		"publisher-place": "Münster",
+		"URL": "https://www.altertumskommission.lwl.org/media/filer_public/be/5e/be5e344d-ce46-49a1-a09a-6dff26620a7e/rw_6_2011.pdf"
+	},
+	{
+		"id": "hanel1995",
+		"type": "book",
+		"author": [
+			{
+				"family": "Hanel",
+				"given": "Norbert"
+			}
+		],
+		"issued": {
+			"date-parts": [[1995]]
+		},
+		"title": "Vetera I. Die Funde aus den römischen Lagern auf dem Fürstenberg bei Xanten",
+		"collection-title": "Rheinische Ausgrabungen",
+		"collection-number": "35",
+		"publisher": "Rheinland-Verlag",
+		"publisher-place": "Köln",
+		"ISBN": "3-7927-1248-2",
+		"URL": "https://d-nb.info/944626157"
+	},
+	{
+		"id": "hanel2007",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Hanel",
+				"given": "Norbert"
+			},
+			{
+				"family": "Song",
+				"given": "Baoquan"
+			}
+		],
+		"issued": {
+			"date-parts": [[2007]]
+		},
+		"title": "Neue Ergebnisse der Luftbildarchäologie zu den römischen Militärlagern Vetera castra I auf dem Fürstenberg bei Xanten",
+		"container-title": "Germania",
+		"volume": "85",
+		"page": "349-357",
+		"DOI": "10.11588/ger.2007.61236"
+	},
+	{
+		"id": "hanel2015",
+		"type": "chapter",
+		"author": [
+			{
+				"family": "Hanel",
+				"given": "Norbert"
+			}
+		],
+		"issued": {
+			"date-parts": [[2015]]
+		},
+		"title": "Zwischen Agrippa und Drusus. Roms Intervention am Niederrhein in den Jahren 19 und 12 v. Chr. Historische Quellen und archäologische Zeugnisse",
+		"container-title": "„Über die Alpen und über den Rhein …“",
+		"page": "165-176",
+		"publisher": "De Gruyter",
+		"publisher-place": "Berlin",
+		"DOI": "10.1515/9783110408300-007"
+	},
+	{
+		"id": "ebelzepezauer2009",
+		"type": "book",
+		"author": [
+			{
+				"family": "Ebel-Zepezauer",
+				"given": "Wolfgang"
+			},
+			{
+				"family": "Grünewald",
+				"given": "Christoph"
+			},
+			{
+				"family": "Ilisch",
+				"given": "Peter"
+			},
+			{
+				"family": "Kühlborn",
+				"given": "Johann-Sebastian"
+			},
+			{
+				"family": "Tremmel",
+				"given": "Bettina"
+			}
+		],
+		"issued": {
+			"date-parts": [[2009]]
+		},
+		"title": "Augusteische Marschlager und Siedlungen des 1. bis 9. Jahrhunderts in Dorsten-Holsterhausen. Die Ausgrabungen 1999 bis 2002",
+		"collection-title": "Bodenaltertümer Westfalens",
+		"collection-number": "47",
+		"note": "Digitale Ausgabe: Heidelberg, Propylaeum 2023",
+		"DOI": "10.11588/propylaeum.1237"
+	},
+	{
+		"id": "ebelzepezauer2003",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Ebel-Zepezauer",
+				"given": "Wolfgang"
+			}
+		],
+		"issued": {
+			"date-parts": [[2003]]
+		},
+		"title": "Die augusteischen Marschlager in Dorsten-Holsterhausen",
+		"container-title": "Germania",
+		"volume": "81",
+		"page": "539-555",
+		"DOI": "10.11588/ger.2003.92922"
+	},
+	{
+		"id": "schnurbein1974",
+		"type": "book",
+		"author": [
+			{
+				"family": "Schnurbein",
+				"non-dropping-particle": "von",
+				"given": "Siegmar"
+			}
+		],
+		"issued": {
+			"date-parts": [[1974]]
+		},
+		"title": "Die römischen Militäranlagen bei Haltern. Bericht über die Forschungen seit 1899",
+		"collection-title": "Bodenaltertümer Westfalens",
+		"collection-number": "14",
+		"publisher": "Aschendorff",
+		"publisher-place": "Münster",
+		"ISBN": "3-402-05117-6",
+		"URL": "https://d-nb.info/750049839"
+	},
+	{
+		"id": "schnurbein1981",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Schnurbein",
+				"non-dropping-particle": "von",
+				"given": "Siegmar"
+			}
+		],
+		"issued": {
+			"date-parts": [[1981]]
+		},
+		"title": "Untersuchungen zur Geschichte der römischen Militärlager an der Lippe",
+		"container-title": "Bericht der Römisch-Germanischen Kommission",
+		"volume": "62",
+		"page": "5-101",
+		"DOI": "10.11588/berrgk.1981.1.108180"
+	},
+	{
+		"id": "kuehlborn1992",
+		"type": "book",
+		"author": [
+			{
+				"family": "Kühlborn",
+				"given": "Johann-Sebastian"
+			}
+		],
+		"issued": {
+			"date-parts": [[1992]]
+		},
+		"title": "Das Römerlager in Oberaden III. Die Ausgrabungen im nordwestlichen Lagerbereich und weitere Baustellenuntersuchungen der Jahre 1962–1988",
+		"collection-title": "Bodenaltertümer Westfalens",
+		"collection-number": "27",
+		"publisher": "Aschendorff",
+		"publisher-place": "Münster",
+		"URL": "https://nwbib.de/HT004482171"
+	},
+	{
+		"id": "kuehlborn2008",
+		"type": "chapter",
+		"author": [
+			{
+				"family": "Kühlborn",
+				"given": "Johann-Sebastian"
+			}
+		],
+		"issued": {
+			"date-parts": [[2008]]
+		},
+		"title": "Die Lippetrasse. Zum Stand der archäologischen Forschungen während der Jahre 1996 bis 2006 in den augusteischen Lippelagern",
+		"container-title": "Rom auf dem Weg nach Germanien. Geostrategie, Vormarschtrassen und Logistik",
+		"collection-title": "Bodenaltertümer Westfalens",
+		"collection-number": "45",
+		"page": "7-35",
+		"publisher": "von Zabern",
+		"publisher-place": "Mainz",
+		"URL": "https://nwbib.de/HT015740580"
+	},
+	{
+		"id": "zelle2005",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Zelle",
+				"given": "Michael"
+			}
+		],
+		"issued": {
+			"date-parts": [[2005]]
+		},
+		"title": "Augustus’ Legionen in Lippe. Untersuchungen zur römischen Präsenz in Lippe während der augusteisch-frühtiberischen Zeit",
+		"container-title": "Lippische Mitteilungen aus Geschichte und Landeskunde",
+		"volume": "74",
+		"page": "241-279",
+		"URL": "https://nwbib.de/HT014656588"
+	},
+	{
+		"id": "korzus1973",
+		"type": "book",
+		"author": [
+			{
+				"family": "Korzus",
+				"given": "Bernard"
+			}
+		],
+		"issued": {
+			"date-parts": [[1973]]
+		},
+		"title": "Die Fundmünzen der römischen Zeit in Deutschland VI. Nordrhein-Westfalen 6. Detmold",
+		"publisher": "Mann",
+		"publisher-place": "Berlin",
+		"ISBN": "3-7861-1056-5",
+		"URL": "https://d-nb.info/740081950"
+	},
+	{
+		"id": "boedecker2015",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Bödecker",
+				"given": "Steve"
+			},
+			{
+				"family": "Held",
+				"given": "Sebastian"
+			},
+			{
+				"family": "Rung",
+				"given": "Eugen"
+			}
+		],
+		"issued": {
+			"date-parts": [[2015]]
+		},
+		"title": "Ein temporäres Legionslager bei Till, Kapitelshof?",
+		"container-title": "Archäologie im Rheinland",
+		"volume": "2014",
+		"page": "98-101",
+		"DOI": "10.11588/air.2014.0.111894"
+	},
+	{
+		"id": "englert2016a",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Englert",
+				"given": "Johannes"
+			},
+			{
+				"family": "Bödecker",
+				"given": "Steve"
+			}
+		],
+		"issued": {
+			"date-parts": [[2016]]
+		},
+		"title": "Erste Grabungsergebnisse zu den neu entdeckten Lagern bei Till",
+		"container-title": "Der Limes",
+		"volume": "10",
+		"page": "4-7",
+		"issue": "1",
+		"URL": "https://www.deutsche-limeskommission.de/fileadmin/user_upload/Der_Limes_2016_1.pdf"
+	},
+	{
+		"id": "englert2016b",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Englert",
+				"given": "Johannes"
+			},
+			{
+				"family": "Bödecker",
+				"given": "Steve"
+			}
+		],
+		"issued": {
+			"date-parts": [[2016]]
+		},
+		"title": "Erste Grabungsergebnisse zu den neu entdeckten Lagern bei Till, Kapitelshof",
+		"container-title": "Archäologie im Rheinland",
+		"volume": "2015",
+		"page": "108-110",
+		"URL": "https://nwbib.de/990213976630206441"
+	},
+	{
+		"id": "burandt2017",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Burandt",
+				"given": "Boris"
+			}
+		],
+		"issued": {
+			"date-parts": [[2017]]
+		},
+		"title": "Neue Grabungsergebnisse zu den römischen Lagern bei Till, Kapitelshof",
+		"container-title": "Archäologie im Rheinland",
+		"volume": "2016",
+		"page": "107-109",
+		"URL": "https://nwbib.de/990219934210206441"
+	},
+	{
+		"id": "poeschel1968",
+		"type": "book",
+		"author": [
+			{
+				"family": "Poeschel",
+				"given": "Hans-Claus"
+			}
+		],
+		"issued": {
+			"date-parts": [[1968]]
+		},
+		"title": "Alte Fernstraßen in der mittleren Westfälischen Bucht",
+		"collection-title": "Spieker",
+		"collection-number": "17",
+		"publisher": "Geographische Kommission für Westfalen",
+		"publisher-place": "Münster",
+		"URL": "https://www.geographische-kommission.lwl.org/media/filer_public/5c/c8/5cc84e08-ccf2-4af4-b6f6-c56b4fd28280/spieker_17.pdf"
+	},
+	{
+		"id": "wilbersrost2007",
+		"type": "book",
+		"author": [
+			{
+				"family": "Wilbers-Rost",
+				"given": "Susanne"
+			}
+		],
+		"issued": {
+			"date-parts": [[2007]]
+		},
+		"title": "Kalkriese 3. Interdisziplinäre Untersuchungen auf dem Oberesch in Kalkriese. Archäologische Befunde und naturwissenschaftliche Begleituntersuchungen",
+		"collection-title": "Römisch-Germanische Forschungen",
+		"collection-number": "65",
+		"publisher": "von Zabern",
+		"publisher-place": "Mainz",
+		"ISBN": "3-8053-3802-3",
+		"URL": "https://d-nb.info/985580305"
+	},
+	{
+		"id": "haertling2025",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Härtling",
+				"given": "Joachim W."
+			},
+			{
+				"family": "Stele",
+				"given": "Andreas"
+			},
+			{
+				"family": "Ortisi",
+				"given": "Salvatore"
+			},
+			{
+				"family": "Jepsen",
+				"given": "Andre"
+			},
+			{
+				"family": "Rappe",
+				"given": "Marc"
+			},
+			{
+				"family": "Bussmann",
+				"given": "Jens"
+			},
+			{
+				"family": "Fülling",
+				"given": "Alexander"
+			}
+		],
+		"issued": {
+			"date-parts": [[2025]]
+		},
+		"title": "Germanic Rampart or Roman Encampment? New Geoarchaeological Evidence at the Roman Conflict Site at Kalkriese (NW-Germany)",
+		"container-title": "Geoarchaeology",
+		"volume": "40",
+		"page": "e22031",
+		"issue": "1",
+		"DOI": "10.1002/gea.22031"
+	},
+	{
+		"id": "hassmann2016",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Haßmann",
+				"given": "Henning"
+			},
+			{
+				"family": "Ortisi",
+				"given": "Salvatore"
+			},
+			{
+				"family": "Wulf",
+				"given": "Friedrich-Wilhelm"
+			}
+		],
+		"issued": {
+			"date-parts": [[2016]]
+		},
+		"title": "Römer vor Hannover. Das augusteische Marschlager von Wilkenburg",
+		"container-title": "Berichte zur Denkmalpflege in Niedersachsen",
+		"volume": "36",
+		"page": "190-193",
+		"issue": "4",
+		"URL": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=874953308"
+	},
+	{
+		"id": "berger2021",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Berger",
+				"given": "Frank"
+			},
+			{
+				"family": "Wulf",
+				"given": "Friedrich-Wilhelm"
+			}
+		],
+		"issued": {
+			"date-parts": [[2021]]
+		},
+		"title": "Zu den Funden römischer Münzen und keltischer Kleinerze aus dem augusteischen Marschlager Wilkenburg, Stadt Hemmingen. Ein Arbeitsbericht",
+		"container-title": "Nachrichten aus Niedersachsens Urgeschichte",
+		"volume": "90",
+		"page": "277-298",
+		"URL": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1794002367"
+	},
+	{
+		"id": "werz2018",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Werz",
+				"given": "Ulrich"
+			}
+		],
+		"issued": {
+			"date-parts": [[2018]]
+		},
+		"title": "Kleingeldversorgung augusteischer Zeit in Gallien und Germanien. Überlegungen zu den Kleinerzen aus dem römischen Marschlager von Wilkenburg",
+		"container-title": "Nachrichten aus Niedersachsens Urgeschichte",
+		"volume": "87",
+		"page": "167-182",
+		"DOI": "10.11588/nnu.2018.1.83217"
+	},
+	{
+		"id": "lehmann2019",
+		"type": "chapter",
+		"author": [
+			{
+				"family": "Lehmann",
+				"given": "Robert"
+			}
+		],
+		"issued": {
+			"date-parts": [[2019]]
+		},
+		"title": "Der Schatzfund von Gehrden und das Römerlager Wilkenburg",
+		"container-title": "Schatzfunde, Fundmünzen",
+		"collection-title": "Hannoversche Numismatische Beiträge",
+		"collection-number": "3",
+		"page": "239-252",
+		"publisher": "Marie Leidorf",
+		"publisher-place": "Rahden/Westf.",
+		"URL": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1691329002"
+	},
+	{
+		"id": "grote2012",
+		"type": "book",
+		"author": [
+			{
+				"family": "Grote",
+				"given": "Klaus"
+			}
+		],
+		"issued": {
+			"date-parts": [[2012]]
+		},
+		"title": "Römerlager Hedemünden. Der augusteische Stützpunkt, seine Außenanlagen, seine Funde und Befunde",
+		"collection-title": "Veröffentlichungen der Archäologischen Sammlungen des Landesmuseums Hannover",
+		"collection-number": "53",
+		"publisher": "Sandstein",
+		"publisher-place": "Dresden",
+		"ISBN": "978-3-95498-003-1",
+		"URL": "https://d-nb.info/1025768752"
+	},
+	{
+		"id": "grote2012kring",
+		"type": "chapter",
+		"author": [
+			{
+				"family": "Grote",
+				"given": "Klaus"
+			}
+		],
+		"issued": {
+			"date-parts": [[2012]]
+		},
+		"title": "Das augusteische Kleinlager Kring bei Oberode",
+		"container-title": "Römerlager Hedemünden. Der augusteische Stützpunkt, seine Außenanlagen, seine Funde und Befunde",
+		"collection-title": "Veröffentlichungen der Archäologischen Sammlungen des Landesmuseums Hannover",
+		"collection-number": "53",
+		"page": "208-217",
+		"publisher": "Sandstein",
+		"publisher-place": "Dresden",
+		"URL": "https://d-nb.info/1025768752"
+	},
+	{
+		"id": "grote2006",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Grote",
+				"given": "Klaus"
+			}
+		],
+		"issued": {
+			"date-parts": [[2006]]
+		},
+		"title": "Das Römerlager im Werratal bei Hedemünden (Ldkr. Göttingen)",
+		"container-title": "Germania",
+		"volume": "84",
+		"page": "27-59",
+		"DOI": "10.11588/ger.2006.76460"
+	},
+	{
+		"id": "grote2007",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Grote",
+				"given": "Klaus"
+			}
+		],
+		"issued": {
+			"date-parts": [[2007]]
+		},
+		"title": "Die Römerlager Hedemünden (Werra)",
+		"container-title": "Göttinger Jahrbuch",
+		"volume": "55",
+		"page": "5-17",
+		"DOI": "10.62013/55-001"
+	},
+	{
+		"id": "grote2014",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Grote",
+				"given": "Klaus"
+			}
+		],
+		"issued": {
+			"date-parts": [[2014]]
+		},
+		"title": "Hedemünden (Lkr. Göttingen), mehr als nur ein römisches Militärlager",
+		"container-title": "Archäologisches Korrespondenzblatt",
+		"volume": "44",
+		"page": "239-258",
+		"issue": "2",
+		"DOI": "10.11588/ak.2014.2.28107"
+	},
+	{
+		"id": "ulbert1977",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Ulbert",
+				"given": "Günter"
+			}
+		],
+		"issued": {
+			"date-parts": [[1977]]
+		},
+		"title": "Die römischen Funde von Bentumersiel. Zeugnisse für die Anwesenheit römischer Truppen zu Beginn des 1. Jahrhunderts n. Chr. an der unteren Ems und für den römisch-germanischen Handel in der mittleren Kaiserzeit",
+		"container-title": "Probleme der Küstenforschung im südlichen Nordseegebiet",
+		"volume": "12",
+		"page": "33-65",
+		"URL": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=607690186"
+	},
+	{
+		"id": "strahl2011",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Strahl",
+				"given": "Erwin"
+			}
+		],
+		"issued": {
+			"date-parts": [[2011]]
+		},
+		"title": "Neue Forschungen zum germanischen „Stapelplatz“ von Bentumersiel an der unteren Ems",
+		"container-title": "Siedlungs- und Küstenforschung im südlichen Nordseegebiet",
+		"volume": "34",
+		"page": "293-306",
+		"URL": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1044562315"
+	},
+	{
+		"id": "siegmueller2025",
+		"type": "chapter",
+		"author": [
+			{
+				"family": "Siegmüller",
+				"given": "Annette"
+			}
+		],
+		"issued": {
+			"date-parts": [[2025]]
+		},
+		"title": "Bentumersiel an der Ems. Zusammenfassende Einordnung einer mehrphasigen Fundstelle im Landkreis Leer und ihrer Stellung in der umgebenden Siedlungslandschaft",
+		"container-title": "Alte Interpretationsmodelle im Fokus aktueller Befund- und Fundanalyse",
+		"collection-title": "Siedlungs- und Küstenforschung im südlichen Nordseegebiet",
+		"collection-number": "48",
+		"publisher": "Marie Leidorf",
+		"publisher-place": "Rahden/Westf.",
+		"page": "87-164",
+		"URL": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1947834282"
+	},
+	{
+		"id": "lau2025",
+		"type": "chapter",
+		"author": [
+			{
+				"family": "Lau",
+				"given": "Nina"
+			},
+			{
+				"family": "Rau",
+				"given": "Andreas"
+			}
+		],
+		"issued": {
+			"date-parts": [[2025]]
+		},
+		"title": "Zu einigen Fundkategorien aus dem vermeintlich römischen Landeplatz von Bentumersiel, Ldkr. Leer",
+		"container-title": "Alte Interpretationsmodelle im Fokus aktueller Befund- und Fundanalyse",
+		"collection-title": "Siedlungs- und Küstenforschung im südlichen Nordseegebiet",
+		"collection-number": "48",
+		"publisher": "Marie Leidorf",
+		"publisher-place": "Rahden/Westf.",
+		"page": "165-272",
+		"URL": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1947836617"
+	},
+	{
+		"id": "bersu1926",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Bersu",
+				"given": "G."
+			},
+			{
+				"family": "Heimbs",
+				"given": "G."
+			},
+			{
+				"family": "Lange",
+				"given": "H."
+			},
+			{
+				"family": "Schuchhardt",
+				"given": "C."
+			}
+		],
+		"issued": {
+			"date-parts": [[1926]]
+		},
+		"title": "Der Angrivarisch-Cheruskische Grenzwall und die beiden Schlachten des Jahres 16 nach Chr. zwischen Arminius und Germanicus",
+		"container-title": "Prähistorische Zeitschrift",
+		"volume": "17",
+		"page": "100-131",
+		"issue": "1",
+		"DOI": "10.1515/prhz.1926.17.1.100"
+	},
+	{
+		"id": "freese1997",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Freese",
+				"given": "Heinz-Dieter"
+			}
+		],
+		"issued": {
+			"date-parts": [[1997]]
+		},
+		"title": "Neues vom Angrivarier-Wall",
+		"container-title": "Berichte zur Denkmalpflege in Niedersachsen",
+		"volume": "17",
+		"page": "138-141",
+		"issue": "3",
+		"URL": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=473914557"
+	},
+	{
+		"id": "fansa1997",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Fansa",
+				"given": "Mamoun"
+			},
+			{
+				"family": "Schneider",
+				"given": "Reinhard"
+			}
+		],
+		"issued": {
+			"date-parts": [[1997]]
+		},
+		"title": "Der eisenzeitliche Bohlenweg VI (Pr) im Großen Moor am Dümmer zwischen der Geesthalbinsel Lindloge, Ldkr. Diepholz, und Kroge bei Lohne, Ldkr. Vechta",
+		"container-title": "Archäologische Mitteilungen aus Nordwestdeutschland",
+		"volume": "20",
+		"page": "41-75",
+		"URL": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=47391395X"
+	},
+	{
+		"id": "heumueller2023",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Heumüller",
+				"given": "Marion"
+			},
+			{
+				"family": "Abbentheren",
+				"given": "Eik"
+			}
+		],
+		"issued": {
+			"date-parts": [[2023]]
+		},
+		"title": "2000 Jahre altes Großbauprojekt. Neue Ausgrabungen am Bohlenweg Pr VI in der Diepholzer Moorniederung",
+		"container-title": "Oldenburger Münsterland",
+		"volume": "72",
+		"page": "142-155",
+		"URL": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1832805018"
+	},
+	{
+		"id": "becker2015",
+		"type": "book",
+		"author": [
+			{
+				"family": "Becker",
+				"given": "Armin"
+			},
+			{
+				"family": "Rasbach",
+				"given": "Gabriele"
+			}
+		],
+		"issued": {
+			"date-parts": [[2015]]
+		},
+		"title": "Waldgirmes. Die Ausgrabungen in der spätaugusteischen Siedlung von Lahnau-Waldgirmes (1993–2009). 1. Befunde und Funde",
+		"collection-title": "Römisch-Germanische Forschungen",
+		"collection-number": "71",
+		"publisher": "Philipp von Zabern",
+		"publisher-place": "Darmstadt",
+		"ISBN": "978-3-8053-4968-0",
+		"URL": "https://d-nb.info/1104289040"
+	},
+	{
+		"id": "rasbach2016",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Rasbach",
+				"given": "Gabriele"
+			}
+		],
+		"issued": {
+			"date-parts": [[2016]]
+		},
+		"title": "Waldgirmes, Deutschland. Abschluss der Arbeiten und Publikation",
+		"container-title": "e-Forschungsberichte des DAI",
+		"volume": "2016",
+		"page": "28-30",
+		"issue": "2",
+		"URL": "https://publications.dainst.org/journals/efb/article/view/1570/4469"
+	},
+	{
+		"id": "schnurbein2003",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Schnurbein",
+				"non-dropping-particle": "von",
+				"given": "Siegmar"
+			}
+		],
+		"issued": {
+			"date-parts": [[2003]]
+		},
+		"title": "Augustus in Germania and his new ‘town’ at Waldgirmes east of the Rhine",
+		"container-title": "Journal of Roman Archaeology",
+		"volume": "16",
+		"page": "93-107",
+		"DOI": "10.1017/S1047759400013015"
+	},
+	{
+		"id": "rasbach2024",
+		"type": "chapter",
+		"author": [
+			{
+				"family": "Rasbach",
+				"given": "Gabriele"
+			}
+		],
+		"issued": {
+			"date-parts": [[2024]]
+		},
+		"title": "Von Bergleuten, Händlern und römischem Militär im Lahntal (D)",
+		"container-title": "Supplying the Roman Empire. Proceedings of the 25th International Congress of Roman Frontier Studies 4",
+		"editor": [
+			{
+				"family": "Enckevort",
+				"non-dropping-particle": "van",
+				"given": "Harry"
+			},
+			{
+				"family": "Driessen",
+				"given": "Mark"
+			},
+			{
+				"family": "Graafstal",
+				"given": "Erik"
+			},
+			{
+				"family": "Hazenberg",
+				"given": "Tom"
+			},
+			{
+				"family": "Ivleva",
+				"given": "Tatiana"
+			},
+			{
+				"family": "Driel-Murray",
+				"non-dropping-particle": "van",
+				"given": "Carol"
+			}
+		],
+		"publisher": "Sidestone Press",
+		"publisher-place": "Leiden",
+		"DOI": "10.59641/mm723py",
+		"page": "191-200"
+	},
+	{
+		"id": "driessen2024",
+		"type": "chapter",
+		"author": [
+			{
+				"family": "Driessen"
+			},
+			{
+				"family": "Verschoof-van der Vaart"
+			}
+		],
+		"issued": {
+			"date-parts": [[2024]]
+		},
+		"title": "A new Roman camp north of the Lower German Limes at Ermelo (the Netherlands)",
+		"container-title": "Supplying the Roman Empire. Proceedings of the 25th International Congress of Roman Frontier Studies 4",
+		"editor": [
+			{
+				"family": "Enckevort",
+				"non-dropping-particle": "van",
+				"given": "Harry"
+			},
+			{
+				"family": "Driessen",
+				"given": "Mark"
+			},
+			{
+				"family": "Graafstal",
+				"given": "Erik"
+			},
+			{
+				"family": "Hazenberg",
+				"given": "Tom"
+			},
+			{
+				"family": "Ivleva",
+				"given": "Tatiana"
+			},
+			{
+				"family": "Driel-Murray",
+				"non-dropping-particle": "van",
+				"given": "Carol"
+			}
+		],
+		"publisher": "Sidestone Press",
+		"publisher-place": "Leiden",
+		"DOI": "10.59641/mm723py",
+		"page": "173-180"
+	},
+	{
+		"id": "schnurbein1994",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Schnurbein",
+				"non-dropping-particle": "von",
+				"given": "Siegmar"
+			},
+			{
+				"family": "Köhler",
+				"given": "Heinz-Jürgen"
+			}
+		],
+		"issued": {
+			"date-parts": [[1994]]
+		},
+		"title": "Dorlar. Ein augusteisches Römerlager im Lahntal",
+		"container-title": "Germania",
+		"volume": "72",
+		"page": "193-203",
+		"URL": "https://zenon.dainst.org/Record/001185913"
+	},
+	{
+		"id": "schoenberger1976",
+		"type": "book",
+		"author": [
+			{
+				"family": "Schönberger",
+				"given": "H."
+			},
+			{
+				"family": "Simon"
+			}
+		],
+		"issued": {
+			"date-parts": [[1976]]
+		},
+		"title": "Römerlager Rödgen",
+		"collection-title": "Limesforschungen",
+		"collection-number": "15",
+		"publisher": "Mann",
+		"publisher-place": "Berlin",
+		"ISBN": "3-7861-1067-0",
+		"URL": "https://d-nb.info/760286124"
+	},
+	{
+		"id": "schoenberger1967",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Schönberger",
+				"given": "H."
+			}
+		],
+		"issued": {
+			"date-parts": [[1967]]
+		},
+		"title": "Das augusteische Römerlager in Rödgen. Vorbericht über die Grabungen in den Jahren 1961 bis 1966",
+		"container-title": "Germania",
+		"volume": "45",
+		"page": "84-95",
+		"URL": "https://zenon.dainst.org/Record/000501108"
+	},
+	{
+		"id": "herrmann2004",
+		"type": "chapter",
+		"author": [
+			{
+				"family": "Herrmann",
+				"given": "Fritz-Rudolf"
+			}
+		],
+		"issued": {
+			"date-parts": [[2004]]
+		},
+		"title": "Numismatik und Archäologie. Vorbericht über ein neu entdecktes römisches Lager bei Oberbrechen (Kreis Limburg-Weilburg)",
+		"editor": [
+			{
+				"family": "Cunz",
+				"given": "Reiner"
+			}
+		],
+		"container-title": "Fundamenta historiae. Geschichte im Spiegel der Numismatik und ihrer Nachbarwissenschaften. Festschrift für Niklot Klüßendorf zum 60. Geburtstag",
+		"page": "435-445",
+		"publisher": "Niedersächsisches Landesmuseum",
+		"publisher-place": "Hannover",
+		"URL": "https://zenon.dainst.org/Record/001030380"
+	},
+	{
+		"id": "posluschny2018",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Posluschny",
+				"given": "Axel G."
+			},
+			{
+				"family": "Schade-Lindig",
+				"given": "Sabine"
+			},
+			{
+				"family": "Szédeli",
+				"given": "Hans"
+			}
+		],
+		"issued": {
+			"date-parts": [[2018]]
+		},
+		"title": "Archäologische Ausgrabung im Vorfeld der „Alteburg“ in Villmar-Weyer",
+		"container-title": "hessenARCHÄOLOGIE",
+		"volume": "2017",
+		"page": "84-88",
+		"URL": "https://zenon.dainst.org/Record/001563197"
+	},
+	{
+		"id": "kuessner2014",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Küßner",
+				"given": "Mario"
+			},
+			{
+				"family": "Schüler",
+				"given": "Tim"
+			}
+		],
+		"issued": {
+			"date-parts": [[2014]]
+		},
+		"title": "Truppen in Thüringen. Nordöstlichste römische Militäranlage entdeckt",
+		"container-title": "Archäologie in Deutschland",
+		"volume": "30",
+		"page": "6",
+		"issue": "3",
+		"URL": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=785789022"
+	},
+	{
+		"id": "hellwing2016",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Hellwing",
+				"given": "Marcus"
+			}
+		],
+		"issued": {
+			"date-parts": [[2016]]
+		},
+		"title": "Römische Präsenz im Südharz",
+		"container-title": "Beiträge zur Geschichte aus Stadt und Landkreis Nordhausen",
+		"volume": "41",
+		"page": "21-34",
+		"URL": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=875857329"
+	},
+	{
+		"id": "poeppelmann2013",
+		"type": "book",
+		"editor": [
+			{
+				"family": "Pöppelmann",
+				"given": "Heike"
+			}
+		],
+		"issued": {
+			"date-parts": [[2013]]
+		},
+		"title": "Roms vergessener Feldzug. Die Schlacht am Harzhorn",
+		"collection-title": "Veröffentlichungen des Braunschweigischen Landesmuseums",
+		"collection-number": "115",
+		"publisher": "Theiss",
+		"publisher-place": "Stuttgart",
+		"ISBN": "978-3-8062-2822-9",
+		"URL": "https://d-nb.info/1034377809"
+	},
+	{
+		"id": "geschwinde2025",
+		"type": "book",
+		"author": [
+			{
+				"family": "Geschwinde",
+				"given": "Michael"
+			},
+			{
+				"family": "Meyer",
+				"given": "Michael"
+			},
+			{
+				"family": "Lönne",
+				"given": "Petra"
+			},
+			{
+				"family": "Schatte",
+				"given": "Torben"
+			}
+		],
+		"issued": {
+			"date-parts": [[2025]]
+		},
+		"title": "Harzhorn. Die Archäologie eines germanisch-römischen Kampfplatzes des 3. Jahrhunderts n. Chr.",
+		"collection-title": "Römisch-Germanische Forschungen",
+		"collection-number": "77",
+		"publisher": "Reichert",
+		"publisher-place": "Wiesbaden",
+		"ISBN": "978-3-7520-0796-1",
+		"URL": "https://d-nb.info/1418259640"
+	},
+	{
+		"id": "mommsen1885",
+		"type": "book",
+		"author": [
+			{
+				"family": "Mommsen",
+				"given": "Theodor"
+			}
+		],
+		"issued": {
+			"date-parts": [[1885]]
+		},
+		"title": "Römische Geschichte",
+		"volume": "5",
+		"URL": "http://www.zeno.org/Geschichte/M/Mommsen,+Theodor/R%C3%B6mische+Geschichte/F%C3%BCnfter+Band/Achtes+Buch.+L%C3%A4nder+und+Leute+von+Caesar+bis+Diocletian/Fu%C3%9Fnoten",
+		"note": "Online bei zeno.org"
+	},
+	{
+		"id": "hulst2007",
+		"type": "report",
+		"author": [
+			{
+				"family": "Hulst",
+				"given": "R. S."
+			}
+		],
+		"issued": {
+			"date-parts": [[2007]]
+		},
+		"title": "Het onderzoek van het Romeinse marskamp bij Ermelo-Leuvenum, Nederland",
+		"collection-title": "Rapportage Archeologische Monumentenzorg",
+		"collection-number": "146",
+		"publisher": "DANS Data Station Archaeology",
+		"DOI": "10.17026/dans-xde-s9pw"
+	},
+	{
+		"id": "oosterbaan2026",
+		"type": "dataset",
+		"author": [
+			{
+				"family": "Oosterbaan",
+				"given": "J."
+			}
+		],
+		"issued": {
+			"date-parts": [[2026]]
+		},
+		"title": "Onderzoek naar tijdelijk gebruikte legerkampen in Hoog-Buurlo",
+		"version": "1.1",
+		"publisher": "DANS Data Station Archaeology",
+		"DOI": "10.17026/ar/gwim9t"
+	},
+	{
+		"id": "staatsbosbeheer2025",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Staatsbosbeheer"
+			}
+		],
+		"issued": {
+			"date-parts": [[2025, 5]]
+		},
+		"title": "Ontdekking Romeins legerkamp bij Hoog Buurlo",
+		"container-title": "Staatsbosbeheer, Nieuws",
+		"URL": "https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2025/05/ontdekking-romeins-legerkamp-nabij-hoog-buurlo",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "gld2024",
+		"type": "article-newspaper",
+		"issued": {
+			"date-parts": [[2024, 3, 4]]
+		},
+		"title": "Romeinen op de Veluwe? Jazeker en veel vaker dan we dachten",
+		"container-title": "Omroep Gelderland",
+		"URL": "https://www.gld.nl/nieuws/8107238/romeinen-op-de-veluwe-jazeker-en-veel-vaker-dan-we-dachten",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "kaye2013",
+		"type": "report",
+		"author": [
+			{
+				"family": "Kaye",
+				"given": "Steve"
+			}
+		],
+		"issued": {
+			"date-parts": [[2013, 2, 1]]
+		},
+		"title": "Roman Marching Camps in Britain. GIS, statistical analysis and hydrological examination of known marching camps, resulting in the prediction of possible camp sites",
+		"genre": "Working Paper",
+		"publisher": "Zenodo",
+		"DOI": "10.5281/zenodo.839026"
+	},
+	{
+		"id": "jones2011",
+		"type": "book",
+		"author": [
+			{
+				"family": "Jones",
+				"given": "Rebecca"
+			}
+		],
+		"issued": {
+			"date-parts": [[2011]]
+		},
+		"title": "Roman Camps in Scotland",
+		"publisher": "Society of Antiquaries of Scotland",
+		"publisher-place": "Edinburgh",
+		"ISBN": "978-1-908332-41-7",
+		"DOI": "10.9750/9781908332417"
+	},
+	{
+		"id": "tobler1993",
+		"type": "report",
+		"author": [
+			{
+				"family": "Tobler"
+			}
+		],
+		"issued": {
+			"date-parts": [[1993]]
+		},
+		"title": "Three Presentations on Geographical Analysis and Modeling",
+		"collection-title": "NCGIA Technical Report",
+		"number": "93-1",
+		"publisher": "National Center for Geographic Information and Analysis",
+		"publisher-place": "Santa Barbara",
+		"URL": "https://escholarship.org/uc/item/05r820mz"
+	},
+	{
+		"id": "lewis2021",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Lewis",
+				"given": "Joseph"
+			}
+		],
+		"issued": {
+			"date-parts": [[2021]]
+		},
+		"title": "Probabilistic Modelling for Incorporating Uncertainty in Least Cost Path Results. A Postdictive Roman Road Case Study",
+		"container-title": "Journal of Archaeological Method and Theory",
+		"volume": "28",
+		"page": "911-924",
+		"issue": "3",
+		"DOI": "10.1007/s10816-021-09522-w"
+	},
+	{
+		"id": "hesse2010",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Hesse",
+				"given": "Ralf"
+			}
+		],
+		"issued": {
+			"date-parts": [[2010]]
+		},
+		"title": "LiDAR-derived Local Relief Models. A new tool for archaeological prospection",
+		"container-title": "Archaeological Prospection",
+		"volume": "17",
+		"page": "67-72",
+		"issue": "2",
+		"DOI": "10.1002/arp.374"
+	},
+	{
+		"id": "duda1972",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Duda",
+				"given": "Richard O."
+			},
+			{
+				"family": "Hart",
+				"given": "Peter E."
+			}
+		],
+		"issued": {
+			"date-parts": [[1972]]
+		},
+		"title": "Use of the Hough transformation to detect lines and curves in pictures",
+		"container-title": "Communications of the ACM",
+		"volume": "15",
+		"page": "11-15",
+		"issue": "1",
+		"DOI": "10.1145/361237.361242"
+	},
+	{
+		"id": "barnes2014",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Barnes",
+				"given": "Richard"
+			},
+			{
+				"family": "Lehman",
+				"given": "Clarence"
+			},
+			{
+				"family": "Mulla",
+				"given": "David"
+			}
+		],
+		"issued": {
+			"date-parts": [[2014]]
+		},
+		"title": "Priority-flood. An optimal depression-filling and watershed-labeling algorithm for digital elevation models",
+		"container-title": "Computers & Geosciences",
+		"volume": "62",
+		"page": "117-127",
+		"DOI": "10.1016/j.cageo.2013.04.024"
+	},
+	{
+		"id": "beven1979",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Beven",
+				"given": "K. J."
+			},
+			{
+				"family": "Kirkby",
+				"given": "M. J."
+			}
+		],
+		"issued": {
+			"date-parts": [[1979]]
+		},
+		"title": "A physically based, variable contributing area model of basin hydrology",
+		"container-title": "Hydrological Sciences Bulletin",
+		"volume": "24",
+		"page": "43-69",
+		"issue": "1",
+		"DOI": "10.1080/02626667909491834"
+	},
+	{
+		"id": "gerlach2022",
+		"type": "article-journal",
+		"author": [
+			{
+				"family": "Gerlach",
+				"given": "Renate"
+			},
+			{
+				"family": "Meurers-Balke",
+				"given": "Jutta"
+			},
+			{
+				"family": "Kalis",
+				"given": "Arie J."
+			}
+		],
+		"issued": {
+			"date-parts": [[2022]]
+		},
+		"title": "The Lower Rhine (Germany) in Late Antiquity. A time of dissolving structures",
+		"container-title": "Netherlands Journal of Geosciences",
+		"volume": "101",
+		"page": "e14",
+		"DOI": "10.1017/njg.2022.11"
+	},
+	{
+		"id": "clarke1767",
+		"type": "book",
+		"author": [
+			{
+				"family": "Vegetius Renatus",
+				"given": "Flavius"
+			}
+		],
+		"translator": [
+			{
+				"family": "Clarke",
+				"given": "John"
+			}
+		],
+		"issued": {
+			"date-parts": [[1767]]
+		},
+		"title": "Military Institutions of Vegetius, in Five Books",
+		"publisher": "W. Griffin",
+		"publisher-place": "London",
+		"URL": "https://archive.org/details/bim_eighteenth-century_de-re-militari-english_vegetius-renatus-flaviu_1767"
+	},
+	{
+		"id": "juengerich2022",
+		"type": "post-weblog",
+		"author": [
+			{
+				"family": "Jüngerich",
+				"given": "Florian"
+			}
+		],
+		"issued": {
+			"date-parts": [[2022]]
+		},
+		"title": "Das große Graben",
+		"container-title": "Zeitmaschine. Blog der LWL-Archäologie für Westfalen",
+		"URL": "https://zeitmaschine.lwl.org/de/blog-neues-wissen-uber-alte-dinge/das-grosse-graben/",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "lwl2023paderborn",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Landschaftsverband Westfalen-Lippe"
+			}
+		],
+		"issued": {
+			"date-parts": [[2023, 6, 23]]
+		},
+		"title": "Ein augusteisches Marschlager in Paderborn?",
+		"container-title": "LWL-Pressemitteilungen",
+		"genre": "Pressemitteilung",
+		"URL": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=57212",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "lwl2023johannisstift",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Landschaftsverband Westfalen-Lippe"
+			}
+		],
+		"issued": {
+			"date-parts": [[2023]]
+		},
+		"title": "Römer am Johannisstift?",
+		"container-title": "LWL-Pressemitteilungen",
+		"genre": "Pressemitteilung",
+		"URL": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=56091",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "lwl2023varus",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Landschaftsverband Westfalen-Lippe"
+			}
+		],
+		"issued": {
+			"date-parts": [[2023, 1, 2]]
+		},
+		"title": "„Wann war Varus wo?“",
+		"container-title": "LWL-Pressemitteilungen",
+		"genre": "Pressemitteilung",
+		"URL": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=56161",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "lwl2021haltern",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Landschaftsverband Westfalen-Lippe"
+			}
+		],
+		"issued": {
+			"date-parts": [[2021, 10, 6]]
+		},
+		"title": "LWL entdeckt ältestes römisches Marschlager in Haltern am See",
+		"container-title": "LWL-Pressemitteilungen",
+		"genre": "Pressemitteilung",
+		"URL": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=53541",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "lwl2019bielefeld",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Landschaftsverband Westfalen-Lippe"
+			}
+		],
+		"issued": {
+			"date-parts": [[2019, 5, 8]]
+		},
+		"title": "Neuer Fund eines römischen Marschlagers in Bielefeld",
+		"container-title": "LWL-Pressemitteilungen",
+		"genre": "Pressemitteilung",
+		"URL": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=47898",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "lwl2025osttor",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Landschaftsverband Westfalen-Lippe"
+			}
+		],
+		"issued": {
+			"date-parts": [[2025, 6, 24]]
+		},
+		"title": "Neues vom Osttor",
+		"container-title": "LWL-Pressemitteilungen",
+		"genre": "Pressemitteilung",
+		"URL": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=61588",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "lwl2021hotspot",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Landschaftsverband Westfalen-Lippe"
+			}
+		],
+		"issued": {
+			"date-parts": [[2021, 1, 28]]
+		},
+		"title": "„Archäologischer Hotspot“ im Wesertal",
+		"container-title": "LWL-Pressemitteilungen",
+		"genre": "Pressemitteilung",
+		"URL": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=51847",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "lwl2023lippe",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Landschaftsverband Westfalen-Lippe"
+			}
+		],
+		"issued": {
+			"date-parts": [[2023]]
+		},
+		"title": "Viermal komplett neu aufgebaut",
+		"container-title": "LWL-Pressemitteilungen",
+		"genre": "Pressemitteilung",
+		"URL": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=56865",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "lwl2024annaberg",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Landschaftsverband Westfalen-Lippe"
+			}
+		],
+		"issued": {
+			"date-parts": [[2024, 6, 10]]
+		},
+		"title": "„Das römische Kastell auf dem Annaberg. Mythos oder Wirklichkeit?“",
+		"container-title": "LWL-Pressemitteilungen",
+		"genre": "Mitteilung",
+		"URL": "https://www.lwl.org/pressemitteilungen/mitteilung.php?urlID=59236",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "aonline2015",
+		"type": "webpage",
+		"issued": {
+			"date-parts": [[2015, 12, 4]]
+		},
+		"title": "Porta Westfalica in römischer Zeit",
+		"container-title": "Archäologie online",
+		"URL": "https://www.archaeologie-online.de/nachrichten/porta-westfalica-in-roemischer-zeit-2994/",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "aonline2009",
+		"type": "webpage",
+		"issued": {
+			"date-parts": [[2009, 1, 9]]
+		},
+		"title": "Zwischenbilanz der Römerfunde an der Porta Westfalica",
+		"container-title": "Archäologie online",
+		"URL": "https://www.archaeologie-online.de/nachrichten/zwischenbilanz-der-roemerfunde-an-der-porta-westfalica-1183/",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "spreenledebur2017",
+		"type": "article-newspaper",
+		"author": [
+			{
+				"family": "Spreen-Ledebur",
+				"given": "Joern"
+			}
+		],
+		"issued": {
+			"date-parts": [[2017, 2, 18]]
+		},
+		"title": "Wo Varus über das Wiehengebirge marschierte",
+		"container-title": "Neue Westfälische",
+		"URL": "https://www.nw.de/lokal/kreis_minden_luebbecke/luebbecke/21692637_Wo-Varus-ueber-das-Wiehengebirge-marschierte.html",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "besserer2023a",
+		"type": "article-newspaper",
+		"author": [
+			{
+				"family": "Besserer",
+				"given": "Dieter"
+			}
+		],
+		"issued": {
+			"date-parts": [[2023, 12, 8]]
+		},
+		"title": "Varus trifft Preußisch Oldendorf",
+		"container-title": "Westfalen-Blatt",
+		"URL": "https://www.westfalen-blatt.de/owl/kreis-minden-luebbecke/pr-oldendorf/varus-schlacht-wiehengebirge-forschungen-2879038",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "besserer2023b",
+		"type": "article-newspaper",
+		"author": [
+			{
+				"family": "Besserer",
+				"given": "Dieter"
+			}
+		],
+		"issued": {
+			"date-parts": [[2023, 12, 22]]
+		},
+		"title": "Preußisch Oldendorf. Hier wurden Schlachten geschlagen",
+		"container-title": "Westfalen-Blatt",
+		"URL": "https://www.westfalen-blatt.de/owl/kreis-minden-luebbecke/pr-oldendorf/porta-westfalica-schlachten-varus-germanicus-roemer-2887859",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "bollig2019",
+		"type": "article-newspaper",
+		"author": [
+			{
+				"family": "Bollig",
+				"given": "Peter"
+			}
+		],
+		"issued": {
+			"date-parts": [[2019, 9, 10]]
+		},
+		"title": "Spurensuche im römischen Marschlager",
+		"container-title": "Westfalen-Blatt",
+		"URL": "https://www.westfalen-blatt.de/owl/bielefeld/spurensuche-im-romischen-marschlager-976015",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "gefbdml2024",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Gesellschaft zur Förderung der Bodendenkmalpflege im Kreis Minden-Lübbecke"
+			}
+		],
+		"issued": {
+			"date-parts": [[2024]]
+		},
+		"title": "Erneut römische Goldmünze bei Costedt gefunden. Ein spätantiker Solidus aus Porta Westfalica",
+		"URL": "https://www.gefbdml.de/erneut-roemische-goldmuenze-bei-costedt-gefunden-ein-spaetantiker-solidus-aus-porta-westfalica/",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "gefbdml-costedt",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Gesellschaft zur Förderung der Bodendenkmalpflege im Kreis Minden-Lübbecke"
+			}
+		],
+		"title": "Römische Goldmünze bei Costedt gefunden. Ein spätantiker Solidus aus Porta Westfalica",
+		"URL": "https://www.gefbdml.de/roemische-goldmuenze-bei-costedt-gefunden-ein-spaetantiker-solidus-aus-porta-westfalica/",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "nld2021",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Niedersächsisches Landesamt für Denkmalpflege"
+			}
+		],
+		"issued": {
+			"date-parts": [[2021, 9, 28]]
+		},
+		"title": "Eröffnung des Infopfades zum Bohlenweg Pr VI im Naturschutzgebiet Aschener/Heeder Moor",
+		"URL": "https://denkmalpflege.niedersachsen.de/aktuelles/nachrichten/eroffnung-des-infopfades-zum-bohlenweg-pr-vi-im-naturschutzgebiet-aschener-heeder-moor-204628.html",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "hoeper-germanen",
+		"type": "map",
+		"author": [
+			{
+				"family": "Höper",
+				"given": "Hermann-Josef"
+			}
+		],
+		"title": "Lebensräume der germanischen Stämme im nördlichen Bereich des rechtsrheinischen Gebietes und aufgefundene Römerlager, die während der Herrschaft des Kaisers Augustus errichtet worden sind",
+		"container-title": "Internet-Portal „Westfälische Geschichte“",
+		"note": "Diaserie „Römerlager an der Lippe“, Dia 1",
+		"URL": "https://www.lwl.org/westfaelische-geschichte/portal/Internet/finde/langDatensatz.php?urlID=525&url_tabelle=tab_medien",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "wegekarte1891",
+		"type": "map",
+		"issued": {
+			"date-parts": [[1891]]
+		},
+		"title": "Wegekarte der Provinz Westfalen in 30 Blättern",
+		"container-title": "Internet-Portal „Westfälische Geschichte“",
+		"URL": "https://www.lwl.org/westfaelische-geschichte/portal/Internet/finde/langDatensatz.php?urlID=495&url_tabelle=tab_karte",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "itinere2025",
+		"type": "dataset",
+		"author": [
+			{
+				"family": "Soto",
+				"non-dropping-particle": "de",
+				"given": "Pau"
+			},
+			{
+				"family": "Pažout",
+				"given": "Adam"
+			},
+			{
+				"family": "Brughmans",
+				"given": "Tom"
+			},
+			{
+				"family": "Vahlstrup",
+				"given": "Peter"
+			},
+			{
+				"family": "Auir",
+				"given": "Alvaro"
+			},
+			{
+				"family": "Bongers",
+				"given": "Toon"
+			},
+			{
+				"family": "Christoffersen",
+				"given": "Jens"
+			},
+			{
+				"family": "Crépy",
+				"given": "Maël"
+			},
+			{
+				"family": "Johansen",
+				"given": "Matthias Holland"
+			},
+			{
+				"family": "Lewis",
+				"given": "Joseph"
+			},
+			{
+				"family": "Manière",
+				"given": "Louis"
+			},
+			{
+				"family": "Massa",
+				"given": "Michele"
+			},
+			{
+				"family": "Møller",
+				"given": "Louise Matilde Harreby"
+			},
+			{
+				"family": "Redon",
+				"given": "Bérangère"
+			},
+			{
+				"family": "Renda",
+				"given": "Giuseppina"
+			},
+			{
+				"family": "Şahin",
+				"given": "Hamdi"
+			},
+			{
+				"family": "Sobotkova",
+				"given": "Adela"
+			},
+			{
+				"family": "Spatzek",
+				"given": "Amanda Leighton"
+			},
+			{
+				"family": "Verhagen",
+				"given": "Philip"
+			},
+			{
+				"family": "Weissova",
+				"given": "Barbora"
+			}
+		],
+		"issued": {
+			"date-parts": [[2025, 9, 15]]
+		},
+		"title": "A High-Resolution Dataset of Roads of the Roman Empire. Itiner-e static version 2024",
+		"version": "1.3",
+		"publisher": "Zenodo",
+		"DOI": "10.5281/zenodo.17122148",
+		"license": "CC BY 4.0"
+	},
+	{
+		"id": "awmc-geodata",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Ancient World Mapping Center"
+			}
+		],
+		"title": "AWMC Geodata. Roman roads",
+		"URL": "https://github.com/AWMC/geodata",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"publisher": "GitHub",
+		"license": "ODbL 1.0"
+	},
+	{
+		"id": "geobasis-dgm1",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Bezirksregierung Köln, Geobasis NRW"
+			}
+		],
+		"title": "Digitales Geländemodell 1 m (DGM1)",
+		"URL": "https://www.opengeodata.nrw.de/produkte/geobasis/hm/dgm1_tiff/dgm1_tiff/",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "GeoTIFF",
+		"license": "Datenlizenz Deutschland – Zero – Version 2.0"
+	},
+	{
+		"id": "geobasis-dgm1-wcs",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Bezirksregierung Köln, Geobasis NRW"
+			}
+		],
+		"title": "DGM1 NRW, Web Coverage Service",
+		"URL": "https://www.wcs.nrw.de/geobasis/wcs_nw_dgm",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "WCS",
+		"license": "Datenlizenz Deutschland – Zero – Version 2.0"
+	},
+	{
+		"id": "geobasis-schummerung",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Bezirksregierung Köln, Geobasis NRW"
+			}
+		],
+		"title": "Schummerung aus dem DGM1 NRW",
+		"URL": "https://www.wms.nrw.de/geobasis/wms_nw_dgm-schummerung",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "WMS",
+		"license": "Datenlizenz Deutschland – Zero – Version 2.0"
+	},
+	{
+		"id": "geobasis-uraufnahme",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Bezirksregierung Köln, Geobasis NRW"
+			}
+		],
+		"title": "Preußische Uraufnahme 1836–1850",
+		"URL": "https://www.wms.nrw.de/geobasis/wms_nw_uraufnahme",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "WMS",
+		"license": "Datenlizenz Deutschland – Zero – Version 2.0"
+	},
+	{
+		"id": "geobasis-tranchot",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Bezirksregierung Köln, Geobasis NRW"
+			}
+		],
+		"title": "Tranchot/v. Müffling 1801–1828",
+		"URL": "https://www.wms.nrw.de/geobasis/wms_nw_tranchot",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "WMS",
+		"license": "Datenlizenz Deutschland – Zero – Version 2.0"
+	},
+	{
+		"id": "geobasis-neuaufnahme",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Bezirksregierung Köln, Geobasis NRW"
+			}
+		],
+		"title": "Preußische Neuaufnahme 1891–1912",
+		"URL": "https://www.wms.nrw.de/geobasis/wms_nw_neuaufnahme",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "WMS",
+		"license": "Datenlizenz Deutschland – Zero – Version 2.0"
+	},
+	{
+		"id": "geobasis-tk25-1936",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Bezirksregierung Köln, Geobasis NRW"
+			}
+		],
+		"title": "Topographische Karte 1:25 000, 1936–1945",
+		"URL": "https://www.wms.nrw.de/geobasis/wms_nw_tk25_1936-1945",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "WMS",
+		"license": "Datenlizenz Deutschland – Zero – Version 2.0"
+	},
+	{
+		"id": "geobasis-hist-dop",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Bezirksregierung Köln, Geobasis NRW"
+			}
+		],
+		"title": "Historische Luftbilder 1951–1958",
+		"URL": "https://www.wms.nrw.de/geobasis/wms_nw_hist_dop",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "WMS",
+		"license": "Datenlizenz Deutschland – Zero – Version 2.0"
+	},
+	{
+		"id": "nrw-uesg",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Land Nordrhein-Westfalen"
+			}
+		],
+		"title": "Überschwemmungsgebiete NRW",
+		"URL": "https://www.wms.nrw.de/umwelt/wasser/uesg",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "WMS"
+	},
+	{
+		"id": "nrw-gewstat",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Land Nordrhein-Westfalen"
+			}
+		],
+		"title": "Gewässerstationierungskarte NRW (GSK3B)",
+		"URL": "https://www.wms.nrw.de/umwelt/gewstat",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "WMS"
+	},
+	{
+		"id": "gd-bk50",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Geologischer Dienst NRW"
+			}
+		],
+		"title": "Bodenkarte von Nordrhein-Westfalen 1:50 000 (BK50)",
+		"URL": "https://www.wms.nrw.de/gd/bk050",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "WMS",
+		"license": "Datenlizenz Deutschland – Namensnennung – Version 2.0"
+	},
+	{
+		"id": "gd-gk100",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Geologischer Dienst NRW"
+			}
+		],
+		"title": "Geologische Karte von Nordrhein-Westfalen 1:100 000 (GK100)",
+		"URL": "https://www.wms.nrw.de/gd/GK100",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "WMS",
+		"license": "Datenlizenz Deutschland – Namensnennung – Version 2.0"
+	},
+	{
+		"id": "lbeg-gum50",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Landesamt für Bergbau, Energie und Geologie"
+			}
+		],
+		"title": "Moorverbreitung (GUM50) und Bodenkarte (BK50) Niedersachsen, NIBIS-Kartenserver",
+		"URL": "https://nibis.lbeg.de/cardomap3/",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "WMS"
+	},
+	{
+		"id": "nrw-bodendenkmal",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Land Nordrhein-Westfalen"
+			}
+		],
+		"title": "INSPIRE Bodendenkmäler NRW",
+		"URL": "https://www.wfs.nrw.de/wfs/wfs_nw_inspire-denkmal",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		},
+		"genre": "WFS/WMS"
+	},
+	{
+		"id": "mapterhorn",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Mapterhorn"
+			}
+		],
+		"title": "Mapterhorn Höhenkacheln (Terrarium)",
+		"URL": "https://tiles.mapterhorn.com/tilejson.json",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "mapzen-terrain",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Mapzen"
+			}
+		],
+		"title": "Terrain Tiles",
+		"publisher": "Registry of Open Data on AWS",
+		"note": "Enthält SRTM und EU-DEM (© Europäische Union)",
+		"URL": "https://registry.opendata.aws/terrain-tiles/",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "osm",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "OpenStreetMap-Mitwirkende"
+			}
+		],
+		"title": "OpenStreetMap",
+		"license": "ODbL 1.0",
+		"URL": "https://www.openstreetmap.org/copyright",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "bkg-schummerung",
+		"type": "dataset",
+		"author": [
+			{
+				"literal": "Bundesamt für Kartographie und Geodäsie"
+			}
+		],
+		"title": "basemap.de Web Raster, Schummerung",
+		"genre": "WMTS",
+		"license": "CC BY 4.0",
+		"URL": "https://basemap.de/produkte-und-dienste/web-raster/",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	},
+	{
+		"id": "bergkamen-oberaden",
+		"type": "webpage",
+		"author": [
+			{
+				"literal": "Bergkamen erleben"
+			}
+		],
+		"title": "Übersicht – Römerlager Oberaden",
+		"note": "3D-Modell „Römerlager Grundriss“",
+		"URL": "https://bergkamen.app/roemerlager/uebersicht-roemerlager-oberaden",
+		"accessed": {
+			"date-parts": [[2026, 10, 6]]
+		}
+	}
+]

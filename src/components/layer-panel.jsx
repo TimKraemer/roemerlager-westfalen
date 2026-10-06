@@ -14,6 +14,7 @@ import {
 	Typography,
 } from "@mui/material"
 import { useEffect, useState } from "react"
+import { hasLayerSources, layerCsl } from "@/lib/layer-sources"
 import {
 	ALTKARTEN_GROUP,
 	altkartenAvailable,
@@ -22,6 +23,7 @@ import {
 } from "@/lib/layers"
 import { SITE_TYPES } from "@/lib/sites"
 import { useMapStore } from "@/store/use-map-store"
+import { openCite } from "./cite-dialog"
 import CustomLayers from "./custom-layers"
 
 export function SectionTitle({ children }) {
@@ -168,35 +170,41 @@ export default function LayerPanel({ onFlyTo }) {
 			<HelperSwitch
 				checked={showCandidates}
 				onChange={setShowCandidates}
+				id="candidates"
 				label="Vermutete Lagerplätze"
 				note="Am besten bewertete Stellen der Analyse, nummeriert nach Rang"
 			/>
 			<HelperSwitch
 				checked={showRings}
 				onChange={setShowRings}
+				id="rings"
 				label="1 Tagesmarsch um jedes Marschlager"
 			/>
 			<HelperSwitch
 				checked={showRoutes}
 				onChange={setShowRoutes}
+				id="routes"
 				label="Mögliche Marschwege und Etappenhalte"
 				note="Weg geringster Gehzeit zwischen bekannten Lagern (Modell), gestrichelt zu Kalkriese und zum vermuteten Lager Löhne"
 			/>
 			<HelperSwitch
 				checked={showRoads}
 				onChange={setShowRoads}
+				id="roads"
 				label="Römerstraßen"
 				note="Belegt durchgezogen, vermutet gestrichelt"
 			/>
 			<HelperSwitch
 				checked={showWaterways}
 				onChange={setShowWaterways}
+				id="waterways"
 				label="Natürliches Gewässernetz der Analyse"
 				note="Aus den Talzügen des Höhenmodells, ohne Kanäle. Große Flüsse im alten Lauf (Uraufnahme um 1840, bei Haltern und Xanten römerzeitlich)"
 			/>
 			<HelperSwitch
 				checked={showModel}
 				onChange={setShowModel}
+				id="model3d"
 				label="3D-Modell Römerlager Oberaden"
 				note="Ab Zoomstufe 15, mit Beschriftungen und Link. Modell aus der Bergkamen-App, am Grabungsplan der LWL-Archäologie eingepasst"
 			/>
@@ -216,7 +224,7 @@ export default function LayerPanel({ onFlyTo }) {
 	)
 }
 
-function HelperSwitch({ checked, onChange, label, note }) {
+function HelperSwitch({ checked, onChange, id, label, note }) {
 	return (
 		<FormControlLabel
 			control={
@@ -226,7 +234,7 @@ function HelperSwitch({ checked, onChange, label, note }) {
 					onChange={(e) => onChange(e.target.checked)}
 				/>
 			}
-			label={<LayerLabel layer={{ label, note }} />}
+			label={<LayerLabel layer={{ id, label, note }} />}
 			sx={{
 				alignItems: "flex-start",
 				mb: 0.5,
@@ -257,12 +265,44 @@ function OverlayStatus({ layer }) {
 	)
 }
 
+/** Öffnet den Zitierdialog mit der Ebene und ihren Daten und Methoden. */
+export function openLayerSources(id, label) {
+	const items = layerCsl(id)
+	const own = items[0]?.id.endsWith(`-${id}`)
+	openCite({
+		title: `Quellen: ${label}`,
+		intro: own
+			? "Die Ebene als Teil dieser Anwendung und die Daten und Methoden, aus denen sie entsteht."
+			: "Die Ebene zeigt einen fremden Kartendienst, zitiert wird dessen Anbieter.",
+		items,
+		base: `quellen-${id}`,
+	})
+}
+
+export function SourcesLink({ id, label }) {
+	return (
+		<Link
+			component="button"
+			variant="caption"
+			sx={{ verticalAlign: "baseline" }}
+			onClick={(e) => {
+				// sonst schaltet der Klick im Label auch den Schalter
+				e.preventDefault()
+				openLayerSources(id, label)
+			}}
+		>
+			Quellen und zitieren
+		</Link>
+	)
+}
+
 function LayerLabel({ layer, onJump }) {
 	const jump = layer.jump && onJump
+	const sources = layer.id && hasLayerSources(layer.id)
 	return (
 		<Box sx={{ py: 0.25 }}>
 			<Typography variant="body2">{layer.label}</Typography>
-			{(layer.note || jump || layer.info) && (
+			{(layer.note || jump || layer.info || sources) && (
 				<Typography variant="caption" color="text.secondary" component="div">
 					{layer.note}
 					{jump && (
@@ -288,6 +328,12 @@ function LayerLabel({ layer, onJump }) {
 							<Link href={layer.info} target="_blank" rel="noreferrer">
 								Info
 							</Link>
+						</>
+					)}
+					{sources && (
+						<>
+							{(layer.note || jump || layer.info) && " "}
+							<SourcesLink id={layer.id} label={layer.label} />
 						</>
 					)}
 				</Typography>

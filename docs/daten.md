@@ -11,7 +11,8 @@ Lizenz: CC BY 4.0, Namensnennung „Tim Krämer, Römerlager Westfalen“.
 | Datei | Inhalt |
 |-------|--------|
 | `src/data/fundstellen.json` | Bekannte Fundstellen als GeoJSON, Schema unten |
-| `src/data/quellen.json` | Literatur, Karten und Datendienste für den Reiter „Quellen“ |
+| `src/data/literatur.json` | Literatur, Presse und Datendienste als CSL-JSON, Schema unten |
+| `src/data/quellen.json` | Gruppen und Reihenfolge der Quellen im Reiter „Quellen“, verweist per `ref` auf die Literatur |
 | `src/data/texte.json` | Antike Textstellen mit lateinischem bzw. griechischem Original, deutscher Übersetzung und Kartenbezug |
 | `src/lib/criteria.js` | Erklärtexte und Belege je Modellkriterium |
 | `src/lib/text-geo.js` | Orte, Räume und Richtungen je Textstelle für die Karte |
@@ -40,10 +41,8 @@ der gemeinfreien englischen Übersetzung von E. Cary (Loeb, 1917).
 		"place": "Porta Westfalica, Kreis Minden-Lübbecke",
 		"description": "Marschlager an der Weser nördlich der Porta. …",
 		"sources": [
-			{
-				"label": "Tremmel 2011: Augusteische Marschlager in Porta Westfalica-Barkhausen „Auf der Lake“. Archäologie in Westfalen-Lippe 2010 (2011), S. 79–81",
-				"url": "https://doi.org/10.11588/aiw.0.0.25926"
-			}
+			{ "ref": "tremmel2011a", "note": "Lagepläne der Grabung" },
+			{ "label": "Wikipedia: Marschlager Porta Westfalica", "url": "https://de.wikipedia.org/wiki/Marschlager_Porta_Westfalica" }
 		],
 		"inModel": true
 	}
@@ -59,13 +58,60 @@ der gemeinfreien englischen Übersetzung von E. Cary (Loeb, 1917).
 | `inModel` | `true` für augusteische Lager, die Ringe und Routen im Modell erzeugen |
 | `routeTarget`, `routeNote` | Optional. Ziel einer Marschroute ohne gesichertes Lager (Kalkriese, Suchraum Löhne) |
 | `waypoint` | Optional. Zwangspunkt für Routen |
-| `sources` | Mindestens eine Quelle. Fachliteratur mit DOI oder Katalogeintrag bevorzugt, Wikipedia nur zusätzlich |
+| `sources` | Mindestens eine Quelle. Fachliteratur steht in `literatur.json` und wird per `ref` eingebunden, optional mit `note`. Wikipedia und Projektseiten direkt mit `label` und `url`, nur zusätzlich |
 
 Koordinaten stammen aus veröffentlichten Quellen (Fachliteratur,
 LWL-Pressemitteilungen, Wikipedia). Bodendenkmäler sind gesetzlich
 geschützt. Genauere Lagen als die veröffentlichten gehören nicht in dieses
 Repository, und die Potenzialkarte ist keine Aufforderung zum Graben oder
 Sondeln.
+
+### Literatur
+
+`src/data/literatur.json` ist eine Liste im Format
+[CSL-JSON](https://citeproc-js.readthedocs.io/en/latest/csl-json/markup.html),
+das Zotero, Pandoc und citeproc verstehen. Aus ihr entstehen die Kurzangaben
+in den Listen (`src/lib/literature.js`), die Zitierstile und die Exporte nach
+BibTeX, BibLaTeX und RIS (`src/lib/cite.js`).
+
+```json
+{
+	"id": "tremmel2011a",
+	"type": "article-journal",
+	"author": [{ "family": "Tremmel", "given": "Bettina" }],
+	"issued": { "date-parts": [[2011]] },
+	"title": "Augusteische Marschlager in Porta Westfalica-Barkhausen „Auf der Lake“",
+	"container-title": "Archäologie in Westfalen-Lippe",
+	"volume": "2010",
+	"page": "79-81",
+	"DOI": "10.11588/aiw.0.0.25926"
+}
+```
+
+| Feld | Bedeutung |
+|------|-----------|
+| `id` | Kleinbuchstaben, Ziffern und Bindestriche, Muster Name und Jahr. Wird zum BibTeX-Schlüssel, Bindestriche dort als Unterstrich |
+| `type` | CSL-Typ, hier `article-journal`, `book`, `chapter`, `report`, `dataset`, `map`, `webpage`, `article-newspaper`, `post-weblog` |
+| `author`, `editor` | Personen mit `family` und `given`, Namenszusätze in `non-dropping-particle` („von“), Institutionen als `literal` |
+| `volume`, `issued` | Bei Jahrbüchern ist `volume` das Berichtsjahr und `issued` das Erscheinungsjahr („2010 (2011)“) |
+| `DOI`, `URL` | DOI ohne `https://doi.org/`. Ohne DOI der Katalogeintrag (DNB, K10plus, NWBib, Zenon) oder die Seite |
+| `accessed` | Abrufdatum bei Webseiten und Diensten |
+
+Die Angaben stammen aus DOI-Metadaten (Crossref, DataCite) und den Katalogen
+der DNB, des K10plus, der NWBib (lobid) und von Zenon (DAI), abgerufen am
+06.10.2026. Wo ein Katalog keinen Vornamen nennt, fehlt er auch hier.
+Pressemitteilungen und Zeitungsartikel tragen den Titel der Seite.
+
+### Zitierstile
+
+Die Stildateien in `public/csl/` stammen aus dem
+[CSL-Stilrepository](https://github.com/citation-style-language/styles) und
+stehen unter [CC BY-SA 3.0](https://creativecommons.org/licenses/by-sa/3.0/).
+Der DAI-Stil ist an zwei Stellen geändert, vermerkt im Kopf der Datei. URLs
+bleiben in der ursprünglichen Schreibung (der Stil schrieb sie klein und
+machte damit Links mit `urlID=` ungültig), und die Auflage steht wie in den
+Zitierrichtlinien des DAI hochgestellt vor dem Jahr. APA 7 bringt
+citation-js selbst mit.
 
 ## Von Skripten erzeugt
 

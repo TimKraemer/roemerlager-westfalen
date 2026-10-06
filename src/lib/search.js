@@ -4,6 +4,7 @@ import sources from "@/data/quellen.json"
 import roads from "@/data/roemerstrassen.json"
 import texts from "@/data/texte.json"
 import { BASE_LAYERS, OVERLAYS } from "./layers"
+import { resolveSource } from "./literature"
 import { SITE_TYPE_BY_ID, SITES } from "./sites"
 import { hasTextGeo } from "./text-geo"
 import { utmToLonLat } from "./utm"
@@ -261,7 +262,7 @@ function buildIndex() {
 	}
 
 	sources.forEach((g, gi) => {
-		g.items.forEach((item, ii) => {
+		g.items.map(resolveSource).forEach((item, ii) => {
 			entries.push({
 				kind: "source",
 				key: `source:${gi}:${ii}`,
