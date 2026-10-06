@@ -8,7 +8,7 @@
 				"name": "Vetera I (Xanten-Fürstenberg)",
 				"type": "legionslager",
 				"precision": "Lagermitte, etwa ±200–300 m",
-				"size_ha": "56–60",
+				"size_ha": "um 57 (neronisches Steinlager), augusteisch zunächst Marschlager",
 				"dating": "13/12 v. Chr. – 70 n. Chr.",
 				"place": "Xanten, Kreis Wesel",
 				"description": "Ausgangsbasis der Feldzüge an der Lippe. Von hier führte der Weg lippeaufwärts nach Osten.",
@@ -16,6 +16,14 @@
 					{
 						"label": "Wikipedia: Vetera",
 						"url": "https://de.wikipedia.org/wiki/Vetera"
+					},
+					{
+						"label": "Hanel 1995: Vetera I. Die Funde aus den römischen Lagern auf dem Fürstenberg bei Xanten. Rheinische Ausgrabungen 35",
+						"url": "https://d-nb.info/944626157"
+					},
+					{
+						"label": "Hanel/Song 2007: Neue Ergebnisse der Luftbildarchäologie zu den römischen Militärlagern Vetera castra I auf dem Fürstenberg bei Xanten. Germania 85, S. 349–357",
+						"url": "https://doi.org/10.11588/ger.2007.61236"
 					}
 				],
 				"status": "bestätigt",
@@ -45,6 +53,14 @@
 					{
 						"label": "Ebel-Zepezauer 2014: Holsterhausen, Stadt Dorsten, Kreis Recklinghausen. Römerlager in Westfalen 2, 2. Aufl. (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/f1/f6/f1f6b8f9-6c43-4338-90a9-f6b51e812aae/rw_2_2014.pdf"
+					},
+					{
+						"label": "Ebel-Zepezauer u. a. 2009: Augusteische Marschlager und Siedlungen des 1. bis 9. Jahrhunderts in Dorsten-Holsterhausen. Die Ausgrabungen 1999 bis 2002. Bodenaltertümer Westfalens 47 (Digitalisat 2023)",
+						"url": "https://doi.org/10.11588/propylaeum.1237"
+					},
+					{
+						"label": "Ebel-Zepezauer 2003: Die augusteischen Marschlager in Dorsten-Holsterhausen. Germania 81, S. 539–555",
+						"url": "https://doi.org/10.11588/ger.2003.92922"
 					}
 				],
 				"status": "bestätigt",
@@ -78,6 +94,14 @@
 					{
 						"label": "Tremmel 2013: Die westliche Umwehrung des augusteischen Hauptlagers von Haltern. Archäologie in Westfalen-Lippe 2012 (2013), S. 62–66",
 						"url": "https://doi.org/10.11588/aiw.0.0.25988"
+					},
+					{
+						"label": "von Schnurbein 1974: Die römischen Militäranlagen bei Haltern. Bericht über die Forschungen seit 1899. Bodenaltertümer Westfalens 14",
+						"url": "https://d-nb.info/750049839"
+					},
+					{
+						"label": "von Schnurbein 1981: Untersuchungen zur Geschichte der römischen Militärlager an der Lippe. Bericht der Römisch-Germanischen Kommission 62, S. 5–101",
+						"url": "https://doi.org/10.11588/berrgk.1981.1.108180"
 					}
 				],
 				"status": "bestätigt",
@@ -318,6 +342,10 @@
 					{
 						"label": "Tremmel 2011: Ausgrabungen am Nordtor des Römerlagers Bergkamen-Oberaden. Archäologie in Westfalen-Lippe 2010 (2011), S. 76–78",
 						"url": "https://doi.org/10.11588/aiw.0.0.25925"
+					},
+					{
+						"label": "Kühlborn 1992: Das Römerlager in Oberaden III. Die Ausgrabungen im nordwestlichen Lagerbereich und weitere Baustellenuntersuchungen der Jahre 1962–1988. Bodenaltertümer Westfalens 27",
+						"url": "https://nwbib.de/HT004482171"
 					}
 				],
 				"status": "bestätigt",
@@ -335,7 +363,7 @@
 				"name": "Rüthen-Kneblinghausen",
 				"type": "kastell",
 				"precision": "Lagermitte, etwa ±200–300 m",
-				"size_ha": "11 bzw. 8",
+				"size_ha": "10 (Anlage II) bzw. 7,45 (Anlage I)",
 				"dating": "unsicher (augusteisch oder spätes 1. Jh.)",
 				"place": "Rüthen, Kreis Soest",
 				"description": "Lager in 410 m Höhe auf der Haar. Funktion und Datierung sind offen.",
@@ -369,7 +397,7 @@
 				"type": "kastell",
 				"precision": "Lagermitte, etwa ±200–300 m",
 				"size_ha": "23",
-				"dating": "4/5 – 9 n. Chr.",
+				"dating": "4/5 n. Chr., ein Weiterbestehen bis 9 n. Chr. ist archäologisch nicht belegt (Kühlborn 2014)",
 				"place": "Delbrück, Kreis Paderborn",
 				"description": "Versorgungs- und Winterlager an der oberen Lippe, östlichstes bekanntes Lippelager.",
 				"sources": [
@@ -380,6 +408,10 @@
 					{
 						"label": "Kühlborn 2014: Anreppen, Stadt Delbrück, Kreis Paderborn. Römerlager in Westfalen 4, 2. Aufl. (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/cd/40/cd4074b6-60d5-4bf2-a90a-9d1b6812c556/rw_4_2014.pdf"
+					},
+					{
+						"label": "Kühlborn 2008: Die Lippetrasse. Zum Stand der archäologischen Forschungen während der Jahre 1996 bis 2006 in den augusteischen Lippelagern. In: Rom auf dem Weg nach Germanien. Bodenaltertümer Westfalens 45, S. 7–35",
+						"url": "https://nwbib.de/HT015740580"
 					}
 				],
 				"status": "bestätigt",
@@ -414,6 +446,10 @@
 						"label": "Süße 2023: Von den Römern bis zu den Preußen. Ein multiepochaler Fundplatz in Paderborn. Archäologie in Westfalen-Lippe 2022 (2023), S. 223–227",
 						"url": "https://doi.org/10.11588/aiw.2023.108358",
 						"note": "Grabungsbericht des Ausgräbers"
+					},
+					{
+						"label": "Albert/Süße 2025: Geschanzt, gebacken, geschleift. Neue Befunde aus dem römischen Marschlager in Paderborn. Archäologie in Westfalen-Lippe 2024 (2025), S. 103–107",
+						"url": "https://nwbib.de/HT031404286"
 					}
 				],
 				"status": "Verdacht mit guten Indizien",
@@ -637,13 +673,29 @@
 				"type": "verdacht",
 				"precision": "Lagermitte, etwa ±200–300 m",
 				"size_ha": "ca. 7,7",
-				"dating": "ca. 4 v. – 9 n. Chr.",
+				"dating": "ca. 4 v. Chr. bis mindestens 16 n. Chr. (Rasbach 2016, 2024)",
 				"place": "Lahnau, Lahn-Dill-Kreis",
 				"description": "Zivile römische Stadtgründung mit Forum, kein Militärlager.",
 				"sources": [
 					{
 						"label": "Wikipedia: Römisches Forum Lahnau-Waldgirmes",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6misches_Forum_Lahnau-Waldgirmes"
+					},
+					{
+						"label": "Becker/Rasbach 2015: Waldgirmes. Die Ausgrabungen in der spätaugusteischen Siedlung von Lahnau-Waldgirmes (1993–2009). 1. Befunde und Funde. Römisch-Germanische Forschungen 71",
+						"url": "https://d-nb.info/1104289040"
+					},
+					{
+						"label": "Rasbach 2016: Waldgirmes, Deutschland. Abschluss der Arbeiten und Publikation. e-Forschungsberichte des DAI 2016, Faszikel 2, S. 28–30",
+						"url": "https://publications.dainst.org/journals/efb/article/view/1570/4469"
+					},
+					{
+						"label": "von Schnurbein 2003: Augustus in Germania and his new ‘town’ at Waldgirmes east of the Rhine. Journal of Roman Archaeology 16, S. 93–107",
+						"url": "https://doi.org/10.1017/s1047759400013015"
+					},
+					{
+						"label": "Rasbach 2024: Von Bergleuten, Händlern und römischem Militär im Lahntal (D). In: H. van Enckevort u. a. (Hrsg.), Supplying the Roman Empire. Proceedings of the 25th International Congress of Roman Frontier Studies 4, S. 191–200",
+						"url": "https://doi.org/10.59641/mm723py"
 					}
 				],
 				"status": "bestätigt",
@@ -662,13 +714,21 @@
 				"type": "marschlager",
 				"precision": "Lagermitte, etwa ±200–300 m",
 				"size_ha": "21",
-				"dating": "1. Jahrzehnt n. Chr.",
+				"dating": "augusteisch (halternzeitlich), mehrfach aufgesucht",
 				"place": "Lahnau, Lahn-Dill-Kreis",
 				"description": "Marschlager nahe Waldgirmes.",
 				"sources": [
 					{
 						"label": "Wikipedia: Römerlager Lahnau-Dorlar",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Lahnau-Dorlar"
+					},
+					{
+						"label": "von Schnurbein/Köhler 1994: Dorlar. Ein augusteisches Römerlager im Lahntal. Germania 72, S. 193–203",
+						"url": "https://zenon.dainst.org/Record/001185913"
+					},
+					{
+						"label": "Rasbach 2024: Von Bergleuten, Händlern und römischem Militär im Lahntal (D). In: H. van Enckevort u. a. (Hrsg.), Supplying the Roman Empire. Proceedings of the 25th International Congress of Roman Frontier Studies 4, S. 191–200",
+						"url": "https://doi.org/10.59641/mm723py"
 					}
 				],
 				"status": "bestätigt",
@@ -694,6 +754,14 @@
 					{
 						"label": "Wikipedia: Römerlager Rödgen",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_R%C3%B6dgen"
+					},
+					{
+						"label": "Schönberger/Simon 1976: Römerlager Rödgen. Limesforschungen 15",
+						"url": "https://d-nb.info/760286124"
+					},
+					{
+						"label": "Schönberger 1967: Das augusteische Römerlager in Rödgen. Vorbericht über die Grabungen in den Jahren 1961 bis 1966. Germania 45, S. 84–95",
+						"url": "https://zenon.dainst.org/Record/000501108"
 					}
 				],
 				"status": "bestätigt",
@@ -719,6 +787,10 @@
 					{
 						"label": "Staatsbosbeheer 2025",
 						"url": "https://www.staatsbosbeheer.nl/wat-we-doen/nieuws/2025/05/ontdekking-romeins-legerkamp-nabij-hoog-buurlo"
+					},
+					{
+						"label": "Oosterbaan 2026: Onderzoek naar tijdelijk gebruikte legerkampen in Hoog-Buurlo. Forschungsdatensatz, DANS Data Station Archaeology",
+						"url": "https://doi.org/10.17026/ar/gwim9t"
 					}
 				],
 				"status": "bestätigt",
@@ -850,6 +922,14 @@
 					{
 						"label": "Steinborn u. a. 2006: Dokumentation römischer Fundmünzen (PDF)",
 						"url": "https://www.roemerfreunde-weser.info/dokumentation-r%C3%B6mischer-fundm%C3%BCnzen-aus-der-region-weserbergland.pdf"
+					},
+					{
+						"label": "Zelle 2005: Augustus' Legionen in Lippe. Lippische Mitteilungen aus Geschichte und Landeskunde 74, S. 241–279",
+						"url": "https://nwbib.de/HT014656588"
+					},
+					{
+						"label": "Korzus 1973: Die Fundmünzen der römischen Zeit in Deutschland VI. Nordrhein-Westfalen 6. Detmold",
+						"url": "https://d-nb.info/740081950"
 					}
 				],
 				"waypoint": true
@@ -993,14 +1073,26 @@
 				"status": "bestätigt",
 				"inModel": true,
 				"precision": "Lagermitte, etwa ±200–300 m",
-				"size_ha": null,
-				"dating": "augusteisch, aufgegeben spätestens um 9 n. Chr.",
+				"size_ha": "ca. 2,8",
+				"dating": "augusteisch (Denar des Gaius und Lucius, 2 v.–4 n. Chr.)",
 				"place": "Brechen, Landkreis Limburg-Weilburg",
-				"description": "Frührömisches Lager an der Lahn, nur kurz belegt.",
+				"description": "Wall-Graben-Anlage („Alteburg“) an der Lahn bei Oberbrechen und Villmar-Weyer. Rasbach (2024) deutet sie als Händlerposten mit zeitweise anwesenden Truppenteilen, nicht als temporäres Militärlager.",
 				"sources": [
 					{
 						"label": "Wikipedia: Römerlager Oberbrechen",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Oberbrechen"
+					},
+					{
+						"label": "Herrmann 2004: Numismatik und Archäologie. Vorbericht über ein neu entdecktes römisches Lager bei Oberbrechen (Kreis Limburg-Weilburg). In: R. Cunz (Hrsg.), Fundamenta historiae. Festschrift für Niklot Klüßendorf, S. 435–445",
+						"url": "https://zenon.dainst.org/Record/001030380"
+					},
+					{
+						"label": "Posluschny/Schade-Lindig/Szédeli 2018: Archäologische Ausgrabung im Vorfeld der „Alteburg“ in Villmar-Weyer. hessenARCHÄOLOGIE 2017, S. 84–88",
+						"url": "https://zenon.dainst.org/Record/001563197"
+					},
+					{
+						"label": "Rasbach 2024: Von Bergleuten, Händlern und römischem Militär im Lahntal (D). In: H. van Enckevort u. a. (Hrsg.), Supplying the Roman Empire. Proceedings of the 25th International Congress of Roman Frontier Studies 4, S. 191–200",
+						"url": "https://doi.org/10.59641/mm723py"
 					}
 				]
 			},
@@ -1019,13 +1111,21 @@
 				"inModel": false,
 				"precision": "Lagermitte, etwa ±200–300 m",
 				"size_ha": "14",
-				"dating": "unklar (claudisch oder vespasianisch diskutiert)",
+				"dating": "2. Hälfte 1. Jh. oder Anfang 2. Jh. n. Chr. (C14 aus Lager A etwa 101 ± 25 n. Chr.)",
 				"place": "Bedburg-Hau, Kreis Kleve",
 				"description": "Lager mit drei parallelen Spitzgräben, 2015 im Luftbild entdeckt. Nicht augusteisch gesichert, deshalb nicht im Modell.",
 				"sources": [
 					{
 						"label": "Wikipedia: Legionslager bei Bedburg-Hau-Till",
 						"url": "https://de.wikipedia.org/wiki/Legionslager_bei_Bedburg-Hau-Till"
+					},
+					{
+						"label": "Bödecker/Held/Rung 2015: Ein temporäres Legionslager bei Till, Kapitelshof? Archäologie im Rheinland 2014 (2015), S. 98–101",
+						"url": "https://doi.org/10.11588/air.2014.0.111894"
+					},
+					{
+						"label": "Englert/Bödecker 2016: Erste Grabungsergebnisse zu den neu entdeckten Lagern bei Till. Der Limes 10, Heft 1, S. 4–7",
+						"url": "https://www.deutsche-limeskommission.de/fileadmin/user_upload/Der_Limes_2016_1.pdf"
 					}
 				]
 			},
@@ -1044,13 +1144,21 @@
 				"inModel": false,
 				"precision": "ungefähr, ±0,5–1 km",
 				"size_ha": "9",
-				"dating": "ca. 170–180 n. Chr.",
+				"dating": "2. Hälfte 2. Jh. n. Chr. (ca. 160–175)",
 				"place": "Ermelo, Gelderland (NL)",
 				"description": "Temporäres Lager des 2. Jh. mit erhaltenen Wällen. Zum Vergleich, nicht im Modell.",
 				"sources": [
 					{
 						"label": "romeinen.nl",
 						"url": "https://www.romeinen.nl/weten/nederland-in-de-romeinse-tijd/gelderland-in-de-romeinse-tijd/ermelo-marskamp"
+					},
+					{
+						"label": "Hulst 2007: Het onderzoek van het Romeinse marskamp bij Ermelo-Leuvenum, Nederland. Rapportage Archeologische Monumentenzorg 146",
+						"url": "https://doi.org/10.17026/dans-xde-s9pw"
+					},
+					{
+						"label": "Driessen/Verschoof-van der Vaart 2024: A new Roman camp north of the Lower German Limes at Ermelo (the Netherlands). In: Supplying the Roman Empire. Proceedings of the 25th International Congress of Roman Frontier Studies 4, S. 173–180",
+						"url": "https://doi.org/10.59641/mm723py"
 					}
 				]
 			},

@@ -9,6 +9,7 @@
 import { addProtocol } from "maplibre-gl"
 import { BASE_PATH, TILES } from "@/config"
 import ALTKARTEN from "@/data/altkarten.json"
+import ALTKARTEN_QUELLEN from "@/data/altkarten-quellen.json"
 import RIVERS from "@/data/fluesse.json"
 import { VECTOR_TILES } from "./water"
 
@@ -324,8 +325,8 @@ export const OVERLAYS = [
 		attribution: "© LWL / LVR, Denkmalbehörden NRW",
 		opacity: 0.9,
 	},
-	// Entzerrte Altkarten, Kacheln aus scripts/altkarten (Herkunft der Scans
-	// unbekannt, Angaben nur soweit auf dem Blatt oder im Dateinamen)
+	// Entzerrte Altkarten, Kacheln aus scripts/altkarten. Bestandsnachweis
+	// und Lizenz der Scans je Karte in src/data/altkarten-quellen.json
 	...ALTKARTEN.map((m) => ({
 		id: `alt-${m.id}`,
 		group: ALTKARTEN_GROUP,
@@ -338,10 +339,19 @@ export const OVERLAYS = [
 		jump: jumpToBounds(m.bounds, m.minzoom),
 		minzoom: m.minzoom,
 		maxzoom: m.maxzoom,
-		attribution: `Altkarte ${m.year}${m.author ? `, ${m.author}` : ""}`,
+		attribution: altkarteAttribution(m),
 		opacity: 0.85,
 	})),
 ]
+
+function altkarteAttribution(m) {
+	const scans = (ALTKARTEN_QUELLEN[m.id] ?? []).map(
+		(q) =>
+			`<a href="${q.url}" target="_blank" rel="noopener">${q.label.split(",")[0]}</a> (${q.license})`,
+	)
+	const head = `Altkarte ${m.year}${m.author ? `, ${m.author}` : ""}`
+	return [head, ...new Set(scans)].join(", ")
+}
 
 let altkartenCheck
 /**
