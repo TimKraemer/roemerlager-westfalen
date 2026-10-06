@@ -20,12 +20,25 @@ import { placeLabel } from "@/lib/criteria"
 import { rankedCandidates } from "@/lib/potential/candidates"
 import { inspectAt } from "@/lib/potential/use-potential"
 import { DEFAULT_REGION } from "@/lib/regions"
-import { useMapStore } from "@/store/use-map-store"
+import { SITE_TYPES } from "@/lib/sites"
+import { anyLayerVisible, useMapStore } from "@/store/use-map-store"
 
 const level = (score) =>
 	score >= 0.85 ? "sehr hoch" : score >= 0.7 ? "hoch" : "mittel"
 
 function Legend() {
+	const heatmap = useMapStore((s) => s.heatmap.visible)
+	const siteTypes = useMapStore((s) => s.siteTypes)
+	const showCandidates = useMapStore((s) => s.showCandidates)
+	const showRoutes = useMapStore((s) => s.showRoutes)
+	const showStages = useMapStore((s) => s.showStages)
+	const showRoads = useMapStore((s) => s.showRoads)
+	const showWaterways = useMapStore((s) => s.showWaterways)
+	const showRings = useMapStore((s) => s.showRings)
+	const showRegion = useMapStore((s) => s.showRegion)
+	const anyVisible = useMapStore(anyLayerVisible)
+	const shownTypes = SITE_TYPES.filter((t) => siteTypes[t.id])
+
 	const item = (symbol, text, detail) => (
 		<Stack direction="row" spacing={1.25} sx={{ alignItems: "flex-start" }}>
 			<Box
@@ -71,65 +84,93 @@ function Legend() {
 			{label}
 		</Box>
 	)
+	const line = (color, outline) => (
+		<Box
+			sx={{
+				width: 22,
+				height: 4,
+				bgcolor: color,
+				borderRadius: 1,
+				outline: `1px solid ${outline}`,
+			}}
+		/>
+	)
+	const dashed = (color, width = 3) => (
+		<Box sx={{ width: 22, borderTop: `${width}px dashed ${color}` }} />
+	)
+	if (!anyVisible)
+		return (
+			<Typography variant="caption" color="text.secondary">
+				Alle Ebenen sind ausgeblendet, die Karte zeigt nur die Grundkarte.
+			</Typography>
+		)
 	return (
 		<Stack spacing={0.75}>
-			<Box sx={{ mb: 0.5 }}>
-				<Box
-					sx={{
-						height: 8,
-						borderRadius: 1,
-						background:
-							"linear-gradient(90deg, rgba(255,241,118,0.6), #fb8c00, #b71c1c)",
-					}}
-				/>
-				<Stack direction="row" sx={{ justifyContent: "space-between" }}>
-					<Typography variant="caption" color="text.secondary">
-						möglich
-					</Typography>
-					<Typography variant="caption" color="text.secondary">
-						sehr wahrscheinlich
-					</Typography>
-				</Stack>
-			</Box>
-			{item(dot("#6a1b9a", "#fff"), "Bekanntes Römerlager")}
-			{item(dot("#fff", "#d84315", "1"), "Vermuteter Lagerplatz")}
-			{item(
-				<Box
-					sx={{
-						width: 22,
-						height: 4,
-						bgcolor: "#ffca28",
-						borderRadius: 1,
-						outline: "1px solid #3e2723",
-					}}
-				/>,
-				"Möglicher Marschweg zwischen zwei Lagern",
+			{heatmap && (
+				<Box sx={{ mb: 0.5 }}>
+					<Box
+						sx={{
+							height: 8,
+							borderRadius: 1,
+							background:
+								"linear-gradient(90deg, rgba(255,241,118,0.6), #fb8c00, #b71c1c)",
+						}}
+					/>
+					<Stack direction="row" sx={{ justifyContent: "space-between" }}>
+						<Typography variant="caption" color="text.secondary">
+							möglich
+						</Typography>
+						<Typography variant="caption" color="text.secondary">
+							sehr wahrscheinlich
+						</Typography>
+					</Stack>
+				</Box>
 			)}
-			{item(
-				<Box sx={{ width: 22, borderTop: "3px dashed #ffca28" }} />,
-				"Marschweg nach Kalkriese oder zum vermuteten Lager Löhne",
+			{shownTypes.map((t) => (
+				<Box key={t.id}>{item(dot(t.color, "#fff"), t.label)}</Box>
+			))}
+			{showCandidates &&
+				item(dot("#fff", "#d84315", "1"), "Vermuteter Lagerplatz")}
+			{showRoutes && (
+				<>
+					{item(
+						line("#ffca28", "#3e2723"),
+						"Möglicher Marschweg zwischen zwei Lagern",
+					)}
+					{item(
+						dashed("#ffca28"),
+						"Marschweg nach Kalkriese oder zum vermuteten Lager Löhne",
+					)}
+					{item(dashed("#4fc3f7"), "Schiffsstrecke auf der Lippe")}
+				</>
 			)}
-			{item(
-				<Box sx={{ width: 22, borderTop: "3px dashed #4fc3f7" }} />,
-				"Schiffsstrecke auf der Lippe",
-			)}
-			{item(
-				<Box
-					sx={{
-						width: 22,
-						height: 4,
-						bgcolor: "#1565c0",
-						borderRadius: 1,
-						outline: "1px solid #fff",
-					}}
-				/>,
-				"Flusslauf vor der Begradigung",
-				"Lippe, Weser und Ems wie um 1840, sonst aus dem Gelände",
-			)}
-			{item(
-				<Box sx={{ width: 22, borderTop: "2px dashed #6a1b9a" }} />,
-				"Ein Tagesmarsch (rund 20 km) um ein Marschlager",
-			)}
+			{showStages &&
+				item(
+					dot("#ffca28", "#3e2723", "E"),
+					"Möglicher Etappenhalt nach einem Tagesmarsch",
+				)}
+			{showRoads &&
+				item(
+					line("#5d4037", "#5d4037"),
+					"Römerstraße",
+					"Belegt durchgezogen, vermutet gestrichelt",
+				)}
+			{showWaterways &&
+				item(
+					line("#1565c0", "#fff"),
+					"Flusslauf vor der Begradigung",
+					"Lippe, Weser und Ems wie um 1840, sonst aus dem Gelände",
+				)}
+			{showRings &&
+				item(
+					dashed("#6a1b9a", 2),
+					"Ein Tagesmarsch (rund 20 km) um ein Marschlager",
+				)}
+			{showRegion &&
+				item(
+					dashed("#4a148c", 2),
+					`Untersuchungsgebiet (${DEFAULT_REGION.label})`,
+				)}
 		</Stack>
 	)
 }

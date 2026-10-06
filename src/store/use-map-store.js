@@ -29,6 +29,64 @@ const showCard = (s) =>
 		? { panelOpen: true, sheetFrac: Math.max(s.sheetFrac, 0.42) }
 		: null
 
+// Schalter für alles über der Grundkarte, die nicht in overlays stehen
+const SWITCHES = [
+	"showRings",
+	"showWaterways",
+	"showRoutes",
+	"showStages",
+	"showCandidates",
+	"showRoads",
+	"showModel",
+	"showRegion",
+]
+
+/** Sichtbarkeit aller Ebenen außer der Grundkarte. */
+function visibility(s) {
+	return {
+		overlays: Object.fromEntries(
+			Object.entries(s.overlays).map(([id, o]) => [id, o.visible]),
+		),
+		siteTypes: s.siteTypes,
+		heatmap: s.heatmap.visible,
+		custom: Object.fromEntries(s.customLayers.map((l) => [l.id, l.visible])),
+		...Object.fromEntries(SWITCHES.map((k) => [k, s[k]])),
+	}
+}
+
+/** Zustandsänderung, die die Sichtbarkeit v herstellt. */
+function applyVisibility(s, v) {
+	const customLayers = s.customLayers.map((l) => ({
+		...l,
+		visible: v.custom[l.id] ?? true,
+	}))
+	saveServices(customLayers)
+	return {
+		overlays: Object.fromEntries(
+			Object.entries(s.overlays).map(([id, o]) => [
+				id,
+				{ ...o, visible: v.overlays[id] ?? o.visible },
+			]),
+		),
+		siteTypes: v.siteTypes,
+		heatmap: { ...s.heatmap, visible: v.heatmap },
+		customLayers,
+		...Object.fromEntries(SWITCHES.map((k) => [k, v[k]])),
+	}
+}
+
+/** Ist außer der Grundkarte noch etwas eingeschaltet? */
+export function anyLayerVisible(s) {
+	const v = visibility(s)
+	return [
+		...Object.values(v.overlays),
+		...Object.values(v.siteTypes),
+		v.heatmap,
+		...Object.values(v.custom),
+		...SWITCHES.map((k) => v[k]),
+	].some(Boolean)
+}
+
 export const useMapStore = create((set) => ({
 	baseLayer: BASE_LAYERS[0].id,
 	overlays: Object.fromEntries(
@@ -44,6 +102,10 @@ export const useMapStore = create((set) => ({
 	// Nummerierte Punkte der Analyse (vermutete Lagerplätze)
 	showCandidates: true,
 	showStages: true,
+	// Umriss des Kreises, für den die Analyse rechnet
+	showRegion: true,
+	// Sichtbarkeit vor „Alle Ebenen aus“, zum Wiederherstellen
+	hiddenLayers: null,
 	// Seitenleiste mit Einstellungen und Quellen, anfangs eingeklappt.
 	// Auf dem Handy ist es das Sheet am unteren Rand.
 	panelOpen: false,
@@ -106,6 +168,31 @@ export const useMapStore = create((set) => ({
 	setShowRoutes: (showRoutes) => set({ showRoutes }),
 	setShowCandidates: (showCandidates) => set({ showCandidates }),
 	setShowStages: (showStages) => set({ showStages }),
+	setShowRegion: (showRegion) => set({ showRegion }),
+	// Hauptschalter: alles aus und merken, beim Einschalten zurück
+	setAllLayers: (on) =>
+		set((s) => {
+			if (on) {
+				const initial = useMapStore.getInitialState()
+				return {
+					...applyVisibility(s, s.hiddenLayers ?? visibility(initial)),
+					hiddenLayers: null,
+				}
+			}
+			const v = visibility(s)
+			const off = (o) =>
+				Object.fromEntries(Object.keys(o).map((k) => [k, false]))
+			return {
+				hiddenLayers: v,
+				...applyVisibility(s, {
+					overlays: off(v.overlays),
+					siteTypes: off(v.siteTypes),
+					heatmap: false,
+					custom: off(v.custom),
+					...off(Object.fromEntries(SWITCHES.map((k) => [k, true]))),
+				}),
+			}
+		}),
 	setPanelOpen: (panelOpen) => set({ panelOpen }),
 	setPanelTab: (panelTab) => set({ panelTab }),
 	setSheetFrac: (sheetFrac) => set({ sheetFrac }),

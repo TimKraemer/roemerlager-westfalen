@@ -21,8 +21,9 @@ import {
 	BASE_LAYERS,
 	OVERLAYS,
 } from "@/lib/layers"
+import { DEFAULT_REGION } from "@/lib/regions"
 import { SITE_TYPES } from "@/lib/sites"
-import { useMapStore } from "@/store/use-map-store"
+import { anyLayerVisible, useMapStore } from "@/store/use-map-store"
 import { openCite } from "./cite-dialog"
 import CustomLayers from "./custom-layers"
 
@@ -61,6 +62,12 @@ export default function LayerPanel({ onFlyTo }) {
 	const setShowModel = useMapStore((s) => s.setShowModel)
 	const setShowRoads = useMapStore((s) => s.setShowRoads)
 	const setShowWaterways = useMapStore((s) => s.setShowWaterways)
+	const showRegion = useMapStore((s) => s.showRegion)
+	const setShowRegion = useMapStore((s) => s.setShowRegion)
+	const heatmap = useMapStore((s) => s.heatmap)
+	const setHeatmap = useMapStore((s) => s.setHeatmap)
+	const anyVisible = useMapStore(anyLayerVisible)
+	const setAllLayers = useMapStore((s) => s.setAllLayers)
 
 	const [hasAltkarten, setHasAltkarten] = useState(false)
 	useEffect(() => {
@@ -73,6 +80,16 @@ export default function LayerPanel({ onFlyTo }) {
 
 	return (
 		<Box>
+			<HelperSwitch
+				checked={anyVisible}
+				onChange={setAllLayers}
+				label="Alle Ebenen"
+				note={
+					anyVisible
+						? "Ausschalten zeigt nur noch die Grundkarte"
+						: "Einschalten stellt die vorige Auswahl wieder her"
+				}
+			/>
 			<CustomLayers />
 
 			<SectionTitle>Grundkarte</SectionTitle>
@@ -170,11 +187,23 @@ export default function LayerPanel({ onFlyTo }) {
 
 			<SectionTitle>Analyse und Wege</SectionTitle>
 			<HelperSwitch
+				checked={heatmap.visible}
+				onChange={(visible) => setHeatmap({ visible })}
+				label="Potenzialkarte"
+				note="Farbfläche der Analyse, Schwelle und Deckkraft im Reiter Analyse"
+			/>
+			<HelperSwitch
 				checked={showCandidates}
 				onChange={setShowCandidates}
 				id="candidates"
 				label="Vermutete Lagerplätze"
 				note="Am besten bewertete Stellen der Analyse, nummeriert nach Rang"
+			/>
+			<HelperSwitch
+				checked={showRegion}
+				onChange={setShowRegion}
+				label="Grenze des Untersuchungsgebiets"
+				note={`${DEFAULT_REGION.label}, für den die Analyse rechnet`}
 			/>
 			<HelperSwitch
 				checked={showRings}

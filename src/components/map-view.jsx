@@ -610,6 +610,7 @@ export default function MapView({ onMapReady }) {
 	const showRoads = useMapStore((s) => s.showRoads)
 	const showCandidates = useMapStore((s) => s.showCandidates)
 	const showStages = useMapStore((s) => s.showStages)
+	const showRegion = useMapStore((s) => s.showRegion)
 	const ringSource = useMapStore((s) => s.ringSource)
 	const ringMean = useMapStore((s) => s.params.ringMean)
 	const ringSigma = useMapStore((s) => s.params.ringSigma)
@@ -916,6 +917,13 @@ export default function MapView({ onMapReady }) {
 			map.setLayoutProperty(id, "visibility", showStages ? "visible" : "none")
 		}
 	}, [showStages, map])
+
+	useEffect(() => {
+		if (!alive(map)) return
+		for (const id of ["region", "region-casing"]) {
+			map.setLayoutProperty(id, "visibility", showRegion ? "visible" : "none")
+		}
+	}, [showRegion, map])
 
 	useEffect(() => {
 		if (!alive(map)) return
