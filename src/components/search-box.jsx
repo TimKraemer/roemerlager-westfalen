@@ -119,7 +119,7 @@ function KindIcon({ option }) {
 		case "fix":
 			return <SpellcheckIcon sx={sx} />
 		case "area":
-			return /Gebirge|Höhenzug/.test(option.secondary) ? (
+			return /Gebirge|Höhenzug|Landschaft/.test(option.secondary) ? (
 				<TerrainIcon sx={{ ...sx, color: "#6d4c41" }} />
 			) : (
 				<BorderOuterIcon sx={sx} />

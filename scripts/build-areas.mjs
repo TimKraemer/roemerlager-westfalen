@@ -170,7 +170,9 @@ const TOL = { 4: 800, 5: 500, 6: 250, ridge: 80, region: 300 }
 
 function typeOf(t) {
 	if (t.natural === "mountain_range") return "Gebirge"
-	if (t.boundary === "region") {
+	// Verwaltungsgrenze vor Region: Regierungsbezirk Köln ist auch place=region
+	const admin = t.boundary === "administrative" && ADMIN[t.admin_level]
+	if (!admin && (t.boundary === "region" || t.place === "region")) {
 		const r = t["region:type"] ?? ""
 		if (/mountain/.test(r)) return "Gebirge"
 		if (/natural|landscape/.test(r)) return "Landschaft"
@@ -199,11 +201,17 @@ for (const level of [4, 5, 6]) {
 	)
 	admin.elements.push(...res.elements)
 }
-// Teutoburger Wald, Weserbergland, Senne: in OSM als Region eingetragen
+// Teutoburger Wald ist in OSM boundary=region, Naturräume wie die Senne
+// place=region mit region:type=natural_area
 console.log("Regionen und Landschaften …")
 const regions = await overpass(
 	`[out:json][timeout:300];relation["boundary"="region"]["name"](${bb});out geom(${bb});`,
 )
+console.log("Naturräume …")
+const natural = await overpass(
+	`[out:json][timeout:300];nwr["place"="region"]["name"](${bb});out geom(${bb});`,
+)
+regions.elements.push(...natural.elements)
 console.log("Gemeinden …")
 const towns = await overpass(
 	`[out:json][timeout:300];relation["boundary"="administrative"]["admin_level"="8"](${bb});out tags bb;`,
@@ -247,6 +255,21 @@ for (const el of admin.elements) {
 	add(el, "admin", linesOf(el, TOL[el.tags.admin_level]))
 }
 for (const el of towns.elements) add(el, "admin", null)
+
+// Landschaften, die OSM nicht als Fläche kennt. Ausdehnung von Hand nach
+// Wikipedia, die Suche zoomt nur auf das Rechteck.
+const MANUAL = [
+	{
+		// Weser zwischen Hann. Münden und Porta Westfalica, mit Lipper Bergland
+		name: "Weserbergland",
+		type: "Landschaft, Ausdehnung ungefähr",
+		bounds: [8.6, 51.4, 9.95, 52.35],
+	},
+]
+for (const m of MANUAL) {
+	if (areas.some((a) => a.name === m.name)) continue
+	areas.push({ ...m, key: `${m.type}:${m.name}`, kind: "manual", lines: null })
+}
 
 const out = areas
 	.sort((a, b) => a.name.localeCompare(b.name, "de"))
