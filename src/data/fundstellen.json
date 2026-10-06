@@ -617,6 +617,10 @@
 					{
 						"label": "Berger/Wulf 2021: Zu den Funden römischer Münzen und keltischer Kleinerze aus dem augusteischen Marschlager Wilkenburg, Stadt Hemmingen. Nachrichten aus Niedersachsens Urgeschichte 90, S. 277–298",
 						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1794002367"
+					},
+					{
+						"label": "Werz 2018: Die Kleingeldversorgung augusteischer Zeit in Gallien und Germanien. Überlegungen zu den Kleinerzen aus dem römischen Marschlager von Wilkenburg. Nachrichten aus Niedersachsens Urgeschichte 87, S. 167–182",
+						"url": "https://doi.org/10.11588/nnu.2018.1.83217"
 					}
 				],
 				"status": "bestätigt",
@@ -649,11 +653,15 @@
 					},
 					{
 						"label": "Grote 2006: Das Römerlager im Werratal bei Hedemünden (Ldkr. Göttingen). Germania 84, S. 27–59",
-						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=518950670"
+						"url": "https://doi.org/10.11588/ger.2006.76460"
 					},
 					{
 						"label": "Grote 2007: Die Römerlager Hedemünden (Werra). Göttinger Jahrbuch 55, S. 5–17",
 						"url": "https://doi.org/10.62013/55-001"
+					},
+					{
+						"label": "Grote 2014: Hedemünden (Lkr. Göttingen), mehr als nur ein römisches Militärlager. Archäologisches Korrespondenzblatt 44, S. 239–258",
+						"url": "https://doi.org/10.11588/ak.2014.2.28107"
 					}
 				],
 				"status": "bestätigt",
@@ -691,6 +699,14 @@
 					{
 						"label": "Lau/Rau 2025: Zu einigen Fundkategorien aus dem vermeintlich römischen Landeplatz von Bentumersiel, Ldkr. Leer. Siedlungs- und Küstenforschung im südlichen Nordseegebiet 48, S. 165–272",
 						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1947836617"
+					},
+					{
+						"label": "Ulbert 1977: Die römischen Funde von Bentumersiel. Probleme der Küstenforschung im südlichen Nordseegebiet 12, S. 33–65",
+						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=607690186"
+					},
+					{
+						"label": "Niedersächsisches Institut für historische Küstenforschung: Römer und Germanen in Bentumersiel (Projektseite)",
+						"url": "https://nihk.de/forschung/abgeschlossene-projekte/roemer-und-germanen-in-bentumersiel"
 					}
 				],
 				"status": "umstritten",
