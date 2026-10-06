@@ -91,6 +91,9 @@ export const BASE_LAYERS = [
 	},
 ]
 
+// jump: [Länge, Breite, Zoom] für den Link „Dorthin springen“ bei regional
+// begrenzten Ebenen. Gewählt ist eine Stelle und Stufe, an der der Dienst
+// sicher etwas zeigt; viele WMS zeichnen erst ab Zoom 11 bis 15.
 export const OVERLAYS = [
 	{
 		id: "relief",
@@ -105,6 +108,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "schummerung-nrw",
+		jump: [8.62, 52.3, 12],
 		group: "Gelände",
 		label: "Schummerung NRW (DGM1)",
 		note: "Laserscan, 1 m. Hier zeigen sich Wälle und Gräben.",
@@ -132,6 +136,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "schummerung-nrw-col",
+		jump: [8.62, 52.3, 12],
 		group: "Gelände",
 		label: "Schummerung NRW farbig (DGM1)",
 		note: "Laserscan mit Höhenfarben, nur NRW",
@@ -173,6 +178,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "uraufnahme",
+		jump: [8.62, 52.3, 14],
 		group: "Gewässer",
 		label: "Preußische Uraufnahme (1836–1850)",
 		note: "Vor Mittellandkanal (1906–1938) und Begradigungen, zeigt alte Bachläufe und Feuchtgebiete. Nur NRW.",
@@ -183,6 +189,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "aue-preussisch",
+		jump: [8.92, 52.3, 12],
 		group: "Alte Gewässer und Böden",
 		label: "Historische Aue (preußische Aufnahme)",
 		note: "Überschwemmungsgebiete nach der preußischen Aufnahme, vor Deichen und Begradigung. Nur NRW.",
@@ -193,6 +200,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "bk50-grundwasser",
+		jump: [8.62, 52.3, 12],
 		group: "Alte Gewässer und Böden",
 		label: "Grundwassereinfluss im Boden (BK50 NRW)",
 		note: "Gleye und Auenböden zeigen frühere Bachtäler und nasse Niederungen",
@@ -203,6 +211,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "bk50-bodentyp",
+		jump: [8.62, 52.3, 12],
 		group: "Alte Gewässer und Böden",
 		label: "Bodentypen (BK50 NRW)",
 		wms: "https://www.wms.nrw.de/gd/bk050",
@@ -212,6 +221,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "moore-ni",
+		jump: [8.5, 52.6, 12],
 		group: "Alte Gewässer und Böden",
 		label: "Ursprüngliche Moore (GUM50 Niedersachsen)",
 		note: "Moorverbreitung vor der Kultivierung, ab Zoom 12",
@@ -223,6 +233,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "bk50-ni",
+		jump: [8.45, 52.48, 12],
 		group: "Alte Gewässer und Böden",
 		label: "Bodenkarte BK50 Niedersachsen",
 		note: "Ab Zoom 12",
@@ -234,6 +245,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "gk100-nrw",
+		jump: [8.62, 52.3, 12],
 		group: "Alte Gewässer und Böden",
 		label: "Geologie bis 2 m Tiefe (GK100 NRW)",
 		note: "Holozäne Bach- und Flussablagerungen markieren alte Talböden",
@@ -244,6 +256,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "gewaesser-nrw",
+		jump: [8.62, 52.3, 12],
 		group: "Gewässer",
 		label: "Fließgewässer NRW (GSK3B)",
 		note: "Amtliches Gewässernetz",
@@ -254,6 +267,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "tranchot",
+		jump: [6.45, 51.66, 12],
 		group: "Historische Karten",
 		label: "Tranchot/v. Müffling (1801–1828)",
 		note: "Nur Rheinland, rechts des Rheins etwa bis Duisburg, Wuppertal und Siegen. Xanten liegt drin, die Lippelager und Bergkamen nicht. Ab Zoom 11.",
@@ -265,6 +279,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "neuaufnahme",
+		jump: [8.62, 52.3, 13],
 		group: "Historische Karten",
 		label: "Preußische Neuaufnahme (1891–1912)",
 		wms: "https://www.wms.nrw.de/geobasis/wms_nw_neuaufnahme",
@@ -274,6 +289,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "tk25-1936",
+		jump: [8.62, 52.3, 15],
 		group: "Historische Karten",
 		label: "TK25 (1936–1945)",
 		wms: "https://www.wms.nrw.de/geobasis/wms_nw_tk25_1936-1945",
@@ -283,6 +299,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "hist-dop",
+		jump: [7.62, 51.96, 13],
 		group: "Historische Karten",
 		label: "Luftbilder der 1950er (NRW)",
 		note: "Befliegungen 1951–1958, Bewuchsmerkmale vor der Bebauung",
@@ -295,6 +312,7 @@ export const OVERLAYS = [
 	},
 	{
 		id: "bodendenkmal-nrw",
+		jump: [6.45, 51.66, 12],
 		group: "Denkmäler",
 		label: "Bodendenkmäler NRW (INSPIRE)",
 		note: "Lückenhaft, die Römerlager fehlen dort",
@@ -317,12 +335,27 @@ export const OVERLAYS = [
 			`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/altkarten/${m.id}/{z}/{x}/{y}.webp`,
 		],
 		bounds: m.bounds,
+		jump: jumpToBounds(m.bounds, m.minzoom),
 		minzoom: m.minzoom,
 		maxzoom: m.maxzoom,
 		attribution: `Altkarte ${m.year}${m.author ? `, ${m.author}` : ""}`,
 		opacity: 0.85,
 	})),
 ]
+
+/** Mitte und eine Zoomstufe, auf der die Kartenfläche etwa ins Bild passt. */
+function jumpToBounds([w, s, e, n], minzoom) {
+	// Ausschnitt etwa 1200 × 700 px, ein Breitengrad ist hier etwa 1,6 Längengrade hoch
+	const fit = Math.floor(
+		Math.log2(
+			Math.min(
+				(1200 / 256) * (360 / (e - w)),
+				(700 / 256) * (360 / ((n - s) * 1.6)),
+			),
+		),
+	)
+	return [(w + e) / 2, (s + n) / 2, Math.max(minzoom, fit)]
+}
 
 /** MapLibre-Rasterquelle für eine Kachel- oder WMS-Ebene bzw. einen Teil. */
 export function rasterSource(layer) {

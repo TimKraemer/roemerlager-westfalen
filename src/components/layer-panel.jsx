@@ -202,26 +202,27 @@ function HelperSwitch({ checked, onChange, label, note }) {
 }
 
 function LayerLabel({ layer, onFlyTo }) {
+	const jump = layer.jump && onFlyTo
 	return (
 		<Box sx={{ py: 0.25 }}>
 			<Typography variant="body2">{layer.label}</Typography>
-			{layer.note && (
+			{(layer.note || jump || layer.info) && (
 				<Typography variant="caption" color="text.secondary" component="div">
 					{layer.note}
-					{layer.bounds && onFlyTo && (
+					{jump && (
 						<>
-							{" "}
+							{layer.note && " "}
 							<Link
 								component="button"
 								variant="caption"
 								sx={{ verticalAlign: "baseline" }}
 								onClick={(e) => {
+									// sonst schaltet der Klick im Label auch den Schalter
 									e.preventDefault()
-									const [w, s, e2, n] = layer.bounds
-									onFlyTo((w + e2) / 2, (s + n) / 2, layer.minzoom + 1)
+									onFlyTo(...layer.jump)
 								}}
 							>
-								Hinzoomen
+								Dorthin springen
 							</Link>
 						</>
 					)}
