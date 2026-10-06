@@ -65,6 +65,39 @@ async function loadModel() {
 	return gltf.scene
 }
 
+// Deckkraft aus dem Regler im Ebenen-Panel, gilt für die eine Instanz
+let opacity = 1
+
+export function setModelOpacity(map, value) {
+	opacity = value
+	map?.triggerRepaint()
+}
+
+const materialsOf = (scene) => {
+	const out = []
+	scene.traverse((o) => {
+		if (Array.isArray(o.material)) out.push(...o.material)
+		else if (o.material) out.push(o.material)
+	})
+	return out
+}
+
+/**
+ * Deckkraft auf die Materialien legen. Ein Wechsel zwischen deckend und
+ * transparent braucht ein neues Shader-Programm, darum nur bei Änderung.
+ */
+function applyOpacity(materials, value) {
+	for (const m of materials) {
+		m.userData.base ??= { opacity: m.opacity, transparent: m.transparent }
+		const transparent = m.userData.base.transparent || value < 1
+		if (m.transparent !== transparent) {
+			m.transparent = transparent
+			m.needsUpdate = true
+		}
+		m.opacity = m.userData.base.opacity * value
+	}
+}
+
 /** Custom Layer für maplibre, rendert in den GL-Kontext der Karte. */
 export function oberadenModelLayer() {
 	let THREE
@@ -73,6 +106,8 @@ export function oberadenModelLayer() {
 	let scene
 	let camera
 	let matrix
+	let materials
+	let applied
 	let removed = false
 	return {
 		id: MODEL_LAYER,
@@ -93,6 +128,7 @@ export function oberadenModelLayer() {
 			scene.add(sun)
 			matrix = modelToMercator(THREE)
 			scene.add(model)
+			materials = materialsOf(model)
 			map.triggerRepaint()
 		},
 		// Renderer erst hier anlegen: three.js verstellt dabei den GL-Zustand,
@@ -120,7 +156,18 @@ export function oberadenModelLayer() {
 			camera.updateMatrixWorld()
 			camera.projectionMatrix = mvp.multiply(camera.matrixWorld)
 			camera.projectionMatrixInverse.copy(camera.projectionMatrix).invert()
+			if (applied !== opacity) {
+				applyOpacity(materials, opacity)
+				applied = opacity
+			}
 			renderer.resetState()
+			if (opacity < 1) {
+				// Erst nur die Tiefe, dann die Farbe: so scheint nur die vorderste
+				// Fläche durch, nicht Wände und Dächer dahinter
+				for (const m of materials) m.colorWrite = false
+				renderer.render(scene, camera)
+				for (const m of materials) m.colorWrite = true
+			}
 			renderer.render(scene, camera)
 		},
 		onRemove() {

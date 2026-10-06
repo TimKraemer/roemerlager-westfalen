@@ -43,6 +43,8 @@ export default function LayerPanel({ onFlyTo }) {
 	const setShowRoutes = useMapStore((s) => s.setShowRoutes)
 	const showRoads = useMapStore((s) => s.showRoads)
 	const showModel = useMapStore((s) => s.showModel)
+	const modelOpacity = useMapStore((s) => s.modelOpacity)
+	const setModelOpacity = useMapStore((s) => s.setModelOpacity)
 	const setShowModel = useMapStore((s) => s.setShowModel)
 	const setShowRoads = useMapStore((s) => s.setShowRoads)
 	const setShowWaterways = useMapStore((s) => s.setShowWaterways)
@@ -163,6 +165,18 @@ export default function LayerPanel({ onFlyTo }) {
 				label="3D-Modell Römerlager Oberaden"
 				note="Ab Zoomstufe 15, mit Beschriftungen und Link. Modell aus der Bergkamen-App, am Grabungsplan der LWL-Archäologie eingepasst"
 			/>
+			{showModel && (
+				<Slider
+					size="small"
+					min={0.1}
+					max={1}
+					step={0.05}
+					value={modelOpacity}
+					onChange={(_, v) => setModelOpacity(v)}
+					sx={{ ml: 5, width: "calc(100% - 56px)" }}
+					aria-label="Deckkraft 3D-Modell Römerlager Oberaden"
+				/>
+			)}
 		</Box>
 	)
 }

@@ -30,6 +30,7 @@ import {
 	MODEL_LAYER,
 	MODEL_MIN_ZOOM,
 	oberadenModelLayer,
+	setModelOpacity,
 	showModelAnnotations,
 } from "./oberaden-model"
 import { addTextLayers, showText } from "./text-overlay"
@@ -784,6 +785,10 @@ export default function MapView({ onMapReady }) {
 		map.on("zoomend", add)
 		return () => map.off("zoomend", add)
 	}, [showModel, map])
+	const modelOpacity = useMapStore((s) => s.modelOpacity)
+	useEffect(() => {
+		if (alive(map)) setModelOpacity(map, modelOpacity)
+	}, [modelOpacity, map])
 
 	// Gewässer der Analyse: abgeleitetes Netz als Linien, OSM direkt aus den
 	// Vektorkacheln (Ebene "osm-gewaesser")
