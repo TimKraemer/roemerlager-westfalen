@@ -1,4 +1,4 @@
-import { BASE_PATH } from "@/config"
+import { assetUrl } from "@/config"
 
 /**
  * Zitierstile und Exportformate für CSL-JSON-Einträge. citation-js mit
@@ -79,7 +79,7 @@ function loadEngine() {
 }
 
 let loadStyle = async (name) => {
-	const res = await fetch(`${BASE_PATH}/csl/${name}.csl`)
+	const res = await fetch(assetUrl(`csl/${name}.csl`))
 	if (!res.ok)
 		throw new Error(`Zitierstil ${name} nicht geladen (${res.status})`)
 	return res.text()

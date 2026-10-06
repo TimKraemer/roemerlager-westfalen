@@ -1,5 +1,6 @@
 import * as maplibregl from "maplibre-gl"
 import { metersPerPixel } from "@/lib/geo"
+import { prefetchBounds } from "@/lib/prefetch"
 import { isMobile, mapInsets } from "@/lib/sheet"
 
 /**
@@ -535,6 +536,13 @@ export function showText(map, geo) {
 				duration: reduced ? 0 : 1400,
 			},
 		)
+	prefetchBounds(
+		[
+			[w, s],
+			[e, n],
+		],
+		{ maxZoom: 11 },
+	)
 	fit()
 	// Öffnet sich gleichzeitig die Seitenleiste, ändert sich die Kartenbreite
 	// und die Kamerafahrt bricht ab. Dann noch einmal einpassen.

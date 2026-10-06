@@ -15,6 +15,27 @@ const pick = (value, fallback) => (value ? value : fallback)
 /** Unterpfad der App, z. B. "/roemer". Leer, wenn sie im Wurzelpfad liegt. */
 export const BASE_PATH = process.env.NEXT_PUBLIC_BASE_PATH ?? ""
 
+// Prüfsummen der Dateien unter public/ (next.config.js)
+let hashes = {}
+try {
+	hashes = JSON.parse(process.env.NEXT_PUBLIC_ASSET_HASHES ?? "{}")
+} catch {
+	// Skripte und Tests laufen ohne
+}
+
+/**
+ * URL einer Datei unter public/ mit Inhalts-Prüfsumme (?v=). Solche URLs
+ * cachen Server (deploy/nginx.conf) und Service Worker (public/sw.js)
+ * unbegrenzt, eine geänderte Datei bekommt eine neue URL.
+ */
+export function assetUrl(file) {
+	const v = hashes[file]
+	return `${BASE_PATH}/${file}${v ? `?v=${v}` : ""}`
+}
+
+/** Version einer Datei, z. B. für Kachel-URLs eines Verzeichnisses. */
+export const assetVersion = (file) => hashes[file] ?? ""
+
 /** Kacheldienste. Alle drei müssen CORS für die eigene Domain erlauben. */
 export const TILES = {
 	// Höhenmodell im Terrarium-Format (Mapzen). Fällt bei Fehlern auf die

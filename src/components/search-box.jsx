@@ -25,6 +25,7 @@ import {
 	Typography,
 } from "@mui/material"
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { prefetchBounds, prefetchView } from "@/lib/prefetch"
 import {
 	correction,
 	entryByKey,
@@ -397,24 +398,24 @@ export default function SearchBox({ getMap, desktop }) {
 	}
 
 	const fit = (b, maxZoom) => {
-		getMap()?.fitBounds(
-			[
-				[b[0], b[1]],
-				[b[2], b[3]],
-			],
-			{
-				padding: desktop
-					? { top: 90, bottom: 60, left: 400, right: 60 }
-					: {
-							top: mapInsets().top + 16,
-							bottom: mapInsets().bottom + 24,
-							left: 30,
-							right: 30,
-						},
-				maxZoom,
-				duration: 1400,
-			},
-		)
+		const bounds = [
+			[b[0], b[1]],
+			[b[2], b[3]],
+		]
+		const options = {
+			padding: desktop
+				? { top: 90, bottom: 60, left: 400, right: 60 }
+				: {
+						top: mapInsets().top + 16,
+						bottom: mapInsets().bottom + 24,
+						left: 30,
+						right: 30,
+					},
+			maxZoom,
+			duration: 1400,
+		}
+		prefetchBounds(bounds, options)
+		getMap()?.fitBounds(bounds, options)
 	}
 
 	const mark = (o, coordinates) =>
@@ -438,6 +439,7 @@ export default function SearchBox({ getMap, desktop }) {
 			const same = s.selectedSite === o.id
 			s.setSelectedSite(o.id)
 			if (same) {
+				prefetchView(o.coordinates, 13)
 				map?.flyTo({
 					center: o.coordinates,
 					zoom: 13,
@@ -456,6 +458,7 @@ export default function SearchBox({ getMap, desktop }) {
 		} else if (o.kind === "place" || o.kind === "coord") {
 			s.setSelectedSite(null)
 			mark(o, [o.lon, o.lat])
+			prefetchView([o.lon, o.lat], o.zoom)
 			map?.flyTo({
 				center: [o.lon, o.lat],
 				zoom: o.zoom,

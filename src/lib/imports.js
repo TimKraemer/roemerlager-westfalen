@@ -1,5 +1,4 @@
-import { gpx, kml } from "@tmcw/togeojson"
-import { fromArrayBuffer } from "geotiff"
+// geotiff und togeojson kommen erst mit der ersten Datei (zusammen gut 300 KB)
 import { utmToLonLat } from "./utm"
 
 /**
@@ -97,6 +96,7 @@ function rgbaToDataUrl(rgba, width, height) {
 }
 
 export async function readGeoTiff(file) {
+	const { fromArrayBuffer } = await import("geotiff")
 	const tiff = await fromArrayBuffer(await file.arrayBuffer())
 	const image = await tiff.getImage()
 	const keys = image.getGeoKeys() ?? {}
@@ -172,11 +172,11 @@ export async function readVector(file) {
 	const name = file.name.toLowerCase()
 	const text = await file.text()
 	let data
-	if (name.endsWith(".kml"))
-		data = kml(new DOMParser().parseFromString(text, "text/xml"))
-	else if (name.endsWith(".gpx"))
-		data = gpx(new DOMParser().parseFromString(text, "text/xml"))
-	else data = JSON.parse(text)
+	if (name.endsWith(".kml") || name.endsWith(".gpx")) {
+		const { gpx, kml } = await import("@tmcw/togeojson")
+		const xml = new DOMParser().parseFromString(text, "text/xml")
+		data = name.endsWith(".kml") ? kml(xml) : gpx(xml)
+	} else data = JSON.parse(text)
 	if (data.type === "Feature")
 		data = { type: "FeatureCollection", features: [data] }
 	if (data.type !== "FeatureCollection")

@@ -16,7 +16,7 @@
 	"scripts": {
 		"dev": "next dev",
 		"postinstall": "bun scripts/copy-maplibre-worker.mjs",
-		"build": "next build",
+		"build": "next build && bun scripts/precompress.mjs",
 		"start": "next start",
 		"test": "bun test",
 		"lint": "biome check .",

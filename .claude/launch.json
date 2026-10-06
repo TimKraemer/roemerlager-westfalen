@@ -6,6 +6,12 @@
 			"runtimeExecutable": "node_modules/.bin/next",
 			"runtimeArgs": ["dev", "--port", "3047"],
 			"port": 3047
+		},
+		{
+			"name": "roemerlager-export",
+			"runtimeExecutable": "python3",
+			"runtimeArgs": ["-m", "http.server", "3048", "-d", "out"],
+			"port": 3048
 		}
 	]
 }
