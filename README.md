@@ -1,170 +1,182 @@
 # Römerlager Westfalen
 
+[![CI](https://github.com/TimKraemer/roemerlager-westfalen/actions/workflows/ci.yml/badge.svg)](https://github.com/TimKraemer/roemerlager-westfalen/actions/workflows/ci.yml)
+[![Code: MIT](https://img.shields.io/badge/Code-MIT-blue.svg)](LICENSE)
+[![Daten: CC BY 4.0](https://img.shields.io/badge/Daten-CC%20BY%204.0-lightgrey.svg)](docs/daten.md)
+
 Web-Karte der bekannten augusteischen Römerlager in Westfalen und Umgebung
-mit einer Potenzialkarte für noch unentdeckte Marschlager.
+mit einem offenen Potenzialmodell für noch unentdeckte Marschlager. Die
+Karte zeigt Suchräume für Prospektion und Laserscan-Auswertung, keine
+Fundstellen.
+
+Live: https://experiments.erleben.app/roemer/
+
+![Startansicht mit Potenzialkarte für den Kreis Minden-Lübbecke](docs/screenshot.jpg)
+
+> In English: An interactive map of the known Augustan Roman military camps
+> in Westphalia (Germany) and a transparent predictive model for
+> undiscovered marching camps, based on a day's march between camps, water,
+> terrain and least-cost marching routes, tested by leave-one-out
+> validation. Everything runs in the browser as a static site. The code and
+> most texts were written with AI (Claude by Anthropic) under human
+> direction, see [Entstehung mit KI](#entstehung-mit-ki). The interface and
+> documentation are in German.
+
+## Inhalt
+
+- 40 Fundstellen von Vetera am Rhein bis Hachelbich in Thüringen, mit Typ, Datierung, Genauigkeit der Lage und Quellen
+- Potenzialkarte aus sieben Kriterien mit einstellbaren Gewichten, vorberechnet für den Kreis Minden-Lübbecke und für jeden Ausschnitt im Browser rechenbar
+- Marschwege-Netz als Weg geringster Gehzeit zwischen den Lagern, mit Etappenhalten und Schiffsstrecke auf der Lippe
+- Gegenprobe des Modells, bei der je ein bekanntes Lager weggelassen wird
+- antike Textstellen (Tacitus, Velleius, Florus, Cassius Dio, Ps.-Hyginus, Vegetius) mit Übersetzung und Kartenbezug
+- Ebenen für Luftbild, Laserscan-Schummerung, Preußische Uraufnahme, Bodenkarten, Moore, Römerstraßen, alte Flussläufe und entzerrte Altkarten
+- Suche über Fundstellen, Texte, Ebenen und heutige Orte, eigene Karten per WMS, GeoJSON, KML oder Bild mit World-File
 
 Anstoß war der Vortrag von Dr. Bettina Tremmel (LWL-Archäologie für
-Westfalen, Fachreferat Provinzialrömische Archäologie) auf der
-Regionalkonferenz des Kreisheimatbundes Minden-Lübbecke. Nach ihrer
-Arbeitshypothese lagen Marschlager etwa einen Tagesmarsch (18–20 km) auseinander, an fließendem
-Wasser und meist auf Anhöhen oder in leichter Hanglage. Im Boden erkennt man
-sie an geraden Gräben mit abgerundeten Ecken („Spielkartenform“).
+Westfalen) auf der Regionalkonferenz des Kreisheimatbundes
+Minden-Lübbecke. Nach ihrer Arbeitshypothese lagen Marschlager etwa einen
+Tagesmarsch (18–20 km) auseinander, nahe fließendem Wasser und meist auf
+Anhöhen oder in leichter Hanglage. Das Projekt ist ein privates Vorhaben
+und keine Veröffentlichung der LWL-Archäologie.
 
-## Zitieren
+## Entstehung mit KI
 
-Krämer, Tim (2026): Römerlager in Westfalen. Potenzialkarte für unentdeckte
-Marschlager. Online: https://experiments.erleben.app/roemer/ (abgerufen am …).
+Dieses Projekt ist weitgehend mit künstlicher Intelligenz entstanden. Tim
+Krämer hat Fragestellung und Richtung vorgegeben, die Arbeit in vielen
+Sitzungen angeleitet, Zwischenstände in der App geprüft und entschieden, was
+bleibt. Programmcode, Rechenmodell, Skripte, Erklärtexte, Übersetzungen und
+diese Dokumentation hat das Sprachmodell Claude (Anthropic) über
+[Claude Code](https://claude.com/claude-code) geschrieben. Commits mit KI-Anteil tragen die Zeile
+`Co-Authored-By: Claude …`. Die Dateien `AGENTS.md` und `CLAUDE.md` sind
+Arbeitsanweisungen für KI-Agenten.
 
-Maschinenlesbar in [CITATION.cff](CITATION.cff).
+Was das für die Nutzung heißt:
 
-## Starten
+- Literaturangaben wurden per DOI, Crossref, DataCite oder Bibliothekskatalog nachgeschlagen, wo das ging. Sprachmodelle erfinden Quellen. Bitte jede Angabe vor dem Zitieren am Original prüfen.
+- Die Übersetzungen der antiken Texte sind mit KI erstellt und nicht philologisch geprüft.
+- Das Modell ist eine nachvollziehbare Rechenvorschrift, kein archäologisches Gutachten. Seine Annahmen und Grenzen stehen in [docs/modell.md](docs/modell.md).
+- Fehler bitte als [Issue](https://github.com/TimKraemer/roemerlager-westfalen/issues) melden, möglichst mit Beleg.
+
+## Schnellstart
+
+Voraussetzung ist [Bun](https://bun.sh) ab Version 1.3.
 
 ```bash
+git clone https://github.com/TimKraemer/roemerlager-westfalen.git
+cd roemerlager-westfalen
 bun install
 bun run dev
 ```
 
-Danach http://localhost:3000/roemer/ öffnen.
+Danach http://localhost:3000/ öffnen. Die Startansicht zeigt den Kreis
+Minden-Lübbecke mit vorberechneter Analyse.
 
-Die Startansicht zeigt den Kreis Minden-Lübbecke mit vorberechneter Analyse.
-Nach Änderungen an Fundstellen oder Modell neu rechnen:
-
-```bash
-bun run precompute
-```
-
-Gegenprobe (je ein bekanntes Lager weggelassen, mit Zufallsorten als
-Vergleich) und Prüfung der Linienerkennung:
+Mit Docker statt Bun:
 
 ```bash
-bun scripts/validate-model.mjs
-bun scripts/validate-lineaments.mjs
+docker build -t roemerlager .
+docker run --rm -p 8080:80 roemerlager
 ```
 
-Römerstraßen (Itiner-e und Hellweg vor dem Santforde) neu bauen:
+Danach http://localhost:8080/ öffnen.
+
+## Konfiguration
+
+Alle Einstellungen haben Standardwerte und sind optional. Lokal kommen sie
+in `.env.local` (Vorlage [.env.example](.env.example)), beim Deploy in
+`deploy/deploy.env`, bei Docker als `--build-arg`.
+
+| Variable | Standard | Bedeutung |
+|----------|----------|-----------|
+| `BASE_PATH` | leer | Unterpfad der App, z. B. `/roemer` |
+| `NEXT_PUBLIC_SITE_URL` | `https://experiments.erleben.app/roemer/` | Adresse im Zitiervorschlag |
+| `NEXT_PUBLIC_DEM_TILES` | `https://tiles.erleben.app/dem/{z}/{x}/{y}` | Höhenkacheln im Terrarium-Format, Rückfall auf AWS Terrain Tiles |
+| `NEXT_PUBLIC_VECTOR_TILES` | `https://tiles.erleben.app/germany/{z}/{x}/{y}` | Vektorkacheln im OpenMapTiles-Schema, z. B. von [OpenFreeMap](https://openfreemap.org) |
+| `NEXT_PUBLIC_GLYPHS` | `https://tiles.erleben.app/font/{fontstack}/{range}` | Schriften für Beschriftungen |
+
+Die Standard-Kacheldienste auf tiles.erleben.app erlauben Zugriffe von
+anderen Domains. Wer viel Last erzeugt, sollte eigene Dienste eintragen.
+Inhaltliche Einstellungen (Regionen, Fundstellen, Ebenen, Modellgewichte)
+stehen im Code, siehe [CONTRIBUTING.md](CONTRIBUTING.md#erweitern).
+
+## Auf einem eigenen Server betreiben
+
+Die App ist ein statischer Export. Alles rechnet im Browser, der Server
+liefert nur Dateien aus dem Ordner `out/` aus. Jeder Webserver genügt, der
+`.mjs` als JavaScript ausliefert ([deploy/nginx.conf](deploy/nginx.conf)
+zeigt eine passende nginx-Konfiguration).
 
 ```bash
-bun scripts/build-roads.mjs
+BASE_PATH=/roemer bun run build   # Ergebnis in out/
 ```
 
-Alte Flussläufe (Lippe, Ems, Weser, Rhein, Elbe, Stever, Seseke, Alme)
-neu bauen. Sie dienen dem Reiter „Texte“, der Ebene „Alte
-Flussläufe“ und dem Flussabstand im Modell. In NRW greift das Skript den
-Lauf aus der Preußischen Uraufnahme ab, geführt am heutigen Lauf aus den
-OSM-Kacheln. Dazu wird je 6-km-Abschnitt der günstigste Weg über blau
-kolorierte Wasserflächen gesucht. Findet sich auf einem Blatt kein Blau
-(manche Blätter zeichnen Flüsse grau oder grün) oder folgt der Weg nur
-dünnen Linien wie Festungsgräben, gilt dort der heutige Lauf in voller
-Auflösung. Das gilt auch für Stever, Seseke und Alme, die die Uraufnahme
-meist als dünne schwarze Linie zeichnet. Bei Haltern und Xanten setzt es den
-römerzeitlichen Lauf nach der Literatur ein. Die Kacheln der Uraufnahme
-landen in `node_modules/.cache/uraufnahme`, ein voller Lauf dauert
-beim ersten Mal rund eine Stunde.
+Für wiederholte Deploys per rsync:
 
 ```bash
-bun scripts/build-rivers.mjs            # alle Flüsse
-bun scripts/build-rivers.mjs Lippe Ems  # nur diese
-bun scripts/build-rivers.mjs --roemisch # nur die Römerzeit-Abschnitte neu einsetzen
+cp deploy/deploy.env.example deploy/deploy.env   # Ziel und Unterpfad eintragen
+bun run deploy                                    # Tests, Build, rsync
 ```
 
-Altkarten (Scans ohne Georeferenz) entzerren und als Kacheln nach
-`public/altkarten/` legen. Die Passpunkte je Karte stehen in
-`scripts/altkarten/gcp/`, die Scans selbst liegen nicht im Repo
-(`ALTKARTEN_DIR`, Standard `~/Downloads/Historische Landkarten`). Die
-Kacheln sind ebenfalls nicht eingecheckt und müssen vor dem Deploy einmal
-gerechnet werden:
+Als vollständiges Beispiel dient die Referenzinstanz auf
+experiments.erleben.app. Ihre Dateien (Compose-Dienst, nginx-Konfiguration,
+Einrichtungsskript, Einstellungen) liegen in [deploy/erleben/](deploy/erleben/).
 
-```bash
-bun scripts/altkarten/orte.mjs          # Ortsverzeichnis für Passpunkte, einmalig
-scripts/altkarten/alt.sh fit 1844-kreis-luebbecke
-scripts/altkarten/alt.sh tiles 1844-kreis-luebbecke
-scripts/altkarten/alt.sh index          # schreibt src/data/altkarten.json
-```
+Die Kacheln der Altkarten sind nicht im Repository, weil sie aus Scans
+gerechnet werden (177 MB). Ohne sie blendet die App die Gruppe „Altkarten“
+aus. Wie man sie erzeugt, steht in [docs/daten.md](docs/daten.md#altkarten).
 
-`alt.sh` startet Python über uv mit numpy, scipy, Pillow und pyproj.
+## Aufbau
 
-`bun test` prüft das Rechenmodell,
-`bun run lint` den Code (Biome).
-
-Live unter https://experiments.erleben.app/roemer/ (statischer Export).
-Neue Version veröffentlichen mit `bun run deploy`, Details in
-[deploy/README.md](deploy/README.md).
-
-## Technik
-
-Angelehnt an erleben.app: Next.js 16 (App Router, JavaScript), React 19,
-MUI 9, MapLibre GL 6, zustand, Bun und Biome. Der MapLibre-Worker wird wie
-dort per `postinstall` nach `public/maplibre` kopiert, weil Turbopack ihn
-sonst nicht ausliefert.
+Next.js 16 (App Router, statischer Export), React 19, MUI 9, MapLibre GL 6,
+zustand, Bun und Biome. JavaScript ohne TypeScript.
 
 | Pfad | Inhalt |
 |------|--------|
-| `src/data/fundstellen.json` | Bekannte Fundstellen (GeoJSON) mit Typ, Datierung, Größe, Quelle |
-| `src/data/quellen.json` | Literatur, Karten und Datendienste für den Reiter „Quellen“ |
-| `src/lib/layers.js` | Grundkarten und WMS/WMTS-Ebenen |
-| `src/lib/potential/model.js` | Rechenmodell (rein, getestet in `model.test.js`) |
-| `src/lib/potential/worker.js` | Web Worker: Höhenmodell laden, Raster rechnen |
-| `src/lib/terrain.js` | Terrarium-Höhenkacheln (AWS Open Data) |
-| `src/lib/potential/drainage.js` | Gewässernetz aus dem Höhenmodell (Senkenfüllung, Abfluss) |
-| `src/lib/water.js` | Heutige Fließgewässer aus den OSM-Kacheln von tiles.erleben.app, ohne Kanäle und Gräben |
-| `src/lib/potential/pipeline.js` | Rechenkette für Worker und Vorberechnung |
-| `src/lib/potential/routes.js` | Marschwege als Least-Cost-Path (Tobler) und Etappenhalte |
-| `src/lib/criteria.js` | Erklärtexte und Quellen je Kriterium |
-| `scripts/precompute.mjs` | Vorberechnung der Regionen nach `public/precomputed` |
-| `scripts/build-roads.mjs` | Römerstraßen-Datensatz |
-| `src/data/texte.json` | Antike Textstellen mit Übersetzung und Kartenbezug |
-| `src/lib/text-geo.js` | Orte, Räume und Richtungen je Textstelle für die Karte |
-| `scripts/build-rivers.mjs` | Alte Flussläufe (`src/data/fluesse.json`) aus Uraufnahme, OSM und Literatur |
-| `scripts/altkarten/` | Altkarten entzerren: Passpunkte, Thin-Plate-Spline, Kacheln |
-| `src/data/altkarten.json` | Verzeichnis der gekachelten Altkarten (aus `alt.sh index`) |
-| `src/components/` | Karte, Seitenleiste, Info-Karten |
+| `src/config.js` | Unterpfad, Kacheldienste, Zitierangaben |
+| `src/data/` | Fundstellen, Quellen, Texte, Römerstraßen, alte Flussläufe, Altkarten |
+| `src/lib/potential/` | Rechenmodell (`model.js`), Rechenkette (`pipeline.js`), Gewässernetz, Routen, Linienerkennung, Web Worker |
+| `src/lib/layers.js` | Grundkarten und zuschaltbare Ebenen |
+| `src/lib/regions.js` | Vorberechnete Regionen und Marschwege-Netz |
+| `src/lib/criteria.js` | Erklärtexte und Belege je Kriterium |
+| `src/components/` | Karte, Seitenleiste, Info-Karten, Suche |
+| `scripts/` | Vorberechnung, Gegenprobe und Bau der Datensätze |
+| `public/precomputed/` | Vorberechnete Ergebnisse |
+| `deploy/` | Deploy-Skript, nginx-Konfiguration, Beispielserver |
+| `docs/` | Methode ([modell.md](docs/modell.md)) sowie Daten, Herkunft und Lizenzen ([daten.md](docs/daten.md)) |
 
 ## Potenzialmodell
 
-Der sichtbare Kartenausschnitt (höchstens 90 × 90 km) wird in Zellen von
-100–500 m zerlegt. Jede Zelle bekommt sechs Teilwerte zwischen 0 und 1:
+Der Kartenausschnitt wird in Zellen von 100–500 m zerlegt. Jede Zelle
+bekommt Teilwerte für Tagesmarsch zum nächsten bekannten Lager,
+Fließgewässer, Anhöhe, Terrasse über der Aue, Hanglage, Nähe zu einer
+möglichen Marschroute und Flusskorridor. Der Gesamtwert ist ihr gewichtetes
+Mittel, mit Abzügen für Moore, nasse Niederungen und steiles Gelände.
 
-| Kriterium | Berechnung |
-|-----------|------------|
-| Tagesmarsch | Gaußglocke um den Abstand zum nächsten bekannten Lager (Standard 19 ± 2,5 km) |
-| Fließgewässer | 1 bis 300 m Abstand zum nächsten Bach oder Fluss, danach abfallend |
-| Anhöhe | Topographic Position Index: Höhe minus Mittel im Umkreis von 1,5 km, logistisch skaliert |
-| Hanglage | 0,5–6° Neigung ideal, ab 15° null |
-| Marschroute | Nähe zum Weg geringster Gehzeit zwischen zwei bekannten Lagern |
-| Flusskorridor | Nähe zu größeren Flüssen als Hinweis auf die Marschroute |
+In der Gegenprobe lag die Stelle eines weggelassenen Lagers im Median über
+86 % aller Zellen, bei Zufallsorten über 48 %. Rechengang, Ergebnisse und
+Grenzen stehen in [docs/modell.md](docs/modell.md).
 
-Das Gewässernetz wird standardmäßig aus dem Höhenmodell berechnet. Dazu
-werden Senken gefüllt (Priority-Flood, Barnes et al. 2014), der Abfluss
-folgt dem steilsten Gefälle und das Einzugsgebiet wird aufsummiert. Ab 2 km² Einzugsgebiet gilt ein Pixel
-als Bach, ab 150 km² als Fluss (beides einstellbar). Das folgt den
-natürlichen Talzügen und kennt keine Kanäle oder Begradigungen. Alternativ
-lassen sich die heutigen Gewässer aus OpenStreetMap laden. Die öffentlichen
-Overpass-Server sind aber oft überlastet. Scheitert die Abfrage, rechnet die
-App mit dem Höhenmodell weiter.
+## Zitieren
 
-Für die großen Flüsse (Lippe, Ems, Weser, Rhein und die übrigen in
-`src/data/fluesse.json`) gilt in beiden Fällen der alte Lauf. Abgeleitete
-Flusspixel, die näher als 1,5 km an einem alten Lauf liegen, werden als
-derselbe Fluss verworfen; kleinere Bäche bleiben. Abschaltbar unter
-„Alte Flussläufe“ im Reiter Analyse.
+Krämer, Tim (2026): Römerlager in Westfalen. Potenzialkarte für unentdeckte
+Marschlager. Online: https://experiments.erleben.app/roemer/ (abgerufen am
+…). Quelltext: https://github.com/TimKraemer/roemerlager-westfalen
 
-Der Gesamtwert ist das gewichtete Mittel. Steiles Gelände (über 12°) wird
-abgewertet, das direkte Umfeld bekannter Lager ausgeblendet. Lokale Maxima
-mit mindestens 4 km Abstand erscheinen als nummerierte Kandidaten.
-Klick auf die Karte zeigt die Teilwerte einer Zelle.
+Maschinenlesbar in [CITATION.cff](CITATION.cff). GitHub zeigt dazu rechts
+„Cite this repository“.
 
-Das Modell hat Grenzen. In flachen Auen (Lippe, Münsterland) ist das
-abgeleitete Gewässernetz ungenau, OSM-Bäche sind dafür oft begradigt.
-Einzugsgebiete großer Flüsse reichen über den Ausschnitt hinaus, deshalb
-wird mit 6 km Rand gerechnet. Das Höhenmodell der Terrarium-Kacheln hat bei Zoom 11/12 etwa 25–50 m
-Auflösung, für Gräben braucht es die DGM1-Schummerung. Überbaute Flächen
-und Wald sind nicht berücksichtigt. Dort sind Lager schwerer nachzuweisen,
-aber nicht unwahrscheinlicher. Die Karte zeigt Suchräume, keine Fundstellen.
+## Lizenz
 
-## Lizenzen der Daten
+- Code: [MIT](LICENSE)
+- eigene Daten und Texte (Fundstellen-Zusammenstellung, Quellen, Texte, Erklärungen, vorberechnete Ergebnisse): [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/deed.de)
+- Daten aus OpenStreetMap (Ortsverzeichnis, Gebiete, Flussläufe, Kreisgrenze): [ODbL 1.0](https://opendatacommons.org/licenses/odbl/), © OpenStreetMap-Mitwirkende
+- Altkarten-Scans: je nach Archiv Public Domain Mark oder CC BY-SA 4.0
+- 3D-Modell Oberaden: © erleben.app, alle Rechte vorbehalten
 
-Fundstellen-Koordinaten stammen aus frei zugänglichen Quellen (siehe
-Feld `sources`). Kartendienste: OpenStreetMap (ODbL), Geobasis NRW
-(dl-de/zero-2-0), LGLN Niedersachsen (CC BY 4.0), BKG TopPlusOpen
-(CC BY 4.0), Sentinel-2 cloudless von EOX (CC BY-NC-SA 4.0),
-Höhenkacheln von Mapzen/AWS Terrain Tiles.
+Die Aufstellung je Datei steht in [docs/daten.md](docs/daten.md).
+
+## Mitwirken
+
+Hinweise, Korrekturen und Pull Requests sind willkommen. Wie man
+Fundstellen, Regionen, Ebenen oder Texte ergänzt, steht in
+[CONTRIBUTING.md](CONTRIBUTING.md).

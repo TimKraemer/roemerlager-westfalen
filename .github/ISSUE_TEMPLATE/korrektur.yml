@@ -1,0 +1,25 @@
+name: Korrektur oder Ergänzung
+description: Fehler in Fundstellen, Quellen, Texten oder Karte melden
+labels: [daten]
+body:
+  - type: input
+    id: was
+    attributes:
+      label: Betrifft
+      description: Fundstelle, Textstelle, Ebene oder Quelle
+      placeholder: z. B. Fundstelle „Olfen-Sülsen“
+    validations:
+      required: true
+  - type: textarea
+    id: fehler
+    attributes:
+      label: Was stimmt nicht oder fehlt?
+    validations:
+      required: true
+  - type: textarea
+    id: beleg
+    attributes:
+      label: Beleg
+      description: Literatur mit Seitenzahl, DOI oder Link. Ohne Beleg können wir nichts ändern.
+    validations:
+      required: true

@@ -1,9 +1,27 @@
 cff-version: 1.2.0
-message: "Bitte so zitieren:"
+message: "Wenn Sie Karte, Modell oder Daten verwenden, zitieren Sie bitte so."
 title: "Römerlager in Westfalen. Potenzialkarte für unentdeckte Marschlager"
+abstract: >-
+  Web-Karte der bekannten augusteischen Römerlager in Westfalen und
+  Umgebung mit einem offenen, nachprüfbaren Potenzialmodell für noch
+  unentdeckte Marschlager (Tagesmarsch, Gewässer, Gelände, Marschrouten),
+  Gegenprobe an bekannten Lagern, antiken Textstellen und Altkarten.
+  Code und Texte sind weitgehend mit KI (Claude, Anthropic) entstanden.
 authors:
   - family-names: "Krämer"
     given-names: "Tim"
-date-released: 2026-10-05
+version: "0.1.0"
+date-released: 2026-10-06
 url: "https://experiments.erleben.app/roemer/"
+repository-code: "https://github.com/TimKraemer/roemerlager-westfalen"
+license: MIT
 type: software
+keywords:
+  - Römerlager
+  - Marschlager
+  - Augusteische Germanienfeldzüge
+  - Westfalen
+  - Archäologische Prognose
+  - Predictive Modelling
+  - Least-Cost-Path
+  - Web-GIS
