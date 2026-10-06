@@ -535,7 +535,9 @@ export function searchPlaces(index, query, center, limit = 6) {
 		}
 		if (score) hits.push({ p, score, fix: tokens.map(() => null) })
 	}
-	if (hits.length < 3 && tokens.some((t) => maxErrors(t.length))) {
+	// Unscharf nur ohne genauen Treffer, sonst kommt zu "Wiehengebirge"
+	// auch das Siebengebirge
+	if (!hits.length && tokens.some((t) => maxErrors(t.length))) {
 		hits = hits.concat(fuzzyPlaces(index, tokens, hits))
 	}
 	const dist = (p) =>
