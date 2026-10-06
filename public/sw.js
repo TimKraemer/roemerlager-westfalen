@@ -15,8 +15,14 @@
  */
 
 const VERSION = 2
-const TILES = `tiles-v${VERSION}`
-const ASSETS = `assets-v${VERSION}`
+// Mehrere Instanzen können unter einer Domain liegen (experiments.erleben.app
+// /roemer/ und Forks daneben) und teilen sich dann den Cache-Speicher. Der
+// Unterpfad im Namen hält sie auseinander, damit keine die Caches der
+// anderen löscht.
+const SCOPE = new URL(self.registration.scope).pathname
+const TILES = `${SCOPE}tiles-v${VERSION}`
+const ASSETS = `${SCOPE}assets-v${VERSION}`
+const NAME = /^(tiles|assets)-v\d+$/
 const TILE_DAYS = 14
 const MAX_TILES = 3000
 const MAX_ASSETS = 400
@@ -28,7 +34,11 @@ self.addEventListener("activate", (event) => {
 	event.waitUntil(
 		(async () => {
 			for (const name of await caches.keys()) {
-				if (name !== TILES && name !== ASSETS) await caches.delete(name)
+				// eigene ältere Fassungen und die Namen ohne Unterpfad aus
+				// der ersten Fassung, nie die einer Instanz unter einem Unterpfad
+				const rest = name.startsWith(SCOPE) ? name.slice(SCOPE.length) : name
+				const ours = NAME.test(rest)
+				if (ours && name !== TILES && name !== ASSETS) await caches.delete(name)
 			}
 			await self.clients.claim()
 		})(),
