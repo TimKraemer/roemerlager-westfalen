@@ -64,6 +64,8 @@ export const useMapStore = create((set) => ({
 	customLayers: typeof window === "undefined" ? [] : loadServices(),
 	selectedSite: null,
 	inspect: null,
+	// Angeklickte antike Textstelle, deren Orte die Karte zeigt
+	selectedText: null,
 
 	setBaseLayer: (baseLayer) => set({ baseLayer }),
 	setOverlay: (id, patch) =>
@@ -117,4 +119,5 @@ export const useMapStore = create((set) => ({
 		}),
 	setSelectedSite: (selectedSite) => set({ selectedSite }),
 	setInspect: (inspect) => set({ inspect }),
+	setSelectedText: (selectedText) => set({ selectedText }),
 }))

@@ -24,7 +24,7 @@ import EasyPanel from "./easy-panel"
 import { InfoCards } from "./info-cards"
 import LayerPanel from "./layer-panel"
 import { SitesPanel, SourcesPanel } from "./sites-panel"
-import TextsPanel from "./texts-panel"
+import TextsPanel, { TextChip } from "./texts-panel"
 
 const MapView = dynamic(() => import("./map-view"), { ssr: false })
 
@@ -48,6 +48,8 @@ export default function AppShell() {
 	const desktop = useMediaQuery("(min-width: 900px)", { noSsr: true })
 	const open = useMapStore((s) => s.panelOpen)
 	const setOpen = useMapStore((s) => s.setPanelOpen)
+	// Solange eine Textstelle gezeigt wird, hat sie die Karte für sich
+	const textShown = useMapStore((s) => Boolean(s.selectedText))
 
 	const onMapReady = useCallback((map) => {
 		mapRef.current = map
@@ -143,8 +145,9 @@ export default function AppShell() {
 			</Drawer>
 			<Box component="main" sx={{ position: "relative", flex: 1, minWidth: 0 }}>
 				<MapView onMapReady={onMapReady} />
-				{!open && <EasyPanel onFlyTo={flyTo} />}
+				{!open && !textShown && <EasyPanel onFlyTo={flyTo} />}
 				<InfoCards />
+				<TextChip />
 			</Box>
 		</Box>
 	)

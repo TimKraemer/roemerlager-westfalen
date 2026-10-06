@@ -45,7 +45,16 @@ Römerstraßen (Itiner-e und Hellweg vor dem Santforde) neu bauen:
 
 ```bash
 bun scripts/build-roads.mjs
-``` `bun test` prüft das Rechenmodell,
+```
+
+Flussverläufe für den Reiter „Texte“ (Lippe, Ems, Weser, Rhein, Elbe,
+Stever, Seseke, Alme aus den OSM-Kacheln) neu bauen:
+
+```bash
+bun scripts/build-rivers.mjs
+```
+
+`bun test` prüft das Rechenmodell,
 `bun run lint` den Code (Biome).
 
 Live unter https://experiments.erleben.app/roemer/ (statischer Export).
@@ -74,6 +83,9 @@ sonst nicht ausliefert.
 | `src/lib/criteria.js` | Erklärtexte und Quellen je Kriterium |
 | `scripts/precompute.mjs` | Vorberechnung der Regionen nach `public/precomputed` |
 | `scripts/build-roads.mjs` | Römerstraßen-Datensatz |
+| `src/data/texte.json` | Antike Textstellen mit Übersetzung und Kartenbezug |
+| `src/lib/text-geo.js` | Orte, Räume und Richtungen je Textstelle für die Karte |
+| `scripts/build-rivers.mjs` | Benannte Flussverläufe (`src/data/fluesse.json`) |
 | `src/components/` | Karte, Seitenleiste, Info-Karten |
 
 ## Potenzialmodell
