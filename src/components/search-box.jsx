@@ -292,9 +292,12 @@ export default function SearchBox({ getMap, desktop }) {
 		const kinds = [...new Set(local.map((h) => h.kind))]
 		const typed = normalize(query).text
 		const label = (o) => normalize(o.label).text
+		// Als ganzes Wort: "Barkhausen" im Lagernamen zählt, "Senne" in
+		// "Sennestadt" nicht
+		const words = (text) => ` ${text.split(/[^\p{L}\p{N}]+/u).join(" ")} `
+		const word = (text) => words(text).includes(words(typed))
 		const onMap = local.some(
-			(h) =>
-				["site", "river", "road"].includes(h.kind) && label(h).includes(typed),
+			(h) => ["site", "river", "road"].includes(h.kind) && word(label(h)),
 		)
 		const inTitle = local.some((h) => label(h).includes(typed))
 		const placesFirst =
