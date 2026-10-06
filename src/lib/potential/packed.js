@@ -23,6 +23,7 @@ const FIELDS = [
 	{ path: ["raw", "elev"], type: Int16Array, scale: 1 },
 	{ path: ["raw", "slope"], type: Uint16Array, scale: 10 },
 	{ path: ["raw", "tpi"], type: Int16Array, scale: 2 },
+	{ path: ["raw", "valley"], type: Int16Array, scale: 2 },
 	{ path: ["raw", "distWater"], type: Uint16Array, scale: 0.1, distance: true },
 	{ path: ["raw", "distRiver"], type: Uint16Array, scale: 0.1, distance: true },
 	{ path: ["raw", "distCamp"], type: Uint16Array, scale: 0.1, distance: true },

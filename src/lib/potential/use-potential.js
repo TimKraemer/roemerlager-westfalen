@@ -186,6 +186,7 @@ export function inspectAt(lon, lat, extra = {}) {
 		elev: result.raw.elev[i],
 		slope: result.raw.slope[i],
 		tpi: result.raw.tpi[i],
+		valley: result.raw.valley?.[i] ?? 0,
 		distWater: result.raw.distWater[i],
 		distRiver: result.raw.distRiver[i],
 		distCamp: result.raw.distCamp[i],

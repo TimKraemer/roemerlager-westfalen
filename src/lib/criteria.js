@@ -58,6 +58,17 @@ export const CRITERIA_SOURCES = {
 			url: "https://www.thelatinlibrary.com/vegetius3.html",
 		},
 	],
+	terrace: [
+		{
+			label:
+				"Ps.-Hyginus 56: an erster Stelle Plätze, die sich sanft aus der Ebene erheben",
+			url: "https://www.thelatinlibrary.com/hyginus/hyginus6.shtml",
+		},
+		{
+			label: "Vegetius 1,22: kein Feld, das von Sturzbächen überschwemmt wird",
+			url: "https://www.thelatinlibrary.com/vegetius1.html",
+		},
+	],
 	slope: [
 		{
 			label: "Kaye 2013: Hangneigung und Geländeform als Standortfaktoren",
@@ -167,7 +178,7 @@ export function explain(data, params) {
 			key: "ring",
 			verdict: verdict(f.ring),
 			text: near
-				? `${km(data.distCamp)} bis zum nächsten bekannten Lager (${near.name}). Ein Tagesmarsch ist hier mit ${km(params.ringMean)} ± ${km(params.ringSigma)} angesetzt.`
+				? `${km(data.distCamp)} bis zum nächsten bekannten Lager (${near.name}). Ein Tagesmarsch ist hier mit ${km(params.ringMean)} ± ${km(params.ringSigma)} angesetzt, auch zwei oder drei Märsche zählen, falls ein Zwischenlager fehlt.`
 				: "Kein bekanntes Lager in der Nähe.",
 		},
 		{
@@ -182,6 +193,11 @@ export function explain(data, params) {
 				data.tpi >= 0
 					? `${data.tpi.toFixed(1)} m höher als das Mittel im Umkreis von ${km(params.tpiRadius)}. Die antiken Handbücher empfehlen eine leichte Anhöhe, die nicht von höherem Gelände überragt wird.`
 					: `${Math.abs(data.tpi).toFixed(1)} m tiefer als die Umgebung. Senken und Auen meiden die antiken Regeln wegen Nässe und schlechter Übersicht.`,
+		},
+		{
+			key: "terrace",
+			verdict: verdict(f.terrace),
+			text: `${Math.round(data.valley)} m über dem tiefsten Punkt im Umkreis von 1,5 km. Ideal sind 3–15 m, also trocken über Aue und Bach, aber noch nah am Wasser.`,
 		},
 		{
 			key: "slope",
@@ -241,14 +257,17 @@ export function placeLabel(places, lon, lat) {
  * Begründungen ohne Fachbegriffe für die einfache Ansicht. Nur was für
  * die Stelle spricht, dazu höchstens ein Hinweis, was dagegen spricht.
  */
-export function explainSimple(data) {
+export function explainSimple(data, params) {
 	const f = data.factors
 	const pro = []
 	const contra = []
 	const near = nearestSites(data.lon, data.lat, 1)[0]
 	if (f.ring >= 0.5 && near) {
+		const marches = Math.max(1, Math.round(data.distCamp / params.ringMean))
 		pro.push(
-			`Etwa ein Tagesmarsch (${km(data.distCamp)}) vom bekannten Römerlager ${near.name}. In diesem Abstand bauten die Legionen ihr nächstes Nachtlager.`,
+			marches === 1
+				? `Etwa ein Tagesmarsch (${km(data.distCamp)}) vom bekannten Römerlager ${near.name}. In diesem Abstand bauten die Legionen ihr nächstes Nachtlager.`
+				: `Etwa ${marches === 2 ? "zwei" : "drei"} Tagesmärsche (${km(data.distCamp)}) vom bekannten Römerlager ${near.name}. Dazwischen müsste ein noch unbekanntes Lager liegen, und dieser Ort passt in den Abstand.`,
 		)
 	}
 	if (f.route >= 0.5) {
@@ -264,6 +283,11 @@ export function explainSimple(data) {
 	if (f.height >= 0.6) {
 		pro.push(
 			`Liegt etwas höher als die Umgebung (${Math.round(data.tpi)} m). Von dort war das Umland gut zu überblicken und der Boden trocken.`,
+		)
+	}
+	if (f.terrace >= 0.8 && data.valley >= 3) {
+		pro.push(
+			`Liegt auf einer trockenen Terrasse, ${Math.round(data.valley)} m über der Talaue. Solche sanft ansteigenden Plätze empfahlen die römischen Lagerregeln an erster Stelle.`,
 		)
 	}
 	if (f.slope >= 0.8) {

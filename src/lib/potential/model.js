@@ -23,8 +23,13 @@ export const FACTORS = [
 	},
 	{
 		key: "height",
-		label: "Anhöhe / Geländerücken",
-		hint: "Höher als die Umgebung (Topographic Position Index)",
+		label: "Leichte Anhöhe",
+		hint: "Etwas höher als die Umgebung (Topographic Position Index). Ausgeprägte Hügel zählen weniger, Ps.-Hyginus 56 stellt sie erst an dritte Stelle.",
+	},
+	{
+		key: "terrace",
+		label: "Erhöhte Terrasse über der Aue",
+		hint: "3–15 m über dem tiefsten Punkt im Umkreis von 1,5 km, trocken über Fluss oder Bach (Ps.-Hyginus 56: sanft aus der Ebene ansteigend)",
 	},
 	{
 		key: "slope",
@@ -51,6 +56,8 @@ export const DEFAULT_PARAMS = {
 	riverKm2: 150,
 	ringMean: 19000,
 	ringSigma: 2500,
+	// Ringe auch bei zwei und drei Tagesmärschen (1 = nur ein Tagesmarsch)
+	ringMultiples: 3,
 	waterNear: 300,
 	waterFalloff: 700,
 	corridorSigma: 6000,
@@ -67,7 +74,15 @@ export const DEFAULT_PARAMS = {
 	wetPenalty: 0.4,
 	// Abzug für heutigen Wald; römerzeitlicher Wald ist unbekannt, daher aus
 	forestPenalty: 0,
-	weights: { ring: 3, water: 2, height: 2, slope: 1, route: 2, corridor: 1 },
+	weights: {
+		ring: 3,
+		water: 2,
+		height: 2,
+		terrace: 1,
+		slope: 1,
+		route: 2,
+		corridor: 1,
+	},
 }
 
 const DEG = 180 / Math.PI
@@ -201,6 +216,38 @@ export function computeSlope(grid, elev) {
 		}
 	}
 	return slope
+}
+
+/**
+ * Höhe über dem Talboden: Höhe minus tiefste Höhe im Quadrat ±radius
+ * (getrennter Minimumfilter, erst Zeilen, dann Spalten).
+ */
+export function computeValleyHeight(grid, elev, radiusMeters = 1500) {
+	const { cols, rows } = grid
+	const k = Math.max(1, Math.round(radiusMeters / grid.cellMeters))
+	const tmp = new Float32Array(cols * rows)
+	for (let r = 0; r < rows; r++) {
+		for (let c = 0; c < cols; c++) {
+			let m = Number.POSITIVE_INFINITY
+			for (let d = Math.max(0, c - k); d <= Math.min(cols - 1, c + k); d++) {
+				const v = elev[r * cols + d]
+				if (v < m) m = v
+			}
+			tmp[r * cols + c] = m
+		}
+	}
+	const out = new Float32Array(cols * rows)
+	for (let c = 0; c < cols; c++) {
+		for (let r = 0; r < rows; r++) {
+			let m = Number.POSITIVE_INFINITY
+			for (let d = Math.max(0, r - k); d <= Math.min(rows - 1, r + k); d++) {
+				const v = tmp[d * cols + c]
+				if (v < m) m = v
+			}
+			out[r * cols + c] = elev[r * cols + c] - m
+		}
+	}
+	return out
 }
 
 /** Topographic Position Index: Höhe minus Mittel im Quadrat ±radius. */
@@ -354,18 +401,23 @@ export function distanceToCamps(grid, camps) {
  * Ringfaktor: Für jedes Lager eine Gaußglocke um den Tagesmarsch-Abstand,
  * das Maximum über alle Lager zählt.
  */
-export function ringFactor(grid, camps, mean, sigma) {
+export function ringFactor(grid, camps, mean, sigma, multiples = 3) {
+	// Vielfache eines Tagesmarschs: Fehlt ein Zwischenlager, liegt das nächste
+	// bekannte zwei oder drei Märsche entfernt (Sennestadt–Barkhausen 39 km).
+	// Je Vielfachem wächst die Streuung mit √k, das Gewicht sinkt um 20 %.
 	const { cols, rows } = grid
 	const out = new Float32Array(cols * rows)
-	const twoSigma2 = 2 * sigma * sigma
 	for (let r = 0; r < rows; r++) {
 		for (let c = 0; c < cols; c++) {
 			const [lon, lat] = cellCenter(grid, c, r)
 			let best = 0
 			for (const camp of camps) {
 				const d = haversine(lon, lat, camp.lon, camp.lat)
-				const v = Math.exp(-((d - mean) ** 2) / twoSigma2)
-				if (v > best) best = v
+				for (let k = 1; k <= multiples; k++) {
+					const s2 = 2 * sigma * sigma * k
+					const v = 0.8 ** (k - 1) * Math.exp(-((d - k * mean) ** 2) / s2)
+					if (v > best) best = v
+				}
 			}
 			out[r * cols + c] = best
 		}
@@ -379,8 +431,20 @@ export const factorFns = {
 		return Math.exp(-((dist - p.waterNear) ** 2) / (2 * p.waterFalloff ** 2))
 	},
 	height(tpi) {
-		// Logistische Kurve: Senke ~0, ebene Fläche ~0,3, Rücken ab ~10 m → 0,85+
-		return 1 / (1 + Math.exp(-(tpi - 3) / 4))
+		// Logistisch ansteigend (Senke ~0, Ebene ~0,3, ab ~10 m ~0,85), über
+		// 20 m wieder fallend: Hügel und Berge rangieren bei Ps.-Hyginus 56
+		// hinter der sanften Erhebung
+		const rise = 1 / (1 + Math.exp(-(tpi - 3) / 4))
+		const tooHigh = tpi > 20 ? Math.max(0.4, 1 - (tpi - 20) / 40) : 1
+		return rise * tooHigh
+	},
+	terrace(h) {
+		// Höhe über dem Talboden: 0 m Aue, 3–15 m Terrasse, darüber Hang/Hügel
+		if (h < 1) return 0.1
+		if (h < 3) return 0.1 + (0.9 * (h - 1)) / 2
+		if (h <= 15) return 1
+		if (h >= 45) return 0.3
+		return 1 - (0.7 * (h - 15)) / 30
 	},
 	slope(deg) {
 		if (deg < 0.5) return 0.7 + deg * 0.6
@@ -409,6 +473,7 @@ export function combine(layers, params) {
 		slope,
 		distCamp,
 		distKnown,
+		valley,
 	} = layers
 	const n = ring.length
 	const w = params.weights
@@ -420,11 +485,13 @@ export function combine(layers, params) {
 		slope: new Float32Array(n),
 		route: new Float32Array(n),
 		corridor: new Float32Array(n),
+		terrace: new Float32Array(n),
 	}
 	const score = new Float32Array(n)
 	for (let i = 0; i < n; i++) {
 		factors.water[i] = factorFns.water(distWater[i], params)
 		factors.height[i] = factorFns.height(tpi[i])
+		factors.terrace[i] = valley ? factorFns.terrace(valley[i]) : 0
 		factors.slope[i] = factorFns.slope(slope[i])
 		factors.route[i] = distRoute ? factorFns.route(distRoute[i], params) : 0
 		factors.corridor[i] = factorFns.corridor(distRiver[i], params)

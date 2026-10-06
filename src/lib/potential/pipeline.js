@@ -10,6 +10,7 @@ import {
 	computeFineSlope,
 	computeSlope,
 	computeTpi,
+	computeValleyHeight,
 	createGrid,
 	distanceToCamps,
 	distanceToLines,
@@ -228,6 +229,7 @@ export async function prepare(
 		includeNiMoor,
 	}
 	Object.assign(state, wetness(grid, state.raster, state.slope))
+	state.valley = computeValleyHeight(grid, elev)
 	return state
 }
 
@@ -322,7 +324,13 @@ export async function evaluate(
 		state.routeKey = routeKey
 	}
 
-	const ring = ringFactor(grid, camps, params.ringMean, params.ringSigma)
+	const ring = ringFactor(
+		grid,
+		camps,
+		params.ringMean,
+		params.ringSigma,
+		params.ringMultiples ?? 1,
+	)
 	const distCamp = distanceToCamps(grid, camps)
 	// Umkreis ohne Vorschläge um alle bekannten Lager, nicht nur die Ring-Lager
 	const distKnown = distanceToCamps(grid, routeCamps ?? camps)
@@ -336,6 +344,7 @@ export async function evaluate(
 			slope,
 			distCamp,
 			distKnown,
+			valley: state.valley,
 		},
 		params,
 	)
@@ -376,6 +385,8 @@ export async function evaluate(
 			distCamp,
 			distRoute: state.distRoute,
 			lines,
+			valley: state.valley,
+			distKnown,
 			wet: state.wet,
 			moor: state.moor,
 			forest: state.forest ?? new Float32Array(score.length),

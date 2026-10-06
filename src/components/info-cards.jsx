@@ -182,7 +182,8 @@ const levelText = (score) =>
 				: "gering"
 
 function SimpleReasons({ data }) {
-	const { pro, contra } = explainSimple(data)
+	const params = useMapStore((s) => s.params)
+	const { pro, contra } = explainSimple(data, params)
 	return (
 		<Box>
 			<Typography variant="body2" sx={{ mb: 1 }}>

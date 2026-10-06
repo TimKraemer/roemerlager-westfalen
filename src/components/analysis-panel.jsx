@@ -129,6 +129,16 @@ export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
 				onChange={(ringMean) => setParams({ ringMean })}
 			/>
 			<LabeledSlider
+				label="Auch mehrere Tagesmärsche zählen"
+				hint="Fehlt ein Zwischenlager, liegt das nächste bekannte Lager zwei oder drei Märsche entfernt. 1 = nur ein Tagesmarsch."
+				value={params.ringMultiples}
+				min={1}
+				max={3}
+				step={1}
+				format={(v) => (v === 1 ? "nur einer" : `bis ${v}`)}
+				onChange={(ringMultiples) => setParams({ ringMultiples })}
+			/>
+			<LabeledSlider
 				label="Streuung ±"
 				value={params.ringSigma}
 				min={1000}
