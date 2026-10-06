@@ -72,8 +72,9 @@ export default function TextsPanel() {
 		<Box sx={{ pt: 1.5 }}>
 			<Typography variant="body2" color="text.secondary">
 				Was römische Autoren über Lager, Wege und Feldzüge schreiben, im
-				Original und in eigener Übersetzung (2026). Dazu kommen neuere Thesen
-				aus Archäologie und Presse in eigenen Worten. Texte mit{" "}
+				Original und in eigener, mit KI erstellter und nicht philologisch
+				geprüfter Übersetzung (2026). Dazu kommen neuere Thesen aus Archäologie
+				und Presse in eigenen Worten. Texte mit{" "}
 				<MapIcon sx={{ fontSize: 15, verticalAlign: "-3px", color: PURPLE }} />{" "}
 				zeigen beim Anklicken ihre Orte und Richtungen auf der Karte.
 				Gestrichelt ist, was der Text offenlässt.

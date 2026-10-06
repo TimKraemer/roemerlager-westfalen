@@ -4,8 +4,12 @@
 		"intro": "Aufsätze in „Archäologie in Westfalen-Lippe“ (frei als PDF bei der UB Heidelberg). Ein eigenes Kartenwerk von ihr ist online nicht veröffentlicht, die Lagepläne stecken in diesen Beiträgen.",
 		"items": [
 			{
-				"label": "Augusteische Marschlager in Porta Westfalica-Barkhausen, AiW 2010",
-				"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25926/19643",
+				"label": "Tremmel 2010: Augusteische Marschlager in Porta Westfalica-Barkhausen. Archäologie in Westfalen-Lippe 2009 (2010), S. 45–47",
+				"url": "https://doi.org/10.11588/aiw.0.0.25034"
+			},
+			{
+				"label": "Tremmel 2011: Augusteische Marschlager in Porta Westfalica-Barkhausen „Auf der Lake“. Archäologie in Westfalen-Lippe 2010 (2011), S. 79–81",
+				"url": "https://doi.org/10.11588/aiw.0.0.25926",
 				"note": "Lagepläne der Grabung „Auf der Lake“"
 			},
 			{
@@ -14,25 +18,26 @@
 				"note": "Zusammenfassung zu Barkhausen für die Region"
 			},
 			{
-				"label": "Olfen-Sülsen. Ein neues Römerlager aus der Zeit der Drususfeldzüge, AiW 2011",
-				"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/issue/view/2515"
+				"label": "Tremmel 2012: Olfen-Sülsen. Ein neues Römerlager aus der Zeit der Drususfeldzüge. Archäologie in Westfalen-Lippe 2011 (2012), S. 86–89",
+				"url": "https://doi.org/10.11588/aiw.0.0.25119"
 			},
 			{
-				"label": "Prospektionen im Marschlager Haltern „In der Borg“, AiW 2011",
-				"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25120/18826"
+				"label": "Tremmel 2012: Prospektionen im augusteischen Marschlager Haltern „In der Borg“ (Ostlager). Archäologie in Westfalen-Lippe 2011 (2012), S. 89–92",
+				"url": "https://doi.org/10.11588/aiw.0.0.25120"
 			},
 			{
-				"label": "Die westliche Umwehrung des Hauptlagers von Haltern, AiW 2012",
-				"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25988/19704"
+				"label": "Tremmel 2013: Die westliche Umwehrung des augusteischen Hauptlagers von Haltern. Archäologie in Westfalen-Lippe 2012 (2013), S. 62–66",
+				"url": "https://doi.org/10.11588/aiw.0.0.25988"
 			},
 			{
-				"label": "Tremmel/Schubert: Marschlager in Bielefeld-Sennestadt, AiW 2018",
-				"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/view/76852",
+				"label": "Tremmel/Schubert 2019: Ein neu entdecktes augusteisches Marschlager in Bielefeld-Sennestadt. Archäologie in Westfalen-Lippe 2018 (2019), S. 86–89",
+				"url": "https://doi.org/10.11588/aiw.2019.0.76852",
 				"note": "Entdeckung im Laserscan"
 			},
 			{
-				"label": "AiW 2021 (Heft, Haltern ältestes Marschlager vermutlich darin)",
-				"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/issue/view/6850"
+				"label": "Tremmel 2022: Ein neu entdecktes Marschlager der Drususfeldzüge in Haltern am See. Archäologie in Westfalen-Lippe 2021 (2022), S. 88–92",
+				"url": "https://doi.org/10.11588/aiw.2022.101086",
+				"note": "Das 2021 entdeckte älteste Marschlager in Haltern"
 			},
 			{
 				"label": "Wikipedia: Bettina Tremmel",
@@ -90,27 +95,27 @@
 				"url": "https://www.altertumskommission.lwl.org/de/publikationen/roemerlager-westfalen/"
 			},
 			{
-				"label": "Heft 1: Kneblinghausen",
+				"label": "Rudnick 2014: Kneblinghausen, Stadt Rüthen, Kreis Soest. Römerlager in Westfalen 1, 2. Aufl.",
 				"url": "https://www.altertumskommission.lwl.org/media/filer_public/f1/1a/f11a8f4c-7152-44fd-8989-20395113ad02/rw_1_2014.pdf"
 			},
 			{
-				"label": "Heft 2: Holsterhausen",
+				"label": "Ebel-Zepezauer 2014: Holsterhausen, Stadt Dorsten, Kreis Recklinghausen. Römerlager in Westfalen 2, 2. Aufl.",
 				"url": "https://www.altertumskommission.lwl.org/media/filer_public/f1/f6/f1f6b8f9-6c43-4338-90a9-f6b51e812aae/rw_2_2014.pdf"
 			},
 			{
-				"label": "Heft 3: Oberaden und Beckinghausen",
+				"label": "Kühlborn 2011: Oberaden, Stadt Bergkamen, Kreis Unna, und Beckinghausen, Stadt Lünen, Kreis Unna. Römerlager in Westfalen 3, 2. Aufl.",
 				"url": "https://www.altertumskommission.lwl.org/media/filer_public/c3/3f/c33f9e97-a2b3-4908-8f84-c485c50b030a/rw_32_2011.pdf"
 			},
 			{
-				"label": "Heft 4: Anreppen",
+				"label": "Kühlborn 2014: Anreppen, Stadt Delbrück, Kreis Paderborn. Römerlager in Westfalen 4, 2. Aufl.",
 				"url": "https://www.altertumskommission.lwl.org/media/filer_public/cd/40/cd4074b6-60d5-4bf2-a90a-9d1b6812c556/rw_4_2014.pdf"
 			},
 			{
-				"label": "Heft 5: Haltern",
+				"label": "Aßkamp 2010: Haltern, Stadt Haltern am See, Kreis Recklinghausen. Römerlager in Westfalen 5",
 				"url": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
 			},
 			{
-				"label": "Heft 6: Sparrenberger Egge",
+				"label": "Bérenger 2011: Wachtposten auf der Sparrenberger Egge, kreisfreie Stadt Bielefeld. Römerlager in Westfalen 6",
 				"url": "https://www.altertumskommission.lwl.org/media/filer_public/be/5e/be5e344d-ce46-49a1-a09a-6dff26620a7e/rw_6_2011.pdf"
 			}
 		]
@@ -119,7 +124,7 @@
 		"title": "Übersichtskarten",
 		"items": [
 			{
-				"label": "LWL Westfälische Geschichte: Germanenstämme und augusteische Römerlager (Höper 2004)",
+				"label": "LWL Westfälische Geschichte: Germanenstämme und augusteische Römerlager (Bearbeitung Hermann-Josef Höper, Diaserie „Römerlager an der Lippe“, Dia 1)",
 				"url": "https://www.lwl.org/westfaelische-geschichte/portal/Internet/finde/langDatensatz.php?urlID=525&url_tabelle=tab_medien"
 			},
 			{
@@ -165,7 +170,7 @@
 				"url": "https://www.gefbdml.de/roemische-goldmuenze-bei-costedt-gefunden-ein-spaetantiker-solidus-aus-porta-westfalica/"
 			},
 			{
-				"label": "Kalkriese: Oberesch als mögliches Marschlager (Härtling u. a. 2025)",
+				"label": "Kalkriese: Oberesch als mögliches Marschlager (Härtling u. a. 2025: Germanic Rampart or Roman Encampment? New Geoarchaeological Evidence at the Roman Conflict Site at Kalkriese (NW-Germany). Geoarchaeology 40, e22031)",
 				"url": "https://doi.org/10.1002/gea.22031"
 			}
 		]
@@ -209,7 +214,7 @@
 				"url": "https://github.com/AWMC/geodata"
 			},
 			{
-				"label": "Spieker 17: Fernstraßen der Westfälischen Bucht (PDF)",
+				"label": "Poeschel 1968: Alte Fernstraßen in der mittleren Westfälischen Bucht. Spieker 17 (PDF)",
 				"url": "https://www.geographische-kommission.lwl.org/media/filer_public/5c/c8/5cc84e08-ccf2-4af4-b6f6-c56b4fd28280/spieker_17.pdf"
 			},
 			{
@@ -258,7 +263,7 @@
 				"note": "Quelle der alten Flussläufe in NRW; Linien automatisch aus der Kolorierung abgegriffen"
 			},
 			{
-				"label": "Gerlach, Meurers-Balke & Kalis 2022: The Lower Rhine in Late Antiquity",
+				"label": "Gerlach/Meurers-Balke/Kalis 2022: The Lower Rhine (Germany) in Late Antiquity. A time of dissolving structures. Netherlands Journal of Geosciences 101, e14",
 				"url": "https://doi.org/10.1017/njg.2022.11",
 				"note": "Römerzeitlicher Rheinlauf an Vetera und an der Ostmauer der CUT"
 			},
@@ -280,12 +285,12 @@
 				"url": "https://nibis.lbeg.de/cardomap3/"
 			},
 			{
-				"label": "Natürliches Gewässernetz: Barnes u. a. 2014, Priority-Flood",
+				"label": "Natürliches Gewässernetz: Barnes/Lehman/Mulla 2014: Priority-Flood. An optimal depression-filling and watershed-labeling algorithm for digital elevation models. Computers & Geosciences 62, S. 117–127",
 				"url": "https://doi.org/10.1016/j.cageo.2013.04.024",
 				"note": "Verfahren für das Gewässernetz aus dem Höhenmodell"
 			},
 			{
-				"label": "Beven & Kirkby 1979: Topographischer Feuchteindex",
+				"label": "Beven/Kirkby 1979: A physically based, variable contributing area model of basin hydrology. Hydrological Sciences Bulletin 24, S. 43–69 (Topographischer Feuchteindex)",
 				"url": "https://doi.org/10.1080/02626667909491834",
 				"note": "Abzug für nasse Niederungen"
 			},
@@ -301,7 +306,7 @@
 		"intro": "Gegenprobe vom 05.10.2026: an 16 bestätigten Lagern in NRW im Mittel 27,8 gerade Abschnitte und 0,4 rechtwinklige Ecken je 2,4-km-Fenster, an 10 Zufallsorten 27,3 Abschnitte und 1,2 Ecken. Die automatische Erkennung unterscheidet Lager also nicht von normalem Gelände, weil die meisten Lager eingeebnet oder überbaut sind. Sie fließt deshalb nicht in die Potenzialkarte ein, die Laserscan-Ansicht dient der Prüfung mit dem Auge.",
 		"items": [
 			{
-				"label": "Hesse 2010: LiDAR-derived Local Relief Models",
+				"label": "Hesse 2010: LiDAR-derived Local Relief Models. A new tool for archaeological prospection. Archaeological Prospection 17, S. 67–72",
 				"url": "https://doi.org/10.1002/arp.374",
 				"note": "Verfahren der Laserscan-Ansicht"
 			},
@@ -310,7 +315,7 @@
 				"url": "https://www.wcs.nrw.de/geobasis/wcs_nw_dgm?SERVICE=WCS&REQUEST=GetCapabilities"
 			},
 			{
-				"label": "Duda & Hart 1972: Hough-Transformation für Linien",
+				"label": "Duda/Hart 1972: Use of the Hough transformation to detect lines and curves in pictures. Communications of the ACM 15, S. 11–15",
 				"url": "https://doi.org/10.1145/361237.361242"
 			}
 		]
@@ -329,20 +334,20 @@
 				"note": "Marschleistung und Lagerplatz. Englisch: Clarke 1767"
 			},
 			{
-				"label": "Vegetius englisch (Clarke 1767)",
-				"url": "https://www.digitalattic.org/home/war/vegetius/"
+				"label": "Vegetius englisch: Clarke 1767, Military Institutions of Vegetius, in Five Books (Internet Archive)",
+				"url": "https://archive.org/details/bim_eighteenth-century_de-re-militari-english_vegetius-renatus-flaviu_1767"
 			},
 			{
-				"label": "Kaye 2013: Roman Marching Camps in Britain",
+				"label": "Kaye 2013: Roman Marching Camps in Britain. GIS, statistical analysis and hydrological examination of known marching camps, resulting in the prediction of possible camp sites (Working Paper, Zenodo)",
 				"url": "https://zenodo.org/records/839026",
 				"note": "307 Lager: 45 % bis 50 m, 60 % bis 100 m, 90 % bis 300 m vom Fluss"
 			},
 			{
-				"label": "Jones 2011: Roman Camps in Scotland (frei verfügbar)",
-				"url": "https://books.socantscot.org/digital-books/catalog/book/26"
+				"label": "Jones 2011: Roman Camps in Scotland. Society of Antiquaries of Scotland (frei verfügbar)",
+				"url": "https://doi.org/10.9750/9781908332417"
 			},
 			{
-				"label": "Tobler 1993: Wanderfunktion (NCGIA TR 93-1)",
+				"label": "Tobler 1993: Three Presentations on Geographical Analysis and Modeling. NCGIA Technical Report 93-1 (Wanderfunktion)",
 				"url": "https://escholarship.org/uc/item/05r820mz",
 				"note": "Grundlage der berechneten Marschwege"
 			},
@@ -361,8 +366,8 @@
 				"url": "https://www.gld.nl/nieuws/8107238/romeinen-op-de-veluwe-jazeker-en-veel-vaker-dan-we-dachten"
 			},
 			{
-				"label": "Lewis 2021: Probabilistic least cost path",
-				"url": "https://link.springer.com/article/10.1007/s10816-021-09522-w"
+				"label": "Lewis 2021: Probabilistic Modelling for Incorporating Uncertainty in Least Cost Path Results. A Postdictive Roman Road Case Study. Journal of Archaeological Method and Theory 28, S. 911–924",
+				"url": "https://doi.org/10.1007/s10816-021-09522-w"
 			}
 		]
 	},

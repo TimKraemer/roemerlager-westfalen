@@ -43,7 +43,7 @@
 						"url": "https://de.wikipedia.org/wiki/Marschlager_Holsterhausen"
 					},
 					{
-						"label": "Römerlager in Westfalen, Heft 2 (PDF)",
+						"label": "Ebel-Zepezauer 2014: Holsterhausen, Stadt Dorsten, Kreis Recklinghausen. Römerlager in Westfalen 2, 2. Aufl. (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/f1/f6/f1f6b8f9-6c43-4338-90a9-f6b51e812aae/rw_2_2014.pdf"
 					}
 				],
@@ -72,12 +72,12 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Haltern"
 					},
 					{
-						"label": "Römerlager in Westfalen, Heft 5 (PDF)",
+						"label": "Aßkamp 2010: Haltern, Stadt Haltern am See, Kreis Recklinghausen. Römerlager in Westfalen 5 (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
 					},
 					{
-						"label": "Tremmel, Westliche Umwehrung des Hauptlagers, AiW 2012",
-						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25988/19704"
+						"label": "Tremmel 2013: Die westliche Umwehrung des augusteischen Hauptlagers von Haltern. Archäologie in Westfalen-Lippe 2012 (2013), S. 62–66",
+						"url": "https://doi.org/10.11588/aiw.0.0.25988"
 					}
 				],
 				"status": "bestätigt",
@@ -103,6 +103,10 @@
 					{
 						"label": "Wikipedia: Römerlager Haltern",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Haltern"
+					},
+					{
+						"label": "Aßkamp 2010: Haltern, Stadt Haltern am See, Kreis Recklinghausen. Römerlager in Westfalen 5 (PDF)",
+						"url": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
 					}
 				],
 				"status": "bestätigt",
@@ -128,6 +132,10 @@
 					{
 						"label": "LWL-Pressemitteilung 06.10.2021",
 						"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=53541"
+					},
+					{
+						"label": "Tremmel 2022: Ein neu entdecktes Marschlager der Drususfeldzüge in Haltern am See. Archäologie in Westfalen-Lippe 2021 (2022), S. 88–92",
+						"url": "https://doi.org/10.11588/aiw.2022.101086"
 					}
 				],
 				"status": "bestätigt",
@@ -157,6 +165,10 @@
 					{
 						"label": "LWL-Pressemitteilung Vortrag Annaberg 2024",
 						"url": "https://www.lwl.org/pressemitteilungen/mitteilung.php?urlID=59236"
+					},
+					{
+						"label": "Aßkamp 2010: Haltern, Stadt Haltern am See, Kreis Recklinghausen. Römerlager in Westfalen 5 (PDF)",
+						"url": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
 					}
 				],
 				"status": "bestätigt",
@@ -182,6 +194,10 @@
 					{
 						"label": "Wikipedia: Römerlager Haltern",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Haltern"
+					},
+					{
+						"label": "Aßkamp 2010: Haltern, Stadt Haltern am See, Kreis Recklinghausen. Römerlager in Westfalen 5 (PDF)",
+						"url": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
 					}
 				],
 				"status": "bestätigt",
@@ -205,8 +221,12 @@
 				"description": "Marschlager östlich des Hauptlagers. Punkt über den Straßennamen ermittelt.",
 				"sources": [
 					{
-						"label": "Tremmel, Prospektionen im Marschlager „In der Borg“, AiW 2011",
-						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25120/18826"
+						"label": "Tremmel 2012: Prospektionen im augusteischen Marschlager Haltern „In der Borg“ (Ostlager). Archäologie in Westfalen-Lippe 2011 (2012), S. 89–92",
+						"url": "https://doi.org/10.11588/aiw.0.0.25120"
+					},
+					{
+						"label": "Aßkamp 2010: Haltern, Stadt Haltern am See, Kreis Recklinghausen. Römerlager in Westfalen 5 (PDF)",
+						"url": "https://www.altertumskommission.lwl.org/media/filer_public/58/ba/58ba8af1-240a-4328-bf57-ea5b3f83e7ac/rw_5_2011.pdf"
 					}
 				],
 				"status": "bestätigt",
@@ -234,8 +254,8 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Olfen"
 					},
 					{
-						"label": "Tremmel, Olfen-Sülsen, AiW 2011 (Heft)",
-						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/issue/view/2515"
+						"label": "Tremmel 2012: Olfen-Sülsen. Ein neues Römerlager aus der Zeit der Drususfeldzüge. Archäologie in Westfalen-Lippe 2011 (2012), S. 86–89",
+						"url": "https://doi.org/10.11588/aiw.0.0.25119"
 					}
 				],
 				"status": "bestätigt",
@@ -263,7 +283,7 @@
 						"url": "https://de.wikipedia.org/wiki/Uferkastell_Beckinghausen"
 					},
 					{
-						"label": "Römerlager in Westfalen, Heft 3 (PDF)",
+						"label": "Kühlborn 2011: Oberaden, Stadt Bergkamen, Kreis Unna, und Beckinghausen, Stadt Lünen, Kreis Unna. Römerlager in Westfalen 3, 2. Aufl. (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/c3/3f/c33f9e97-a2b3-4908-8f84-c485c50b030a/rw_32_2011.pdf"
 					}
 				],
@@ -292,8 +312,12 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Oberaden"
 					},
 					{
-						"label": "Römerlager in Westfalen, Heft 3 (PDF)",
+						"label": "Kühlborn 2011: Oberaden, Stadt Bergkamen, Kreis Unna, und Beckinghausen, Stadt Lünen, Kreis Unna. Römerlager in Westfalen 3, 2. Aufl. (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/c3/3f/c33f9e97-a2b3-4908-8f84-c485c50b030a/rw_32_2011.pdf"
+					},
+					{
+						"label": "Tremmel 2011: Ausgrabungen am Nordtor des Römerlagers Bergkamen-Oberaden. Archäologie in Westfalen-Lippe 2010 (2011), S. 76–78",
+						"url": "https://doi.org/10.11588/aiw.0.0.25925"
 					}
 				],
 				"status": "bestätigt",
@@ -321,8 +345,12 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Kneblinghausen"
 					},
 					{
-						"label": "Römerlager in Westfalen, Heft 1 (PDF)",
+						"label": "Rudnick 2014: Kneblinghausen, Stadt Rüthen, Kreis Soest. Römerlager in Westfalen 1, 2. Aufl. (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/f1/1a/f11a8f4c-7152-44fd-8989-20395113ad02/rw_1_2014.pdf"
+					},
+					{
+						"label": "Coolen/Schmidt 2022: Von abgefahren zu abgehoben. Geomagnetik am „Römerlager“ Rüthen-Kneblinghausen. Archäologie in Westfalen-Lippe 2020 (2021), S. 255–258",
+						"url": "https://doi.org/10.11588/aiw.2021.91427"
 					}
 				],
 				"status": "bestätigt",
@@ -350,7 +378,7 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Anreppen"
 					},
 					{
-						"label": "Römerlager in Westfalen, Heft 4 (PDF)",
+						"label": "Kühlborn 2014: Anreppen, Stadt Delbrück, Kreis Paderborn. Römerlager in Westfalen 4, 2. Aufl. (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/cd/40/cd4074b6-60d5-4bf2-a90a-9d1b6812c556/rw_4_2014.pdf"
 					}
 				],
@@ -381,6 +409,11 @@
 					{
 						"label": "LWL-Pressemitteilung Paderborn",
 						"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=56091"
+					},
+					{
+						"label": "Süße 2023: Von den Römern bis zu den Preußen. Ein multiepochaler Fundplatz in Paderborn. Archäologie in Westfalen-Lippe 2022 (2023), S. 223–227",
+						"url": "https://doi.org/10.11588/aiw.2023.108358",
+						"note": "Grabungsbericht des Ausgräbers"
 					}
 				],
 				"status": "Verdacht mit guten Indizien",
@@ -408,8 +441,8 @@
 						"url": "https://de.wikipedia.org/wiki/Marschlager_Bielefeld-Sennestadt"
 					},
 					{
-						"label": "Tremmel/Schubert, AiW 2018",
-						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/view/76852"
+						"label": "Tremmel/Schubert 2019: Ein neu entdecktes augusteisches Marschlager in Bielefeld-Sennestadt. Archäologie in Westfalen-Lippe 2018 (2019), S. 86–89",
+						"url": "https://doi.org/10.11588/aiw.2019.0.76852"
 					},
 					{
 						"label": "LWL-Pressemitteilung 08.05.2019",
@@ -441,7 +474,7 @@
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6mische_Kreisgrabenanlage_auf_der_Sparrenberger_Egge"
 					},
 					{
-						"label": "Römerlager in Westfalen, Heft 6 (PDF)",
+						"label": "Bérenger 2011: Wachtposten auf der Sparrenberger Egge, kreisfreie Stadt Bielefeld. Römerlager in Westfalen 6 (PDF)",
 						"url": "https://www.altertumskommission.lwl.org/media/filer_public/be/5e/be5e344d-ce46-49a1-a09a-6dff26620a7e/rw_6_2011.pdf"
 					}
 				],
@@ -470,12 +503,16 @@
 						"url": "https://de.wikipedia.org/wiki/Marschlager_Porta_Westfalica"
 					},
 					{
-						"label": "Tremmel, Marschlager Barkhausen, AiW 2010",
-						"url": "https://journals.ub.uni-heidelberg.de/index.php/aiw/article/download/25926/19643"
+						"label": "Tremmel 2011: Augusteische Marschlager in Porta Westfalica-Barkhausen „Auf der Lake“. Archäologie in Westfalen-Lippe 2010 (2011), S. 79–81",
+						"url": "https://doi.org/10.11588/aiw.0.0.25926"
 					},
 					{
 						"label": "Tremmel 2012: Die Römer an der Weser. Das Marschlager von Porta Westfalica-Barkhausen, Mitt. Mindener Geschichtsverein 84, S. 25–33",
 						"url": "https://nwbib.de/HT018555379"
+					},
+					{
+						"label": "Tremmel 2010: Augusteische Marschlager in Porta Westfalica-Barkhausen. Archäologie in Westfalen-Lippe 2009 (2010), S. 45–47",
+						"url": "https://doi.org/10.11588/aiw.0.0.25034"
 					}
 				],
 				"status": "bestätigt",
@@ -503,7 +540,7 @@
 						"url": "https://de.wikipedia.org/wiki/Fundregion_Kalkriese"
 					},
 					{
-						"label": "Härtling u. a. 2025, Geoarchaeology",
+						"label": "Härtling u. a. 2025: Germanic Rampart or Roman Encampment? New Geoarchaeological Evidence at the Roman Conflict Site at Kalkriese (NW-Germany). Geoarchaeology 40, e22031",
 						"url": "https://doi.org/10.1002/gea.22031"
 					}
 				],
