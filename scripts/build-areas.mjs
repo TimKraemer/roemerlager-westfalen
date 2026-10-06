@@ -1,7 +1,8 @@
 /**
  * Baut public/precomputed/gebiete.json für die globale Suche: Höhenzüge
- * und Gebirge (Wiehengebirge, Wesergebirge, Teutoburger Wald) sowie
- * Bundesländer, Regierungsbezirke, Kreise und Gemeinden.
+ * und Gebirge (Wiehengebirge, Wesergebirge), Regionen und Landschaften
+ * (Teutoburger Wald, Senne) sowie Bundesländer, Regierungsbezirke, Kreise
+ * und Gemeinden.
  *
  * Die Kacheln von tiles.erleben.app enthalten dafür keine Namen (Grenzen
  * nur als namenlose Linien, keine Höhenzüge), deshalb kommen diese Daten
@@ -13,7 +14,8 @@
  *
  *   bun scripts/build-areas.mjs
  */
-import { mkdirSync, writeFileSync } from "node:fs"
+import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
+import { tmpdir } from "node:os"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 
@@ -26,7 +28,19 @@ const SERVERS = [
 ]
 const UA = "roemerlager-westfalen/0.1 (build script, scripts/build-areas.mjs)"
 
+// Rohdaten zwischenspeichern, Overpass braucht oft viele Minuten
+const CACHE = join(tmpdir(), "roemerlager-gebiete")
+mkdirSync(CACHE, { recursive: true })
+
 async function overpass(query) {
+	const file = join(CACHE, `${Bun.hash(query).toString(36)}.json`)
+	if (existsSync(file)) return JSON.parse(readFileSync(file, "utf8"))
+	const data = await fetchOverpass(query)
+	writeFileSync(file, JSON.stringify(data))
+	return data
+}
+
+async function fetchOverpass(query) {
 	const body = new URLSearchParams({ data: query })
 	for (let attempt = 0; attempt < 12; attempt++) {
 		const url = SERVERS[attempt % SERVERS.length]
@@ -53,8 +67,29 @@ const bb = BBOX.join(",")
 const M_LAT = 110_570
 const mLon = (lat) => 111_320 * Math.cos((lat * Math.PI) / 180)
 
-// Douglas-Peucker in Metern
+const meters = ([x0, y0], [x1, y1]) =>
+	Math.hypot((x1 - x0) * mLon((y0 + y1) / 2), (y1 - y0) * M_LAT)
+
+// Douglas-Peucker in Metern. Geschlossene Linien (Grenzen) erst am
+// entferntesten Punkt teilen, sonst fällt alles auf zwei Punkte zusammen.
 function simplify(points, tol) {
+	if (points.length < 3) return points
+	if (meters(points[0], points.at(-1)) < tol) {
+		let far = 1
+		for (let i = 1; i < points.length; i++) {
+			if (meters(points[0], points[i]) > meters(points[0], points[far])) far = i
+		}
+		if (far < points.length - 1) {
+			return [
+				...simplifyOpen(points.slice(0, far + 1), tol).slice(0, -1),
+				...simplifyOpen(points.slice(far), tol),
+			]
+		}
+	}
+	return simplifyOpen(points, tol)
+}
+
+function simplifyOpen(points, tol) {
 	if (points.length < 3) return points
 	const [x0, y0] = points[0]
 	const [x1, y1] = points.at(-1)
@@ -75,8 +110,8 @@ function simplify(points, tol) {
 	}
 	if (max <= tol) return [points[0], points.at(-1)]
 	return [
-		...simplify(points.slice(0, idx + 1), tol).slice(0, -1),
-		...simplify(points.slice(idx), tol),
+		...simplifyOpen(points.slice(0, idx + 1), tol).slice(0, -1),
+		...simplifyOpen(points.slice(idx), tol),
 	]
 }
 
@@ -131,10 +166,16 @@ const ADMIN = {
 	8: "Gemeinde",
 }
 // Toleranz der Vereinfachung je Art in Metern
-const TOL = { 4: 800, 5: 500, 6: 250, ridge: 80 }
+const TOL = { 4: 800, 5: 500, 6: 250, ridge: 80, region: 300 }
 
 function typeOf(t) {
 	if (t.natural === "mountain_range") return "Gebirge"
+	if (t.boundary === "region") {
+		const r = t["region:type"] ?? ""
+		if (/mountain/.test(r)) return "Gebirge"
+		if (/natural|landscape/.test(r)) return "Landschaft"
+		return "Region"
+	}
 	if (t.natural === "ridge") return "Höhenzug"
 	const lvl = Number(t.admin_level)
 	if (lvl === 6 && /kreisfrei|city/i.test(t["de:place"] ?? t.place ?? ""))
@@ -158,6 +199,11 @@ for (const level of [4, 5, 6]) {
 	)
 	admin.elements.push(...res.elements)
 }
+// Teutoburger Wald, Weserbergland, Senne: in OSM als Region eingetragen
+console.log("Regionen und Landschaften …")
+const regions = await overpass(
+	`[out:json][timeout:300];relation["boundary"="region"]["name"](${bb});out geom(${bb});`,
+)
 console.log("Gemeinden …")
 const towns = await overpass(
 	`[out:json][timeout:300];relation["boundary"="administrative"]["admin_level"="8"](${bb});out tags bb;`,
@@ -193,6 +239,9 @@ const add = (el, kind, lines) => {
 for (const el of ridges.elements) {
 	if (!el.bounds) continue
 	add(el, "ridge", linesOf(el, TOL.ridge))
+}
+for (const el of regions.elements) {
+	if (el.bounds) add(el, "region", linesOf(el, TOL.region))
 }
 for (const el of admin.elements) {
 	add(el, "admin", linesOf(el, TOL[el.tags.admin_level]))
