@@ -578,6 +578,10 @@
 					{
 						"label": "Härtling u. a. 2025: Germanic Rampart or Roman Encampment? New Geoarchaeological Evidence at the Roman Conflict Site at Kalkriese (NW-Germany). Geoarchaeology 40, e22031",
 						"url": "https://doi.org/10.1002/gea.22031"
+					},
+					{
+						"label": "Wilbers-Rost u. a. 2007: Kalkriese 3. Interdisziplinäre Untersuchungen auf dem Oberesch in Kalkriese. Römisch-Germanische Forschungen 65",
+						"url": "https://d-nb.info/985580305"
 					}
 				],
 				"status": "bestätigt",
@@ -605,6 +609,14 @@
 					{
 						"label": "Wikipedia: Marschlager von Wilkenburg",
 						"url": "https://de.wikipedia.org/wiki/Marschlager_von_Wilkenburg"
+					},
+					{
+						"label": "Haßmann/Ortisi/Wulf 2016: Römer vor Hannover. Das augusteische Marschlager von Wilkenburg. Berichte zur Denkmalpflege in Niedersachsen 36, Heft 4, S. 190–193",
+						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=874953308"
+					},
+					{
+						"label": "Berger/Wulf 2021: Zu den Funden römischer Münzen und keltischer Kleinerze aus dem augusteischen Marschlager Wilkenburg, Stadt Hemmingen. Nachrichten aus Niedersachsens Urgeschichte 90, S. 277–298",
+						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1794002367"
 					}
 				],
 				"status": "bestätigt",
@@ -630,6 +642,18 @@
 					{
 						"label": "Wikipedia: Römerlager Hedemünden",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6merlager_Hedem%C3%BCnden"
+					},
+					{
+						"label": "Grote 2012: Römerlager Hedemünden. Der augusteische Stützpunkt, seine Außenanlagen, seine Funde und Befunde. Veröffentlichungen der Archäologischen Sammlungen des Landesmuseums Hannover 53",
+						"url": "https://d-nb.info/1025768752"
+					},
+					{
+						"label": "Grote 2006: Das Römerlager im Werratal bei Hedemünden (Ldkr. Göttingen). Germania 84, S. 27–59",
+						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=518950670"
+					},
+					{
+						"label": "Grote 2007: Die Römerlager Hedemünden (Werra). Göttinger Jahrbuch 55, S. 5–17",
+						"url": "https://doi.org/10.62013/55-001"
 					}
 				],
 				"status": "bestätigt",
@@ -650,14 +674,26 @@
 				"size_ha": null,
 				"dating": "augusteisch/tiberisch",
 				"place": "Jemgum, Landkreis Leer",
-				"description": "Römische Funde an der Ems, möglicherweise ein Flotten- oder Versorgungsplatz. Ein Lager ist nicht belegt.",
+				"description": "Fundplatz an der Ems mit römischen Funden, früher als Flotten- oder Versorgungsplatz gedeutet. Die neuere Forschung spricht vom „vermeintlich römischen Landeplatz“ (Lau/Rau 2025), Befunde des 1. Jh. n. Chr. sind nicht zweifelsfrei nachgewiesen.",
 				"sources": [
 					{
 						"label": "Wikipedia: Fundplatz Bentumersiel",
 						"url": "https://de.wikipedia.org/wiki/Fundplatz_Bentumersiel"
+					},
+					{
+						"label": "Strahl 2011: Neue Forschungen zum germanischen „Stapelplatz“ von Bentumersiel an der unteren Ems. Siedlungs- und Küstenforschung im südlichen Nordseegebiet 34, S. 293–306",
+						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1044562315"
+					},
+					{
+						"label": "Siegmüller 2025: Bentumersiel an der Ems. Zusammenfassende Einordnung einer mehrphasigen Fundstelle im Landkreis Leer. Siedlungs- und Küstenforschung im südlichen Nordseegebiet 48, S. 87–164",
+						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1947834282"
+					},
+					{
+						"label": "Lau/Rau 2025: Zu einigen Fundkategorien aus dem vermeintlich römischen Landeplatz von Bentumersiel, Ldkr. Leer. Siedlungs- und Küstenforschung im südlichen Nordseegebiet 48, S. 165–272",
+						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1947836617"
 					}
 				],
-				"status": "bestätigt",
+				"status": "umstritten",
 				"inModel": false
 			},
 			"geometry": {
@@ -870,6 +906,10 @@
 					{
 						"label": "Wikipedia: Schatzfund von Gehrden",
 						"url": "https://de.wikipedia.org/wiki/Schatzfund_von_Gehrden"
+					},
+					{
+						"label": "Lehmann 2019: Der Schatzfund von Gehrden und das Römerlager Wilkenburg. In: Schatzfunde, Fundmünzen. Hannoversche Numismatische Beiträge 3, S. 239–252",
+						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1691329002"
 					}
 				],
 				"waypoint": true
@@ -956,6 +996,10 @@
 					{
 						"label": "Gesellschaft zur Förderung der Bodendenkmalpflege",
 						"url": "https://www.gefbdml.de/roemische-goldmuenze-bei-costedt-gefunden-ein-spaetantiker-solidus-aus-porta-westfalica/"
+					},
+					{
+						"label": "Gesellschaft zur Förderung der Bodendenkmalpflege im Kreis Minden-Lübbecke 2024: Erneut römische Goldmünze bei Costedt gefunden",
+						"url": "https://www.gefbdml.de/erneut-roemische-goldmuenze-bei-costedt-gefunden-ein-spaetantiker-solidus-aus-porta-westfalica/"
 					}
 				]
 			},
@@ -976,11 +1020,15 @@
 				"size_ha": null,
 				"dating": "16 n. Chr.",
 				"place": "Bückeburg-Evesen, Landkreis Schaumburg",
-				"description": "Schlacht des Germanicus gegen Arminius. Mommsen (1904) und Dobbertin (1983) suchten sie hier am rechten Weserufer. Archäologisch nicht belegt.",
+				"description": "Schlacht des Germanicus gegen Arminius. Mommsen (1885) übernahm in einer Anmerkung die Annahme von Schmidt (Westfälische Zeitschrift 20), die Schlacht sei etwa bei Bückeburg geschlagen worden, ohne sie als gesichert anzusehen. Archäologisch nicht belegt.",
 				"sources": [
 					{
 						"label": "Wikipedia: Idistaviso",
 						"url": "https://de.wikipedia.org/wiki/Idistaviso"
+					},
+					{
+						"label": "Mommsen 1885: Römische Geschichte 5, Achtes Buch, Kap. 1, Anm. 22 (Text bei zeno.org)",
+						"url": "http://www.zeno.org/Geschichte/M/Mommsen,+Theodor/R%C3%B6mische+Geschichte/F%C3%BCnfter+Band/Achtes+Buch.+L%C3%A4nder+und+Leute+von+Caesar+bis+Diocletian/Fu%C3%9Fnoten"
 					}
 				]
 			},
@@ -1001,11 +1049,19 @@
 				"size_ha": null,
 				"dating": "16 n. Chr.",
 				"place": "Leese, Landkreis Nienburg",
-				"description": "Schuchhardt lokalisierte den Wall 1926 hier. Der Wall bei Leese gilt heute als mittelalterlich.",
+				"description": "Bersu, Schuchhardt u. a. lokalisierten den Wall 1926 hier. Freese (1997) datiert den nördlichen Wall bei Leese in die frühe Neuzeit (wohl 1673), römische Funde gibt es dort nicht.",
 				"sources": [
 					{
 						"label": "Wikipedia: Angrivarierwall",
 						"url": "https://de.wikipedia.org/wiki/Angrivarierwall"
+					},
+					{
+						"label": "Bersu/Heimbs/Lange/Schuchhardt 1926: Der Angrivarisch-Cheruskische Grenzwall und die beiden Schlachten des Jahres 16 nach Chr. zwischen Arminius und Germanicus. Prähistorische Zeitschrift 17, S. 100–131",
+						"url": "https://doi.org/10.1515/prhz.1926.17.1.100"
+					},
+					{
+						"label": "Freese 1997: Neues vom Angrivarier-Wall. Berichte zur Denkmalpflege in Niedersachsen 17, Heft 3, S. 138–141",
+						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=473914557"
 					}
 				]
 			},
@@ -1026,11 +1082,23 @@
 				"size_ha": null,
 				"dating": "um 46 v. Chr. (Dendrochronologie)",
 				"place": "Diepholz",
-				"description": "Germanischer Bohlenweg, 520 m ausgegraben. Älter als die Feldzüge, zeigt aber die Bauweise der von Tacitus erwähnten Bohlenwege (pontes longi).",
+				"description": "Germanischer Bohlenweg von rund 4 km Länge, auf etwa 550 m untersucht (NLD 2021). Älter als die Feldzüge, zeigt aber die Bauweise der von Tacitus erwähnten Bohlenwege (pontes longi).",
 				"sources": [
 					{
 						"label": "Wikipedia: Moorweg im Aschener Moor Pr VI",
 						"url": "https://de.wikipedia.org/wiki/Moorweg_im_Aschener_Moor_Pr_VI"
+					},
+					{
+						"label": "Fansa/Schneider 1997: Der eisenzeitliche Bohlenweg VI (Pr) im Großen Moor am Dümmer. Archäologische Mitteilungen aus Nordwestdeutschland 20, S. 41–75",
+						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=47391395X"
+					},
+					{
+						"label": "Heumüller/Abbentheren 2023: 2000 Jahre altes Großbauprojekt. Neue Ausgrabungen am Bohlenweg Pr VI in der Diepholzer Moorniederung. Oldenburger Münsterland 72, S. 142–155",
+						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=1832805018"
+					},
+					{
+						"label": "Niedersächsisches Landesamt für Denkmalpflege 2021: Eröffnung des Infopfades zum Bohlenweg Pr VI",
+						"url": "https://denkmalpflege.niedersachsen.de/aktuelles/nachrichten/eroffnung-des-infopfades-zum-bohlenweg-pr-vi-im-naturschutzgebiet-aschener-heeder-moor-204628.html"
 					}
 				]
 			},
@@ -1056,6 +1124,10 @@
 					{
 						"label": "Wikipedia: Kring (Kaufunger Wald)",
 						"url": "https://de.wikipedia.org/wiki/Kring_(Kaufunger_Wald)"
+					},
+					{
+						"label": "Grote 2012: Das augusteische Kleinlager Kring bei Oberode. In: Römerlager Hedemünden. Veröffentlichungen der Archäologischen Sammlungen des Landesmuseums Hannover 53, S. 208–217",
+						"url": "https://d-nb.info/1025768752"
 					}
 				]
 			},
@@ -1209,6 +1281,14 @@
 					{
 						"label": "Wikipedia: Harzhornereignis",
 						"url": "https://de.wikipedia.org/wiki/Harzhornereignis"
+					},
+					{
+						"label": "Pöppelmann u. a. (Hrsg.) 2013: Roms vergessener Feldzug. Die Schlacht am Harzhorn. Veröffentlichungen des Braunschweigischen Landesmuseums 115",
+						"url": "https://d-nb.info/1034377809"
+					},
+					{
+						"label": "Geschwinde/Meyer/Lönne/Schatte 2025: Harzhorn. Die Archäologie eines germanisch-römischen Kampfplatzes des 3. Jahrhunderts n. Chr. Römisch-Germanische Forschungen 77",
+						"url": "https://d-nb.info/1418259640"
 					}
 				]
 			},
