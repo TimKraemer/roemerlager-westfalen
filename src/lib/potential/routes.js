@@ -1,5 +1,7 @@
 import { haversine } from "../geo"
+import { Heap } from "./heap"
 import { cellAt, cellCenter } from "./model"
+import { riverPath } from "./river-path"
 
 /**
  * Mögliche Marschrouten zwischen bekannten Lagern als Weg geringster
@@ -202,52 +204,6 @@ export function costSurface(
 		cost[i] = c
 	}
 	return cost
-}
-
-class Heap {
-	constructor() {
-		this.ids = []
-		this.keys = []
-	}
-	get size() {
-		return this.ids.length
-	}
-	push(id, key) {
-		const { ids, keys } = this
-		let i = ids.length
-		ids.push(id)
-		keys.push(key)
-		while (i > 0) {
-			const p = (i - 1) >> 1
-			if (keys[p] <= key) break
-			ids[i] = ids[p]
-			keys[i] = keys[p]
-			i = p
-		}
-		ids[i] = id
-		keys[i] = key
-	}
-	pop() {
-		const { ids, keys } = this
-		const top = ids[0]
-		const lastId = ids.pop()
-		const lastKey = keys.pop()
-		if (ids.length) {
-			let i = 0
-			while (true) {
-				let c = 2 * i + 1
-				if (c >= ids.length) break
-				if (c + 1 < ids.length && keys[c + 1] < keys[c]) c++
-				if (keys[c] >= lastKey) break
-				ids[i] = ids[c]
-				keys[i] = keys[c]
-				i = c
-			}
-			ids[i] = lastId
-			keys[i] = lastKey
-		}
-		return top
-	}
 }
 
 // dx, dy, Länge, Kante (EDGE_DIRS), Kante gehört zur Nachbarzelle
@@ -506,7 +462,7 @@ export function computeRoutes(
 	camps,
 	dayMarch,
 	p = ROUTE_PARAMS,
-	{ distRiver, edges = null, waypoints = [] } = {},
+	{ distRiver, edges = null, waypoints = [], rivers = null } = {},
 ) {
 	const nodes = campNodes(grid, camps, p.mergeRadius)
 	const wps = waypoints
@@ -580,36 +536,53 @@ export function computeRoutes(
 			})
 		}
 	}
-	if (distRiver) routes.push(...shipRoutes(grid, nodes, distRiver, p))
+	if (distRiver || rivers)
+		routes.push(...shipRoutes(grid, nodes, distRiver, rivers, p))
 	return routes
 }
 
 /**
- * Schiffsstrecken zwischen aufeinanderfolgenden Lagern der Kette: Weg
- * entlang des Flusses (Zellen am großen Fluss kosten wenig, Land viel).
+ * Schiffsstrecken zwischen aufeinanderfolgenden Lagern der Kette. Mit
+ * rivers (riverGraph) entlang der gezeichneten Flussläufe, sonst als Weg
+ * über das Raster, auf dem Zellen am großen Fluss wenig kosten, Land viel.
  */
-function shipRoutes(grid, nodes, distRiver, p) {
+function shipRoutes(grid, nodes, distRiver, rivers, p) {
 	const chain = nodes
 		.map((n, i) => ({ n, i }))
 		.filter(({ n }) => n.ship != null)
 		.sort((a, b) => a.n.ship - b.n.ship)
-	const cost = new Float32Array(grid.cols * grid.rows)
-	for (let i = 0; i < cost.length; i++) {
-		cost[i] = distRiver[i] < grid.cellMeters * 1.5 ? 1 : 40
-	}
+	let cost = null
 	const routes = []
 	for (let k = 1; k < chain.length; k++) {
 		const a = chain[k - 1].n
 		const b = chain[k].n
-		const { prev } = dijkstra(grid, cost, a.cell, [b.cell])
-		const cells = tracePath(prev, a.cell, b.cell)
-		if (!cells) continue
-		let length = 0
-		for (let c = 1; c < cells.length; c++) {
-			const dx = (cells[c] % grid.cols) - (cells[c - 1] % grid.cols)
-			const dy =
-				Math.floor(cells[c] / grid.cols) - Math.floor(cells[c - 1] / grid.cols)
-			length += Math.hypot(dx, dy) * grid.cellMeters
+		let cells
+		let coords
+		let length
+		const path = rivers && riverPath(rivers, a, b)
+		if (path) {
+			coords = path.coords
+			length = path.length
+			cells = lineCells(grid, coords)
+		} else {
+			if (!distRiver) continue
+			if (!cost) {
+				cost = new Float32Array(grid.cols * grid.rows)
+				for (let i = 0; i < cost.length; i++) {
+					cost[i] = distRiver[i] < grid.cellMeters * 1.5 ? 1 : 40
+				}
+			}
+			const { prev } = dijkstra(grid, cost, a.cell, [b.cell])
+			cells = tracePath(prev, a.cell, b.cell)
+			if (!cells) continue
+			length = 0
+			for (let c = 1; c < cells.length; c++) {
+				const dx = (cells[c] % grid.cols) - (cells[c - 1] % grid.cols)
+				const dy =
+					Math.floor(cells[c] / grid.cols) -
+					Math.floor(cells[c - 1] / grid.cols)
+				length += Math.hypot(dx, dy) * grid.cellMeters
+			}
 		}
 		const note = b.ids.map((id) => p.shipNotes?.[id]).find(Boolean)
 		routes.push({
@@ -618,6 +591,7 @@ function shipRoutes(grid, nodes, distRiver, p) {
 			from: a.names.join(", "),
 			to: b.names.join(", "),
 			cells,
+			coords,
 			along: [0, length],
 			inside: length,
 			length,
@@ -626,6 +600,25 @@ function shipRoutes(grid, nodes, distRiver, p) {
 		})
 	}
 	return routes
+}
+
+/** Rasterzellen unter einer Linie [[lon, lat], …], ohne Wiederholungen. */
+function lineCells(grid, coords) {
+	const cells = []
+	const push = (lon, lat) => {
+		const c = cellAt(grid, lon, lat)
+		if (c >= 0 && c !== cells[cells.length - 1]) cells.push(c)
+	}
+	for (let k = 1; k < coords.length; k++) {
+		const [x0, y0] = coords[k - 1]
+		const [x1, y1] = coords[k]
+		const n = Math.ceil(haversine(x0, y0, x1, y1) / (grid.cellMeters / 2))
+		for (let j = 0; j <= n; j++) {
+			const t = n ? j / n : 0
+			push(x0 + (x1 - x0) * t, y0 + (y1 - y0) * t)
+		}
+	}
+	return cells
 }
 
 /** Etappenpunkte und die beste Potenzialzelle in ihrem Umkreis. */
@@ -699,14 +692,12 @@ export function routesGeoJSON(grid, routes) {
 			},
 			geometry: {
 				type: "LineString",
-				coordinates: route.cells.map((c) => {
-					const [lon, lat] = cellCenter(
-						grid,
-						c % grid.cols,
-						Math.floor(c / grid.cols),
+				coordinates: (
+					route.coords ??
+					route.cells.map((c) =>
+						cellCenter(grid, c % grid.cols, Math.floor(c / grid.cols)),
 					)
-					return [Number(lon.toFixed(5)), Number(lat.toFixed(5))]
-				}),
+				).map(([lon, lat]) => [Number(lon.toFixed(5)), Number(lat.toFixed(5))]),
 			},
 		})),
 	}

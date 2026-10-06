@@ -144,6 +144,11 @@ export function withoutOldRivers(features) {
 	})
 }
 
+/** Alle alten Läufe als Linien [[lon, lat], …], etwa für Schiffswege. */
+export function oldRiverCourses() {
+	return Object.values(rivers).map(coordsOf)
+}
+
 /** Alte Läufe als Linien für die Gewässer-Darstellung der Analyse. */
 export function oldRiverFeatures() {
 	return Object.entries(rivers).map(([name, v]) => ({

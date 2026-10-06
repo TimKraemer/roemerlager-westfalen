@@ -66,7 +66,9 @@ gesucht. Die Gehzeit je Schritt folgt der Wanderfunktion von Tobler (1993)
 aus dem Höhenprofil. Steigungen kosten für den Tross zusätzlich (Wagenfunktion
 nach Herzog), Flussquerungen, nasse Niederungen und Moore kosten Aufschlag,
 im Wiehengebirge wird feiner gerechnet, damit schmale Pässe den Weg bestimmen. Auf der Lippe gilt die Strecke von Vetera bis Beckinghausen
-als Schiffsweg. Das überregionale Netz (`westfalen-netz`) ist vorberechnet.
+als Schiffsweg (weiter bis Anreppen vermutet). Er folgt den gezeichneten alten
+Flussläufen (`src/data/fluesse.json`, ab Vetera erst dem Rhein), vom Lager
+geht es auf kürzestem Weg zum Ufer (`src/lib/potential/river-path.js`). Das überregionale Netz (`westfalen-netz`) ist vorberechnet.
 Code: `src/lib/potential/routes.js`, Netz-Einstellungen:
 `src/lib/regions.js`.
 

@@ -21,9 +21,11 @@ import {
 import {
 	burnOldRivers,
 	OLD_RIVER_NAMES,
+	oldRiverCourses,
 	oldRiverLines,
 	rasterizeLines,
 } from "./old-rivers"
+import { riverGraph } from "./river-path"
 import {
 	computeRoutes,
 	costSurface,
@@ -41,6 +43,9 @@ import {
  * prepare(): Höhenmodell laden, Gelände und Gewässernetz vorbereiten.
  * evaluate(): Ring, TPI, Gewässer, Routen und Gewichtung nach Bedarf neu.
  */
+
+// Netz der alten Flussläufe für Schiffswege, einmal je Worker
+let riverNet = null
 
 // Rand um den Ausschnitt, damit Einzugsgebiete nicht an der Kante enden
 const DRAINAGE_BUFFER_M = 6000
@@ -473,10 +478,13 @@ export async function evaluate(
 			p,
 		)
 		const edges = edgeHours(grid, state.lanes, state.crossings, p)
+		// Schiffswege folgen den alten Flussläufen, auch ohne params.oldRivers
+		riverNet ??= riverGraph(oldRiverCourses())
 		const routes = computeRoutes(grid, cost, routeCamps, params.ringMean, p, {
 			distRiver,
 			edges,
 			waypoints,
+			rivers: riverNet,
 		})
 		const mask = new Uint8Array(grid.cols * grid.rows)
 		for (const route of routes) for (const c of route.cells) mask[c] = 1

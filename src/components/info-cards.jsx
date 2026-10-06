@@ -263,7 +263,8 @@ function RouteText({ route }) {
 				Schiffsstrecke auf der Lippe von {route.from} nach {route.to},{" "}
 				{route.km} km flussaufwärts. Die Lager an der Lippe wurden über den
 				Fluss versorgt, Truppen und Nachschub fuhren mit dem Schiff. Der Weg
-				folgt dem natürlichen Flusslauf aus dem Geländemodell.
+				folgt dem Flusslauf der Uraufnahme um 1840, bei Haltern dem
+				römerzeitlichen Lauf.
 				{route.note && ` ${route.note}`}
 			</Typography>
 		)
