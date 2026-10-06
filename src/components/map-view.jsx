@@ -334,6 +334,59 @@ function addAnalysisLayers(map) {
 	})
 }
 
+/** Markierung für den gewählten Suchtreffer, über allem anderen. */
+function addSearchLayers(map) {
+	map.addSource("search-hit", { type: "geojson", data: EMPTY })
+	const lines = ["!=", ["geometry-type"], "Point"]
+	const points = ["==", ["geometry-type"], "Point"]
+	map.addLayer({
+		id: "search-hit-glow",
+		type: "line",
+		source: "search-hit",
+		filter: lines,
+		layout: { "line-cap": "round", "line-join": "round" },
+		paint: {
+			"line-color": "#ffd600",
+			"line-opacity": 0.55,
+			"line-width": ["interpolate", ["linear"], ["zoom"], 6, 8, 14, 16],
+		},
+	})
+	map.addLayer({
+		id: "search-hit-line",
+		type: "line",
+		source: "search-hit",
+		filter: lines,
+		layout: { "line-cap": "round", "line-join": "round" },
+		paint: { "line-color": "#e65100", "line-width": 2.5 },
+	})
+	map.addLayer({
+		id: "search-hit-point",
+		type: "circle",
+		source: "search-hit",
+		filter: points,
+		paint: {
+			"circle-radius": 11,
+			"circle-color": "rgba(255,214,0,0.35)",
+			"circle-stroke-color": "#e65100",
+			"circle-stroke-width": 3,
+		},
+	})
+	map.addLayer({
+		id: "search-hit-label",
+		type: "symbol",
+		source: "search-hit",
+		filter: points,
+		layout: {
+			"text-field": ["get", "label"],
+			"text-font": FONT,
+			"text-size": 13,
+			"text-offset": [0, 1.4],
+			"text-anchor": "top",
+		},
+		paint: { "text-color": "#bf360c", ...HALO },
+	})
+}
+
 /** Eigene Karte als Quelle und Layer, unter der Potenzialkarte. */
 function addCustomLayer(map, id, l) {
 	if (l.kind === "raster") {
@@ -508,6 +561,7 @@ export default function MapView({ onMapReady }) {
 	const routes = network?.routes ?? localRoutes
 	const selectedSite = useMapStore((s) => s.selectedSite)
 	const selectedText = useMapStore((s) => s.selectedText)
+	const searchHit = useMapStore((s) => s.searchHit)
 
 	useEffect(() => {
 		maplibregl.setWorkerUrl(
@@ -534,6 +588,7 @@ export default function MapView({ onMapReady }) {
 		map.on("load", () => {
 			addAnalysisLayers(map)
 			addTextLayers(map)
+			addSearchLayers(map)
 			setMap(map)
 			onMapReady?.(map)
 		})
@@ -797,6 +852,14 @@ export default function MapView({ onMapReady }) {
 		if (!alive(map)) return
 		return showText(map, selectedText ? textGeo(selectedText) : null)
 	}, [selectedText, map])
+
+	useEffect(() => {
+		if (!alive(map)) return
+		const data = searchHit
+			? { type: "FeatureCollection", features: [searchHit] }
+			: EMPTY
+		map.getSource("search-hit").setData(data)
+	}, [searchHit, map])
 
 	useEffect(() => {
 		if (!alive(map) || !selectedSite) return

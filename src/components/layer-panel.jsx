@@ -61,6 +61,7 @@ export default function LayerPanel() {
 				{BASE_LAYERS.map((layer) => (
 					<FormControlLabel
 						key={layer.id}
+						id={`ebene-${layer.id}`}
 						value={layer.id}
 						control={<Radio size="small" />}
 						label={<LayerLabel layer={layer} />}
@@ -79,7 +80,7 @@ export default function LayerPanel() {
 					{OVERLAYS.filter((o) => o.group === group).map((layer) => {
 						const state = overlays[layer.id]
 						return (
-							<Box key={layer.id} sx={{ mb: 1 }}>
+							<Box key={layer.id} id={`ebene-${layer.id}`} sx={{ mb: 1 }}>
 								<FormControlLabel
 									control={
 										<Switch

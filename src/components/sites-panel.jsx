@@ -72,7 +72,7 @@ export function SourcesPanel() {
 			</Typography>
 			<CitationBox />
 			<ValidationPanel />
-			{sources.map((group) => (
+			{sources.map((group, gi) => (
 				<Box key={group.title}>
 					<SectionTitle>{group.title}</SectionTitle>
 					{group.intro && (
@@ -80,8 +80,8 @@ export function SourcesPanel() {
 							{group.intro}
 						</Typography>
 					)}
-					{group.items.map((item) => (
-						<Box key={item.label} sx={{ mb: 1.25 }}>
+					{group.items.map((item, ii) => (
+						<Box key={item.label} id={`quelle-${gi}-${ii}`} sx={{ mb: 1.25 }}>
 							{item.url ? (
 								<Link
 									href={item.url}

@@ -36,6 +36,8 @@ export const useMapStore = create((set) => ({
 	showRoutes: true,
 	// Seitenleiste mit Einstellungen und Quellen, anfangs eingeklappt
 	panelOpen: false,
+	// Offener Reiter der Seitenleiste
+	panelTab: "layers",
 	showRoads: true,
 	// 3D-Rekonstruktion des Lagers Oberaden, sichtbar ab Zoom 15
 	showModel: true,
@@ -68,6 +70,8 @@ export const useMapStore = create((set) => ({
 	inspect: null,
 	// Angeklickte antike Textstelle, deren Orte die Karte zeigt
 	selectedText: null,
+	// Hervorgehobener Suchtreffer (GeoJSON-Feature) auf der Karte
+	searchHit: null,
 
 	setBaseLayer: (baseLayer) => set({ baseLayer }),
 	setOverlay: (id, patch) =>
@@ -80,6 +84,7 @@ export const useMapStore = create((set) => ({
 	setShowWaterways: (showWaterways) => set({ showWaterways }),
 	setShowRoutes: (showRoutes) => set({ showRoutes }),
 	setPanelOpen: (panelOpen) => set({ panelOpen }),
+	setPanelTab: (panelTab) => set({ panelTab }),
 	setShowRoads: (showRoads) => set({ showRoads }),
 	setShowModel: (showModel) => set({ showModel }),
 	setParams: (patch) => set((s) => ({ params: { ...s.params, ...patch } })),
@@ -123,4 +128,5 @@ export const useMapStore = create((set) => ({
 	setSelectedSite: (selectedSite) => set({ selectedSite }),
 	setInspect: (inspect) => set({ inspect }),
 	setSelectedText: (selectedText) => set({ selectedText }),
+	setSearchHit: (searchHit) => set({ searchHit }),
 }))

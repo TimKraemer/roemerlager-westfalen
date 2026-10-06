@@ -136,11 +136,12 @@ export default function EasyPanel({ onFlyTo }) {
 			elevation={4}
 			sx={{
 				position: "absolute",
-				left: 16,
-				top: 16,
+				left: { xs: 12, md: 16 },
+				// Unter der Suchleiste
+				top: { xs: 64, md: 72 },
 				width: 340,
-				maxWidth: "calc(100vw - 32px)",
-				maxHeight: "calc(100dvh - 120px)",
+				maxWidth: { xs: "calc(100vw - 24px)", md: "calc(100vw - 32px)" },
+				maxHeight: "calc(100dvh - 176px)",
 				overflow: "auto",
 				p: 2,
 				zIndex: 2,

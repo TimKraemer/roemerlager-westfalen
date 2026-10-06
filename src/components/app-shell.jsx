@@ -16,13 +16,14 @@ import {
 	useMediaQuery,
 } from "@mui/material"
 import dynamic from "next/dynamic"
-import { useCallback, useRef, useState } from "react"
+import { useCallback, useRef } from "react"
 import { usePotential } from "@/lib/potential/use-potential"
 import { useMapStore } from "@/store/use-map-store"
 import AnalysisPanel from "./analysis-panel"
 import EasyPanel from "./easy-panel"
 import { InfoCards } from "./info-cards"
 import LayerPanel from "./layer-panel"
+import SearchBox from "./search-box"
 import { SitesPanel, SourcesPanel } from "./sites-panel"
 import TextsPanel, { TextChip } from "./texts-panel"
 
@@ -44,7 +45,8 @@ const TABS = [
 
 export default function AppShell() {
 	const mapRef = useRef(null)
-	const [tab, setTab] = useState("layers")
+	const tab = useMapStore((s) => s.panelTab)
+	const setTab = useMapStore((s) => s.setPanelTab)
 	const desktop = useMediaQuery("(min-width: 900px)", { noSsr: true })
 	const open = useMapStore((s) => s.panelOpen)
 	const setOpen = useMapStore((s) => s.setPanelOpen)
@@ -147,6 +149,7 @@ export default function AppShell() {
 			</Drawer>
 			<Box component="main" sx={{ position: "relative", flex: 1, minWidth: 0 }}>
 				<MapView onMapReady={onMapReady} />
+				<SearchBox getMap={getMap} desktop={desktop} />
 				{!open && !textShown && <EasyPanel onFlyTo={flyTo} />}
 				<InfoCards />
 				<TextChip />

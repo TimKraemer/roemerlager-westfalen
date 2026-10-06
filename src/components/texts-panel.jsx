@@ -195,6 +195,7 @@ function TextCard({ t, active, onToggle }) {
 	const activate = geo ? () => onToggle(t.id) : undefined
 	return (
 		<Box
+			id={`text-${t.id}`}
 			onClick={activate}
 			onKeyDown={
 				geo
@@ -428,11 +429,12 @@ export function TextChip() {
 			key={t.id}
 			sx={{
 				position: "absolute",
-				top: 12,
-				left: "50%",
+				// Handy: unter der Suchleiste, sonst mittig im Platz rechts davon
+				top: { xs: 64, md: 16 },
+				left: { xs: "50%", md: "calc(50% + 186px)" },
 				transform: "translateX(-50%)",
 				zIndex: 2,
-				maxWidth: "calc(100% - 120px)",
+				maxWidth: { xs: "calc(100% - 24px)", md: "calc(100% - 420px)" },
 				display: "flex",
 				alignItems: "center",
 				gap: 1,
