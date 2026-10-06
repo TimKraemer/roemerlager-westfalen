@@ -56,7 +56,9 @@ const state = await prepare(NETWORK.bbox, params, {
 	includeNiMoor: true,
 })
 const { grid } = state
-const all = routeCamps()
+// Routenziele ohne Lager bleiben draußen: Der Suchraum Löhne ist aus
+// Sennestadt und Barkhausen abgeleitet und würde die Gegenprobe verfälschen
+const all = routeCamps().filter((c) => !c.target)
 const marching = campsFor("marching")
 
 let seed = 11

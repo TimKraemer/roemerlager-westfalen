@@ -89,6 +89,10 @@ function Legend() {
 				"Möglicher Marschweg zwischen zwei Lagern",
 			)}
 			{item(
+				<Box sx={{ width: 22, borderTop: "3px dashed #ffca28" }} />,
+				"Marschweg nach Kalkriese oder zum vermuteten Lager Löhne",
+			)}
+			{item(
 				<Box sx={{ width: 22, borderTop: "3px dashed #4fc3f7" }} />,
 				"Schiffsstrecke auf der Lippe",
 			)}

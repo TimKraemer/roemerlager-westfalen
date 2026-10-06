@@ -7,12 +7,18 @@
  *    zurückgerechnet. Rechts des Rheins enthält Itiner-e keine Straßen.
  * 2. Hellweg vor dem Santforde (Minden – Bad Nenndorf – Gehrden), als
  *    mittelalterlicher Fernweg die naheliegende Achse zwischen den Lagern
- *    Barkhausen und Wilkenburg. Der Verlauf folgt näherungsweise der
- *    heutigen B 65 (aus den OSM-Kacheln von tiles.erleben.app).
+ *    Barkhausen und Wilkenburg.
+ * 3. Hellweg unter dem Berg (Minden – Lübbecke – Preußisch Oldendorf –
+ *    Bad Essen – Ostercappeln), am Nordrand des Wiehengebirges, als
+ *    möglicher Weg von Barkhausen nach Kalkriese.
+ *
+ * Beide Hellwege folgen näherungsweise der heutigen B 65 (aus den
+ * OSM-Kacheln von tiles.erleben.app).
  *
  *   bun scripts/build-roads.mjs
+ *   bun scripts/build-roads.mjs --ohne-itinere   (Itiner-e aus der alten Datei)
  */
-import { writeFileSync } from "node:fs"
+import { readFileSync, writeFileSync } from "node:fs"
 import { dirname, join } from "node:path"
 import { fileURLToPath } from "node:url"
 import { VectorTile } from "@mapbox/vector-tile"
@@ -76,10 +82,36 @@ async function itinere() {
 	return features
 }
 
-async function hellweg() {
-	console.log("B 65 aus den Vektorkacheln …")
-	const z = 11
-	const [w, s, e, n] = [8.88, 52.24, 9.78, 52.4]
+const HELLWEGE = [
+	{
+		bbox: [8.88, 52.24, 9.78, 52.4],
+		properties: {
+			name: "Hellweg vor dem Santforde (ungefähr entlang der B 65)",
+			certainty: "hypothetisch",
+			source:
+				"Mittelalterlicher Fernweg Minden – Gehrden, als römische Marschroute vermutet",
+			url: "https://de.wikipedia.org/wiki/Schatzfund_von_Gehrden",
+		},
+	},
+	{
+		// Bis Ostercappeln, wo die B 65 Kalkriese am nächsten kommt. Auf
+		// niedrigeren Zoomstufen fehlt der Straßenname auf Teilstücken.
+		bbox: [8.2, 52.24, 8.93, 52.4],
+		zoom: 14,
+		properties: {
+			name: "Hellweg unter dem Berg (ungefähr entlang der B 65)",
+			certainty: "hypothetisch",
+			source:
+				"Mittelalterlicher Fernweg Minden – Osnabrück am Nordrand des Wiehengebirges, als römische Marschroute nach Kalkriese vermutet",
+			url: "https://de.wikipedia.org/wiki/Hellweg_unter_dem_Berg",
+		},
+	},
+]
+
+async function hellweg({ bbox, zoom = 11, properties }) {
+	console.log(`${properties.name}: B 65 aus den Vektorkacheln …`)
+	const z = zoom
+	const [w, s, e, n] = bbox
 	const [x0, y0] = lonLatToPixel(w, n, z).map((v) => Math.floor(v / 256))
 	const [x1, y1] = lonLatToPixel(e, s, z).map((v) => Math.floor(v / 256))
 	const features = []
@@ -117,13 +149,7 @@ async function hellweg() {
 					if (coords.length < 2) continue
 					features.push({
 						type: "Feature",
-						properties: {
-							name: "Hellweg vor dem Santforde (ungefähr entlang der B 65)",
-							certainty: "hypothetisch",
-							source:
-								"Mittelalterlicher Fernweg Minden – Gehrden, als römische Marschroute vermutet",
-							url: "https://de.wikipedia.org/wiki/Schatzfund_von_Gehrden",
-						},
+						properties,
 						geometry: { type: "LineString", coordinates: coords },
 					})
 				}
@@ -133,11 +159,15 @@ async function hellweg() {
 	return features
 }
 
-const features = [...(await itinere()), ...(await hellweg())]
-writeFileSync(
-	join(ROOT, "src", "data", "roemerstrassen.json"),
-	JSON.stringify({ type: "FeatureCollection", features }),
-)
+const OUT = join(ROOT, "src", "data", "roemerstrassen.json")
+const roads = process.argv.includes("--ohne-itinere")
+	? JSON.parse(readFileSync(OUT, "utf8")).features.filter(
+			(f) => f.properties.source === "Itiner-e (CC BY 4.0)",
+		)
+	: await itinere()
+const features = [...roads]
+for (const way of HELLWEGE) features.push(...(await hellweg(way)))
+writeFileSync(OUT, JSON.stringify({ type: "FeatureCollection", features }))
 const count = (c) => features.filter((f) => f.properties.certainty === c).length
 console.log(
 	`${features.length} Abschnitte: ${count("belegt")} belegt, ${count("vermutet")} vermutet, ${count("hypothetisch")} hypothetisch`,

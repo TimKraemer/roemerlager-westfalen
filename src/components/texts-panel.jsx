@@ -37,6 +37,13 @@ const GROUPS = [
 			"Regeln aus römischen Militärhandbüchern, geordnet nach ihrer Entstehung. Sie nennen keine Orte, liefern aber die Kriterien des Modells.",
 		accent: "#5d6b2f",
 	},
+	{
+		id: "forschung",
+		title: "Neuere Thesen",
+		intro:
+			"Was Archäologie und Lokalpresse seit 2009 über Varus an Weser und Wiehengebirge sagen, sinngemäß zusammengefasst und nach Erscheinen geordnet. Vieles davon ist Vermutung.",
+		accent: "#1f5f7a",
+	},
 ]
 
 const citation = (t) => `${t.author}, ${t.work} ${t.passage}`
@@ -47,7 +54,7 @@ function splitYear(year) {
 	return m ? [m[1], m[2]] : [year, ""]
 }
 
-/** Antike Texte über Lager und Feldzüge als Zeitleiste. */
+/** Antike Texte und neuere Thesen über Lager und Feldzüge als Zeitleiste. */
 export default function TextsPanel() {
 	const selected = useMapStore((s) => s.selectedText)
 	const select = useMapStore((s) => s.setSelectedText)
@@ -65,7 +72,8 @@ export default function TextsPanel() {
 		<Box sx={{ pt: 1.5 }}>
 			<Typography variant="body2" color="text.secondary">
 				Was römische Autoren über Lager, Wege und Feldzüge schreiben, im
-				Original und in eigener Übersetzung (2026). Texte mit{" "}
+				Original und in eigener Übersetzung (2026). Dazu kommen neuere Thesen
+				aus Archäologie und Presse in eigenen Worten. Texte mit{" "}
 				<MapIcon sx={{ fontSize: 15, verticalAlign: "-3px", color: PURPLE }} />{" "}
 				zeigen beim Anklicken ihre Orte und Richtungen auf der Karte.
 				Gestrichelt ist, was der Text offenlässt.
@@ -391,7 +399,8 @@ function TextCard({ t, active, onToggle }) {
 				component="div"
 				sx={{ mt: 1, display: "flex", flexWrap: "wrap", gap: 0.5 }}
 			>
-				{t.written ? `Geschrieben ${t.written}.` : `Entstanden ${t.year}.`}
+				{t.dated ??
+					(t.written ? `Geschrieben ${t.written}.` : `Entstanden ${t.year}.`)}
 				{!geo && " Ohne Ortsangabe."}
 				<Link
 					href={t.url}
@@ -400,7 +409,7 @@ function TextCard({ t, active, onToggle }) {
 					onClick={(e) => e.stopPropagation()}
 					sx={{ display: "inline-flex", alignItems: "center", gap: 0.25 }}
 				>
-					Volltext
+					{t.summary ? "Zum Artikel" : "Volltext"}
 					<OpenInNewIcon sx={{ fontSize: 12 }} />
 				</Link>
 			</Typography>

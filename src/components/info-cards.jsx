@@ -238,8 +238,8 @@ function RouteText({ route }) {
 			gemieden.
 			{route.via &&
 				` Der Weg führt über den augusteischen Fundort ${route.via}, weil der Umweg klein bleibt und die Funde zeigen, wo Truppen zogen.`}
-			{route.partial && " Das Ziel liegt außerhalb des Kartenausschnitts."}{" "}
-			Belegt ist der Weg nicht.
+			{route.partial && " Das Ziel liegt außerhalb des Kartenausschnitts."}
+			{route.note && ` ${route.note}`} Belegt ist der Weg nicht.
 		</Typography>
 	)
 }

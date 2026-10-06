@@ -1,4 +1,5 @@
 import rivers from "@/data/fluesse.json"
+import roadData from "@/data/roemerstrassen.json"
 import { circlePolygon } from "./geo"
 import { SITES } from "./sites"
 
@@ -96,6 +97,40 @@ const OSNING = [
 ]
 
 const MILE = 1480
+
+// Neuere Thesen zum Weg über das Wiehengebirge
+const KALKRIESE = siteAt("kalkriese")
+const MINDEN = [8.917, 52.288]
+const PORTA = [8.925, 52.236]
+// Sattel der Großen Aue und sein Nordausgang bei Bad Holzhausen
+const PASS = [8.525, 52.266]
+const HOLZHAUSEN = [8.535, 52.289]
+// Am Südhang entlang zum Pass, danach etwa auf der B 65 nach Kalkriese
+const SOUTH_SLOPE = [PORTA, [8.86, 52.228], [8.76, 52.245], [8.64, 52.252]]
+const NORTH_EDGE = [
+	HOLZHAUSEN,
+	[8.497, 52.305],
+	[8.344, 52.32],
+	[8.227, 52.345],
+	KALKRIESE,
+]
+
+/**
+ * Teilstücke eines Hellwegs aus den Römerstraßen als gestrichelte Linien,
+ * das längste trägt die Beschriftung.
+ */
+const hellweg = (prefix, label) => {
+	const parts = roadData.features
+		.filter((f) => f.properties.name.startsWith(prefix))
+		.map((f) => f.geometry.coordinates)
+	const longest = parts.reduce((a, b) => (b.length > a.length ? b : a))
+	return parts.map((coords) => ({
+		kind: "line",
+		coords,
+		uncertain: true,
+		label: coords === longest ? label : undefined,
+	}))
+}
 
 /** Bausteine je Textstelle. */
 const GEO = {
@@ -290,6 +325,131 @@ const GEO = {
 			kind: "point",
 			at: rivers.Alme[0],
 			label: "Lippe und Alme? Paderborn-Elsen",
+			uncertain: true,
+		},
+	],
+	"wiki-hellwege": [
+		...hellweg("Hellweg unter dem Berg", "Hellweg unter dem Berg"),
+		...hellweg("Hellweg vor dem Santforde", "Hellweg vor dem Santforde"),
+		{ kind: "point", at: MINDEN, label: "Minden" },
+	],
+	"lwl-2009-barkhausen": [
+		{ kind: "river", name: "Weser" },
+		{
+			kind: "arrow",
+			path: [[8.75, 52.08], [8.86, 52.18], PORTA, BARKHAUSEN],
+			label: "Varus 9 n. Chr. auf dem Weg hierher?",
+			labelAt: [8.83, 52.15],
+			uncertain: true,
+		},
+		{
+			kind: "point",
+			at: BARKHAUSEN,
+			label: "Barkhausen, wenige Tage in Zelten",
+		},
+	],
+	"lwl-2015-porta": [
+		{ kind: "river", name: "Weser" },
+		{ kind: "point", at: BARKHAUSEN, label: "Lager Barkhausen" },
+		{
+			kind: "ring",
+			center: BARKHAUSEN,
+			radius: 2500,
+			label: "Hofstelle im Umfeld des Lagers, Lage ungefähr",
+			uncertain: true,
+		},
+	],
+	"nw-2017-wiegel": [
+		{
+			kind: "arrow",
+			path: [BARKHAUSEN, ...SOUTH_SLOPE, PASS, ...NORTH_EDGE],
+			label: "Varus nach Wiegel",
+			labelAt: [8.72, 52.24],
+			uncertain: true,
+		},
+		{ kind: "point", at: PASS, label: "Holzhausener Pass" },
+		{ kind: "point", at: BARKHAUSEN, label: "Barkhausen" },
+		{ kind: "point", at: KALKRIESE, label: "Kalkriese" },
+	],
+	"lwl-2019-sennestadt": [
+		{
+			kind: "line",
+			coords: OSNING,
+			label: "heutiger Teutoburger Wald",
+		},
+		{
+			kind: "point",
+			at: siteAt("sennestadt"),
+			label: "Marschlager Sennestadt, 26 ha",
+		},
+		{
+			kind: "point",
+			at: siteAt("sparrenberg"),
+			label: "Sparrenberger Egge, Graben nur zur Hälfte",
+		},
+	],
+	"lwl-2021-lerbeck": [
+		{ kind: "river", name: "Weser" },
+		{ kind: "point", at: PORTA, label: "Weserdurchbruch" },
+		{
+			kind: "point",
+			at: [8.943, 52.251],
+			label: "Lerbeck, Siedlung und Grabanlage",
+		},
+		{ kind: "point", at: BARKHAUSEN, label: "Lager Barkhausen" },
+	],
+	"lwl-2023-varus": [
+		{ kind: "river", name: "Lippe" },
+		{ kind: "river", name: "Weser" },
+		{
+			kind: "arrow",
+			path: [
+				HALTERN,
+				...along("Lippe", HALTERN, [8.4, 51.68]),
+				[8.75, 51.95],
+				PORTA,
+			],
+			label: "Sommer 9 n. Chr. zur Weser, Weg unbekannt",
+			labelAt: [8.2, 51.82],
+			uncertain: true,
+		},
+		{ kind: "point", at: HALTERN, label: "Haltern, Amtssitz des Varus" },
+		{
+			kind: "point",
+			at: KALKRIESE,
+			label: "Kalkriese, Metallfunde wie in Haltern",
+		},
+	],
+	"wb-2023-varus": [
+		...hellweg("Hellweg unter dem Berg", "alter Heerweg etwa entlang der B 65"),
+		{
+			kind: "arrow",
+			path: [MINDEN, ...SOUTH_SLOPE, PASS, ...NORTH_EDGE],
+			label: "am Südhang zum Pass, dann nach Kalkriese",
+			labelAt: [8.72, 52.24],
+			uncertain: true,
+		},
+		{ kind: "point", at: PASS, label: "Pass der Großen Aue" },
+		{ kind: "point", at: KALKRIESE, label: "Kalkriese" },
+	],
+	"wb-2023-germanicus": [
+		{ kind: "river", name: "Weser" },
+		{
+			kind: "point",
+			at: siteAt("idistaviso-evesen"),
+			label: "Idistaviso? (Evesen)",
+			uncertain: true,
+		},
+		{
+			kind: "point",
+			at: siteAt("angrivarierwall-leese"),
+			label: "Angrivarierwall? (Leese)",
+			uncertain: true,
+		},
+		{
+			kind: "point",
+			at: [8.497, 52.305],
+			label: "Bohlenwege beim Bau der B 65? Ohne Beleg",
 			uncertain: true,
 		},
 	],

@@ -143,7 +143,7 @@ export default function LayerPanel() {
 				checked={showRoutes}
 				onChange={setShowRoutes}
 				label="Mögliche Marschwege und Etappenhalte"
-				note="Weg geringster Gehzeit zwischen bekannten Lagern (Modell)"
+				note="Weg geringster Gehzeit zwischen bekannten Lagern (Modell), gestrichelt zu Kalkriese und zum vermuteten Lager Löhne"
 			/>
 			<HelperSwitch
 				checked={showRoads}

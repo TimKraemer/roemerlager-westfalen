@@ -63,6 +63,21 @@
 			{
 				"label": "Haltern, Osttor (24.06.2025)",
 				"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=61588"
+			},
+			{
+				"label": "Porta Westfalica in römischer Zeit (04.12.2015)",
+				"url": "https://www.archaeologie-online.de/nachrichten/porta-westfalica-in-roemischer-zeit-2994/",
+				"note": "Germanische Hofstelle nahe dem Lager Barkhausen mit römischer Münze, Hinweis auf Handel mit den Soldaten"
+			},
+			{
+				"label": "„Archäologischer Hotspot“ im Wesertal (28.01.2021)",
+				"url": "https://www.lwl.org/pressemitteilungen/nr_mitteilung.php?urlID=51847",
+				"note": "Dr. Sven Spiong zum Weserdurchbruch an der Porta. Funde aus Bronze- und Völkerwanderungszeit, nicht römisch"
+			},
+			{
+				"label": "Zwischenbilanz der Römerfunde an der Porta Westfalica (09.01.2009)",
+				"url": "https://www.archaeologie-online.de/nachrichten/zwischenbilanz-der-roemerfunde-an-der-porta-westfalica-1183/",
+				"note": "Truppen nur wenige Tage in Zelten. Durchzug des Varus möglich, aber nicht beweisbar"
 			}
 		]
 	},
@@ -156,8 +171,34 @@
 		]
 	},
 	{
+		"title": "Varuszug über das Wiehengebirge",
+		"intro": "Vermutet wird ein Weg von Barkhausen über den Pass der Großen Aue bei Bad Holzhausen und am Nordrand des Wiehengebirges nach Kalkriese. Fachliteratur dazu haben wir nicht gefunden, die Belege sind Lokalpresse. Der berechnete Weg von Löhne nach Kalkriese nimmt ebenfalls diesen Pass.",
+		"items": [
+			{
+				"label": "Neue Westfälische, 18.02.2017: Wo Varus über das Wiehengebirge marschierte",
+				"url": "https://www.nw.de/lokal/kreis_minden_luebbecke/luebbecke/21692637_Wo-Varus-ueber-das-Wiehengebirge-marschierte.html",
+				"note": "Der Archäologe Dr. Bert Wiegel (Rahden) vermutet, dass Varus von Barkhausen über den Holzhausener Pass Richtung Kalkriese zog, und stützt sich auf Luftbilder. Bezahlschranke"
+			},
+			{
+				"label": "Dieter Besserer, Westfalen-Blatt, 08.12.2023: Varus trifft Preußisch Oldendorf",
+				"url": "https://www.westfalen-blatt.de/owl/kreis-minden-luebbecke/pr-oldendorf/varus-schlacht-wiehengebirge-forschungen-2879038",
+				"note": "Teil 1 der Serie „Varus und Arminius/Germanicus“. Pass der Großen Aue, danach entlang der B 65 nach Kalkriese. Nennt den Weg „Helweg vor dem Sandvorde“, so heißt aber der Abschnitt östlich von Minden"
+			},
+			{
+				"label": "Dieter Besserer, Westfalen-Blatt, 22.12.2023: Hier wurden Schlachten geschlagen",
+				"url": "https://www.westfalen-blatt.de/owl/kreis-minden-luebbecke/pr-oldendorf/porta-westfalica-schlachten-varus-germanicus-roemer-2887859",
+				"note": "Teil 2 über Germanicus 15/16 n. Chr., Idistaviso und den Angrivarierwall. Erwähnt Bohlenwege und Straßenreste beim Bau der B 65 nördlich des Wiehengebirges, ohne Quelle"
+			},
+			{
+				"label": "Wikipedia: Arminiusweg",
+				"url": "https://de.wikipedia.org/wiki/Arminiusweg",
+				"note": "Wanderweg von Hille über Lübbecke und Preußisch Oldendorf nach Kalkriese, folgt dem vermuteten Zugweg"
+			}
+		]
+	},
+	{
 		"title": "Römerstraßen und Wege",
-		"intro": "Rechts des Rheins sind keine römischen Straßen belegt. Die Karte zeigt die Straßen am Rhein, den Hellweg vor dem Santforde als vermutete Achse und berechnete Marschwege.",
+		"intro": "Rechts des Rheins sind keine römischen Straßen belegt. Die Karte zeigt die Straßen am Rhein, die beiden Hellwege an der Weser als vermutete Achsen und berechnete Marschwege.",
 		"items": [
 			{
 				"label": "Itiner-e: Digital Atlas of Ancient Roads (CC BY 4.0)",
@@ -178,6 +219,16 @@
 			{
 				"label": "KuLaDig: Kulturlandschaftsbereich Hellweg",
 				"url": "https://www.kuladig.de/Objektansicht/A-EK-20080730-0094"
+			},
+			{
+				"label": "Wikipedia: Hellweg vor dem Santforde",
+				"url": "https://de.wikipedia.org/wiki/Hellweg_vor_dem_Santforde",
+				"note": "Von Minden nach Osten über Bad Nenndorf und Gehrden"
+			},
+			{
+				"label": "Wikipedia: Hellweg unter dem Berg",
+				"url": "https://de.wikipedia.org/wiki/Hellweg_unter_dem_Berg",
+				"note": "Westlich von Minden am Nordrand des Wiehengebirges, ungefähr die B 65. Römische Nutzung dort als wahrscheinlich bezeichnet"
 			},
 			{
 				"label": "Moorweg Pr VI im Aschener Moor (Bohlenweg um 46 v. Chr.)",

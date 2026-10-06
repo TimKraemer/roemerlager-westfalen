@@ -66,7 +66,9 @@ const state = await prepare(NETWORK.bbox, params, {
 })
 const { grid } = state
 
-const all = routeCamps()
+// Routenziele ohne Lager bleiben draußen: Der Suchraum Löhne ist aus
+// Sennestadt und Barkhausen abgeleitet und würde die Gegenprobe verfälschen
+const all = routeCamps().filter((c) => !c.target)
 const marching = campsFor("marching")
 // Testfälle: jedes augusteische Lager im Raster, Begleitanlagen zusammengefasst
 const tests = []

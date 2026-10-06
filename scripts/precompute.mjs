@@ -137,6 +137,7 @@ async function computeNetwork() {
 		},
 		{ full: true },
 	)
+	for (const fine of NETWORK.refine ?? []) await refineRoutes(result, fine)
 	const rivers = waterLines(state, NETWORK.riverKm2, 2000)
 	console.log(
 		`\n${NETWORK.label}: ${result.routes.features.length} Routen, ` +
@@ -144,6 +145,63 @@ async function computeNetwork() {
 			`${Math.round((Date.now() - t0) / 1000)} s`,
 	)
 	return { routes: result.routes, stages: result.stages, rivers }
+}
+
+/**
+ * Fußwege, deren beide Enden im Ausschnitt fine.bbox liegen, mit feineren
+ * Zellen neu rechnen und im Netz ersetzen, samt ihrer Etappenhalte. Die
+ * Paare bleiben die des groben Netzes.
+ */
+async function refineRoutes(result, fine) {
+	const params = { ...DEFAULT_PARAMS, cellMeters: fine.cellMeters }
+	const log = (stage, value = 0) =>
+		process.stdout.write(
+			`\r${NETWORK.label}, ${fine.label}: ${stage} ${Math.round(value * 100)} %   `,
+		)
+	const state = await prepare(fine.bbox, params, {
+		onProgress: log,
+		includeNiMoor: true,
+	})
+	const detail = await evaluate(
+		state,
+		{
+			params,
+			camps: campsFor("marching"),
+			routeCamps: routeCamps(),
+			waypoints: routeWaypoints(),
+			routeParams: NETWORK.routeParams,
+			candidateThreshold: CANDIDATE_THRESHOLD,
+		},
+		{ full: true },
+	)
+	const key = ({ from, to }) => [from, to].sort().join("|")
+	const finer = new Map(
+		detail.routes.features
+			.filter((f) => f.properties.mode === "Fuß" && !f.properties.partial)
+			.map((f) => [key(f.properties), f]),
+	)
+	const replaced = new Set()
+	result.routes.features = result.routes.features.map((f) => {
+		const k = key(f.properties)
+		const g = finer.get(k)
+		if (!g || f.properties.mode !== "Fuß") return f
+		replaced.add(k)
+		return {
+			...g,
+			properties: {
+				...g.properties,
+				id: f.properties.id,
+				cellMeters: fine.cellMeters,
+			},
+		}
+	})
+	result.stages = [
+		...result.stages.filter((st) => !replaced.has(key(st))),
+		...detail.stages.filter((st) => replaced.has(key(st))),
+	]
+	console.log(
+		`\n${fine.label}: ${replaced.size} Routen mit ${fine.cellMeters} m neu gerechnet`,
+	)
 }
 
 /** Etappenhalte im Kreis auf die beste Zelle des feinen Rasters setzen. */

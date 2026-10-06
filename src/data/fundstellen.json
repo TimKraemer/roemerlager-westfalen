@@ -508,7 +508,9 @@
 					}
 				],
 				"status": "bestätigt",
-				"inModel": false
+				"inModel": false,
+				"routeTarget": true,
+				"routeNote": "Kalkriese ist kein gesichertes Lager, sondern der Fundplatz der Schlacht. Der Weg zeigt, wie ein Heer aus dem Weserraum dorthin gezogen sein könnte."
 			},
 			"geometry": {
 				"type": "Point",
@@ -698,6 +700,8 @@
 				"type": "verdacht",
 				"status": "Verdacht (Hypothese)",
 				"inModel": false,
+				"routeTarget": true,
+				"routeNote": "Das Lager bei Löhne ist nur vermutet.",
 				"precision": "nur Ortsmittelpunkt, Fundstelle mehrere km entfernt möglich",
 				"size_ha": null,
 				"dating": "augusteisch (Hypothese)",

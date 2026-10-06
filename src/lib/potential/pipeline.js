@@ -352,7 +352,10 @@ export async function evaluate(
 	)
 	const distCamp = distanceToCamps(grid, camps)
 	// Umkreis ohne Vorschläge um alle bekannten Lager, nicht nur die Ring-Lager
-	const distKnown = distanceToCamps(grid, routeCamps ?? camps)
+	const distKnown = distanceToCamps(
+		grid,
+		(routeCamps ?? camps).filter((c) => !c.target),
+	)
 	const { factors, score } = combine(
 		{
 			ring,

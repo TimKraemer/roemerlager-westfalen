@@ -30,6 +30,12 @@ export const NETWORK = {
 	cellMeters: 500,
 	riverKm2: 300,
 	file: "precomputed/westfalen-netz",
+	// Feinere Zellen, wo schmale Pässe den Weg entscheiden (Sattel bei Bad
+	// Holzhausen im Wiehengebirge). Routen mit beiden Enden im Ausschnitt
+	// werden dort neu gerechnet.
+	refine: [
+		{ label: "Wiehengebirge", bbox: [7.9, 51.8, 9.3, 52.6], cellMeters: 250 },
+	],
 	routeParams: {
 		connect: true,
 		neighbors: 3,

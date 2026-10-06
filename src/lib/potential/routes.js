@@ -317,6 +317,9 @@ export function campNodes(grid, camps, mergeRadius = ROUTE_PARAMS.mergeRadius) {
 		if (near) {
 			near.names.push(camp.name)
 			near.ids.push(camp.id)
+			// Mit einem gesicherten Lager zusammen ist der Knoten kein bloßes Ziel
+			near.target &&= !!camp.target
+			if (camp.note) near.notes.push(camp.note)
 		} else
 			nodes.push({
 				cell,
@@ -325,6 +328,8 @@ export function campNodes(grid, camps, mergeRadius = ROUTE_PARAMS.mergeRadius) {
 				lat: camp.lat,
 				names: [camp.name],
 				ids: [camp.id],
+				target: !!camp.target,
+				notes: camp.note ? [camp.note] : [],
 			})
 	}
 	return nodes
@@ -338,6 +343,8 @@ export function campPairs(nodes, p = ROUTE_PARAMS) {
 		const candidates = nodes
 			.map((b, j) => ({ j, d: haversine(a.lon, a.lat, b.lon, b.lat) }))
 			.filter(({ j, d }) => j !== i && d >= p.minPair && d <= p.maxPair)
+			// Ziele ohne gesichertes Lager knüpfen nur ihre eigenen Verbindungen
+			.filter(({ j }) => a.target || !nodes[j].target)
 			// Zwischen Lagern der Schiffskette fährt man, statt zu marschieren
 			.filter(({ j }) => a.ship == null || nodes[j].ship == null)
 			// Ein Lager abseits der Kette hängt nur am nächstgelegenen Hafen
@@ -390,7 +397,10 @@ function nearestShip(nodes, k) {
 
 /** Kruskal über alle Lager im Raster: fehlende Verbindungen ergänzen. */
 function connectTree(nodes, pairs) {
-	const inside = [...nodes.keys()].filter((i) => !nodes[i].outside)
+	// Ziele ohne gesichertes Lager sind keine Brücke zwischen Lagern
+	const inside = [...nodes.keys()].filter(
+		(i) => !nodes[i].outside && !nodes[i].target,
+	)
 	const parent = new Map(inside.map((i) => [i, i]))
 	const find = (i) => {
 		while (parent.get(i) !== i) i = parent.get(i)
@@ -564,6 +574,9 @@ export function computeRoutes(
 				hours,
 				via: via?.name,
 				days: length / dayMarch,
+				// Endet an einem Ziel ohne gesichertes Lager (Kalkriese, Löhne)
+				target: nodes[a].target || b.target,
+				note: [...nodes[a].notes, ...b.notes].join(" ") || undefined,
 			})
 		}
 	}
@@ -679,6 +692,7 @@ export function routesGeoJSON(grid, routes) {
 				partial: route.partial,
 				via: route.via ?? "",
 				mode: route.mode ?? "Fuß",
+				target: !!route.target,
 				note: route.note ?? "",
 				crowKm: Math.round(route.crow / 100) / 10,
 				days: Math.round(route.days * 10) / 10,

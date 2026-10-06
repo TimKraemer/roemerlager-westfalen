@@ -204,14 +204,16 @@ function addAnalysisLayers(map) {
 		source: "routes",
 		layout: { "line-cap": "round", "line-join": "round" },
 		paint: {
-			// Fußwege gelb, Schiffsstrecken auf der Lippe hellblau gestrichelt
+			// Fußwege gelb, Schiffsstrecken auf der Lippe hellblau gestrichelt,
+			// Wege zu Zielen ohne gesichertes Lager gelb gestrichelt
 			"line-color": ["match", ["get", "mode"], "Schiff", "#4fc3f7", "#ffca28"],
 			"line-width": 3,
 			"line-dasharray": [
-				"match",
-				["get", "mode"],
-				"Schiff",
+				"case",
+				["==", ["get", "mode"], "Schiff"],
 				["literal", [2, 1.2]],
+				["to-boolean", ["get", "target"]],
+				["literal", [2.5, 1.5]],
 				["literal", [1, 0]],
 			],
 		},

@@ -49,7 +49,7 @@ const GROUPS = {
 	site: "Fundorte",
 	river: "Flüsse",
 	road: "Römerstraßen",
-	text: "Antike Texte",
+	text: "Texte",
 	layer: "Ebenen",
 	source: "Quellen",
 	place: "Heutige Orte (OpenStreetMap)",

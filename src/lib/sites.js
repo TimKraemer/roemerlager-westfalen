@@ -43,8 +43,23 @@ export function campsFor(ringSource) {
 		}))
 }
 
+// Routenziele ohne gesichertes Lager: Kalkriese als Endpunkt des
+// Varuszugs, der Suchraum Löhne als vermutetes Zwischenlager. Sie erzeugen
+// keine Ringe und blenden keine Vorschläge in ihrer Nähe aus.
+export const routeTargets = () =>
+	SITES.features
+		.filter((f) => f.properties.routeTarget)
+		.map((f) => ({
+			id: f.properties.id,
+			name: f.properties.name,
+			lon: f.geometry.coordinates[0],
+			lat: f.geometry.coordinates[1],
+			target: true,
+			note: f.properties.routeNote,
+		}))
+
 // Routen verbinden alle Militärlager, unabhängig von der Ring-Auswahl
-export const routeCamps = () => campsFor("camps")
+export const routeCamps = () => [...campsFor("camps"), ...routeTargets()]
 
 // Augusteische Fundorte als mögliche Zwischenstationen der Routen
 export const routeWaypoints = () =>
