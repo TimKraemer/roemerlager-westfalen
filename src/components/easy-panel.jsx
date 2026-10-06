@@ -9,7 +9,6 @@ import {
 	IconButton,
 	List,
 	ListItemButton,
-	ListItemText,
 	Paper,
 	Skeleton,
 	Stack,
@@ -27,12 +26,31 @@ const level = (score) =>
 	score >= 0.85 ? "sehr hoch" : score >= 0.7 ? "hoch" : "mittel"
 
 function Legend() {
-	const item = (symbol, text) => (
-		<Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
-			<Box sx={{ width: 22, display: "flex", justifyContent: "center" }}>
+	const item = (symbol, text, detail) => (
+		<Stack direction="row" spacing={1.25} sx={{ alignItems: "flex-start" }}>
+			<Box
+				sx={{
+					width: 22,
+					height: 20,
+					flexShrink: 0,
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+				}}
+			>
 				{symbol}
 			</Box>
-			<Typography variant="caption">{text}</Typography>
+			<Typography variant="caption" sx={{ lineHeight: "20px" }}>
+				{text}
+				{detail && (
+					<Box
+						component="span"
+						sx={{ display: "block", lineHeight: 1.35, color: "text.secondary" }}
+					>
+						{detail}
+					</Box>
+				)}
+			</Typography>
 		</Stack>
 	)
 	const dot = (bg, border, label = "") => (
@@ -54,8 +72,8 @@ function Legend() {
 		</Box>
 	)
 	return (
-		<Stack spacing={0.5} sx={{ mt: 1.5 }}>
-			<Box>
+		<Stack spacing={0.75}>
+			<Box sx={{ mb: 0.5 }}>
 				<Box
 					sx={{
 						height: 8,
@@ -105,7 +123,8 @@ function Legend() {
 						outline: "1px solid #fff",
 					}}
 				/>,
-				"Flusslauf vor der Begradigung (Lippe, Weser und Ems wie um 1840, sonst aus dem Gelände)",
+				"Flusslauf vor der Begradigung",
+				"Lippe, Weser und Ems wie um 1840, sonst aus dem Gelände",
 			)}
 			{item(
 				<Box sx={{ width: 22, borderTop: "2px dashed #6a1b9a" }} />,
@@ -115,7 +134,39 @@ function Legend() {
 	)
 }
 
-/** Erklärung, Legende und die wahrscheinlichsten Orte. */
+const LEVEL_COLOR = {
+	"sehr hoch": "#b71c1c",
+	hoch: "#e65100",
+	mittel: "#f9a825",
+}
+
+function SectionTitle({ children }) {
+	return (
+		<Typography
+			variant="overline"
+			color="text.secondary"
+			component="div"
+			sx={{ mt: 2, mb: 0.5, lineHeight: 1.6 }}
+		>
+			{children}
+		</Typography>
+	)
+}
+
+function Title() {
+	return (
+		<Box>
+			<Typography variant="h6" component="h2" sx={{ lineHeight: 1.25 }}>
+				Mögliche Marschlager
+			</Typography>
+			<Typography variant="caption" color="text.secondary">
+				Errechnete Werte für den {DEFAULT_REGION.label}
+			</Typography>
+		</Box>
+	)
+}
+
+/** Erklärung, die wahrscheinlichsten Orte und Legende. */
 export function EasyContent({ onFlyTo, heading = false }) {
 	const result = useMapStore((s) => s.result)
 	const setInspect = useMapStore((s) => s.setInspect)
@@ -135,15 +186,10 @@ export function EasyContent({ onFlyTo, heading = false }) {
 		<>
 			{heading && (
 				<Box sx={{ pt: 1.5 }}>
-					<Typography variant="h6" sx={{ lineHeight: 1.2 }}>
-						Mögliche Marschlager-Positionen
-					</Typography>
-					<Typography variant="caption" color="text.secondary">
-						Errechnete Werte für den {DEFAULT_REGION.label}
-					</Typography>
+					<Title />
 				</Box>
 			)}
-			<Typography variant="body2" sx={{ mt: 1 }}>
+			<Typography variant="body2" sx={{ mt: 1.25 }}>
 				Auf ihren Feldzügen bauten die römischen Legionen nach jedem Tagesmarsch
 				ein befestigtes Nachtlager, etwa alle 20 km, meist etwas erhöht und nahe
 				am Wasser. Im Kreis ist bisher nur eines bekannt, in Porta
@@ -151,64 +197,73 @@ export function EasyContent({ onFlyTo, heading = false }) {
 				könnten.
 			</Typography>
 
-			<Legend />
-
-			<Typography
-				variant="overline"
-				color="text.secondary"
-				component="div"
-				sx={{ mt: 1.5 }}
-			>
-				Die wahrscheinlichsten Orte
-			</Typography>
+			<SectionTitle>Die wahrscheinlichsten Orte</SectionTitle>
 			{!result ? (
-				<Stack spacing={0.5}>
-					{[0, 1, 2].map((i) => (
+				<Stack>
+					{[0, 1, 2, 3, 4].map((i) => (
 						<Skeleton key={i} height={36} />
 					))}
 				</Stack>
 			) : (
-				<List dense disablePadding>
-					{top.map((c) => (
-						<ListItemButton
-							key={c.index}
-							onClick={() => open(c, c.rank)}
-							sx={{ borderRadius: 1, px: 1 }}
-						>
-							<Box
-								sx={{
-									width: 22,
-									height: 22,
-									mr: 1.5,
-									flexShrink: 0,
-									borderRadius: "50%",
-									border: "2px solid #d84315",
-									color: "#d84315",
-									fontSize: 12,
-									fontWeight: 700,
-									display: "flex",
-									alignItems: "center",
-									justifyContent: "center",
-								}}
+				<List dense disablePadding sx={{ mx: -1 }}>
+					{top.map((c) => {
+						const lvl = level(c.score)
+						return (
+							<ListItemButton
+								key={c.index}
+								onClick={() => open(c, c.rank)}
+								sx={{ borderRadius: 1, px: 1, py: 0.5, minHeight: 36 }}
 							>
-								{c.rank}
-							</Box>
-							<ListItemText
-								primary={
-									placeLabel(result.places, c.lon, c.lat) ?? `Ort ${c.rank}`
-								}
-								secondary={`Wahrscheinlichkeit ${level(c.score)}`}
-							/>
-						</ListItemButton>
-					))}
+								<Box
+									sx={{
+										width: 22,
+										height: 22,
+										mr: 1.25,
+										flexShrink: 0,
+										borderRadius: "50%",
+										border: "2px solid #d84315",
+										color: "#d84315",
+										fontSize: 12,
+										fontWeight: 700,
+										display: "flex",
+										alignItems: "center",
+										justifyContent: "center",
+									}}
+								>
+									{c.rank}
+								</Box>
+								<Typography
+									variant="body2"
+									noWrap
+									sx={{ flex: 1, minWidth: 0 }}
+								>
+									{placeLabel(result.places, c.lon, c.lat) ?? `Ort ${c.rank}`}
+								</Typography>
+								<Typography
+									variant="caption"
+									sx={{
+										ml: 1,
+										flexShrink: 0,
+										fontWeight: 600,
+										color: LEVEL_COLOR[lvl],
+									}}
+								>
+									{lvl}
+								</Typography>
+							</ListItemButton>
+						)
+					})}
 				</List>
 			)}
+
+			<SectionTitle>Legende</SectionTitle>
+			<Legend />
 
 			<Typography
 				variant="caption"
 				color="text.secondary"
 				component="p"
-				sx={{ mt: 1 }}
+				sx={{ mt: 2 }}
 			>
 				{SHORT_CREDIT}
 			</Typography>
@@ -232,40 +287,52 @@ export default function EasyPanel({ onFlyTo }) {
 				width: 340,
 				maxWidth: "calc(100vw - 32px)",
 				maxHeight: "calc(100dvh - 176px)",
-				overflow: "auto",
-				p: 2,
+				display: "flex",
+				flexDirection: "column",
+				overflow: "hidden",
 				zIndex: 2,
 			}}
 		>
-			<Stack direction="row" sx={{ alignItems: "flex-start" }}>
+			<Stack
+				direction="row"
+				sx={{ alignItems: "flex-start", px: 2, pt: 2, pb: collapsed ? 0 : 0.5 }}
+			>
 				<Box sx={{ flex: 1 }}>
-					<Typography variant="h6" sx={{ lineHeight: 1.2 }}>
-						Mögliche Marschlager-Positionen
-					</Typography>
-					<Typography variant="caption" color="text.secondary">
-						Errechnete Werte für den {DEFAULT_REGION.label}
-					</Typography>
+					<Title />
 				</Box>
 				<IconButton
 					size="small"
 					onClick={() => setCollapsed(!collapsed)}
 					aria-label={collapsed ? "Ausklappen" : "Einklappen"}
+					sx={{ mr: -0.5 }}
 				>
 					{collapsed ? <ExpandMoreIcon /> : <ExpandLessIcon />}
 				</IconButton>
 			</Stack>
 
-			{!collapsed && <EasyContent onFlyTo={onFlyTo} />}
+			{!collapsed && (
+				<Box sx={{ flex: 1, minHeight: 0, overflow: "auto", px: 2, pb: 1 }}>
+					<EasyContent onFlyTo={onFlyTo} />
+				</Box>
+			)}
 
-			<Button
-				fullWidth
-				variant="outlined"
-				startIcon={<TuneIcon />}
-				onClick={() => setPanelOpen(true)}
-				sx={{ mt: 1.5 }}
+			<Box
+				sx={{
+					p: 2,
+					pt: 1.5,
+					borderTop: collapsed ? 0 : 1,
+					borderColor: "divider",
+				}}
 			>
-				Ebenen, Einstellungen und Quellen
-			</Button>
+				<Button
+					fullWidth
+					variant="outlined"
+					startIcon={<TuneIcon />}
+					onClick={() => setPanelOpen(true)}
+				>
+					Ebenen, Einstellungen und Quellen
+				</Button>
+			</Box>
 		</Paper>
 	)
 }
