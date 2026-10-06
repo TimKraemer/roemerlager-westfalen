@@ -23,7 +23,11 @@ import json
 import math
 import os
 import re
+import shutil
+import subprocess
 import sys
+import tempfile
+from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
 
 import numpy as np
@@ -48,7 +52,13 @@ SCRATCH = Path(os.environ.get("ALTKARTEN_TMP", CACHE / "check"))
 
 R = 6378137.0
 WORLD = 2 * math.pi * R
-TILE = 256
+# 512er-Kacheln: viermal weniger Anfragen als 256er. Bei tileSize 512 ist
+# die Kachelstufe z gleich der MapLibre-Zoomstufe, auch minzoom/maxzoom in
+# den gcp-Dateien sind so gemeint.
+TILE = 512
+# WebP-Qualität: q90 mit sharp_yuv ist bei doppelter Vergrößerung kaum vom
+# Original zu unterscheiden (SSIM 0,98), near-lossless wäre dreimal so groß
+CWEBP = ["cwebp", "-quiet", "-q", "90", "-m", "6", "-sharp_yuv", "-mt"]
 
 
 def merc(lon, lat):
@@ -365,6 +375,12 @@ def densify(poly, n=40):
     return np.array(out)
 
 
+def encode(png, webp):
+    subprocess.run([*CWEBP, str(png), "-o", str(webp)], check=True)
+    png.unlink()
+    return webp.stat().st_size
+
+
 def cmd_tiles(args):
     opts = parse_opts(args)
     spec = load_spec(opts["pos"][0])
@@ -386,7 +402,12 @@ def cmd_tiles(args):
     bx0, by0 = edge.min(0)
     bx1, by1 = edge.max(0)
     out = OUT_DIR / spec["id"]
-    count = size = 0
+    # alte Kacheln weg, sonst bleiben Reste anderer Stufen oder Größen liegen
+    shutil.rmtree(out, ignore_errors=True)
+    tmp = Path(tempfile.mkdtemp(prefix=f"alt-{spec['id']}-"))
+    pool = ThreadPoolExecutor(max_workers=os.cpu_count() or 4)
+    jobs = []
+    count = 0
     for z in range(maxz, minz - 1, -1):
         tr = tile_res(z)
         # vorher auf Kachelauflösung verkleinern, sonst flimmern feine Linien
@@ -439,22 +460,25 @@ def cmd_tiles(args):
                     for c in range(3)
                 ]
                 tile = Image.fromarray(np.dstack(chans + [a]).astype(np.uint8))
+                if a.min() == 255:
+                    tile = tile.convert("RGB")
                 p = out / str(z) / str(tx)
                 p.mkdir(parents=True, exist_ok=True)
-                fn = p / f"{ty}.webp"
-                if a.min() == 255:
-                    tile.convert("RGB").save(fn, quality=72, method=4)
-                else:
-                    tile.save(fn, quality=72, method=4)
+                png = tmp / f"{z}-{tx}-{ty}.png"
+                tile.save(png, compress_level=1)
+                jobs.append(pool.submit(encode, png, p / f"{ty}.webp"))
                 count += 1
-                size += fn.stat().st_size
-        print(f"  z{z}: 1/{f:.1f}, bisher {count} Kacheln, {size / 1e6:.1f} MB", flush=True)
+        print(f"  z{z}: 1/{f:.1f}, bisher {count} Kacheln", flush=True)
+    size = sum(j.result() for j in jobs)
+    pool.shutdown()
+    shutil.rmtree(tmp, ignore_errors=True)
     lon0, lat0 = unmerc(bx0, by0)
     lon1, lat1 = unmerc(bx1, by1)
     meta = {
         "bounds": [round(float(v), 5) for v in (lon0, lat0, lon1, lat1)],
         "minzoom": minz,
         "maxzoom": maxz,
+        "tileSize": TILE,
         "tiles": count,
         "bytes": size,
     }
@@ -484,6 +508,7 @@ def cmd_index(_args):
                 "bounds": meta["bounds"],
                 "minzoom": meta["minzoom"],
                 "maxzoom": meta["maxzoom"],
+                "tileSize": meta.get("tileSize", 256),
             }
         )
     maps.sort(key=lambda m: (m["year"], m["id"]))

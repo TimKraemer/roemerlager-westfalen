@@ -96,7 +96,9 @@ export const BASE_LAYERS = [
 
 // jump: [Länge, Breite, Zoom] für den Link „Dorthin springen“ bei regional
 // begrenzten Ebenen. Gewählt ist eine Stelle und Stufe, an der der Dienst
-// sicher etwas zeigt; viele WMS zeichnen erst ab Zoom 11 bis 15.
+// sicher etwas zeigt. minzoom bei WMS ist die Kartenzoomstufe, ab der der
+// Dienst tatsächlich zeichnet (geprüft am 06.10.2026), darunter liefert er
+// nur leere Bilder.
 export const OVERLAYS = [
 	{
 		id: "relief",
@@ -189,6 +191,7 @@ export const OVERLAYS = [
 		layers: "nw_uraufnahme_rw",
 		attribution: GEOBASIS_NRW,
 		opacity: 0.85,
+		minzoom: 12.5,
 	},
 	{
 		id: "aue-preussisch",
@@ -211,6 +214,7 @@ export const OVERLAYS = [
 		layers: "Grundwasser",
 		attribution: "© Geologischer Dienst NRW (dl-de/by-2-0)",
 		opacity: 0.6,
+		minzoom: 9.5,
 	},
 	{
 		id: "bk50-bodentyp",
@@ -221,6 +225,7 @@ export const OVERLAYS = [
 		layers: "Bodentyp",
 		attribution: "© Geologischer Dienst NRW (dl-de/by-2-0)",
 		opacity: 0.6,
+		minzoom: 9.5,
 	},
 	{
 		id: "moore-ni",
@@ -256,6 +261,7 @@ export const OVERLAYS = [
 		layers: "1",
 		attribution: "© Geologischer Dienst NRW (dl-de/by-2-0)",
 		opacity: 0.6,
+		minzoom: 9.5,
 	},
 	{
 		id: "gewaesser-nrw",
@@ -289,6 +295,7 @@ export const OVERLAYS = [
 		layers: "nw_neuaufnahme",
 		attribution: GEOBASIS_NRW,
 		opacity: 0.85,
+		minzoom: 10.5,
 	},
 	{
 		id: "tk25-1936",
@@ -299,6 +306,7 @@ export const OVERLAYS = [
 		layers: "nw_tk25_1936-1945",
 		attribution: GEOBASIS_NRW,
 		opacity: 0.85,
+		minzoom: 13.5,
 	},
 	{
 		id: "hist-dop",
@@ -339,6 +347,7 @@ export const OVERLAYS = [
 		jump: jumpToBounds(m.bounds, m.minzoom),
 		minzoom: m.minzoom,
 		maxzoom: m.maxzoom,
+		tileSize: m.tileSize ?? 256,
 		attribution: altkarteAttribution(m),
 		opacity: 0.85,
 	})),
@@ -393,9 +402,9 @@ export function rasterSource(layer) {
 	return {
 		type: "raster",
 		tiles,
-		tileSize: 256,
+		tileSize: layer.tileSize ?? 256,
 		attribution: layer.attribution,
-		minzoom: layer.minzoom ?? 0,
+		minzoom: Math.floor(layer.minzoom ?? 0),
 		maxzoom: layer.maxzoom ?? 19,
 		...(layer.bounds ? { bounds: layer.bounds } : {}),
 	}

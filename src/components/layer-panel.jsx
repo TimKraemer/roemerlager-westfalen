@@ -3,6 +3,7 @@
 import {
 	Box,
 	Checkbox,
+	CircularProgress,
 	FormControlLabel,
 	Link,
 	Radio,
@@ -106,7 +107,19 @@ export default function LayerPanel({ onFlyTo }) {
 											}
 										/>
 									}
-									label={<LayerLabel layer={layer} onFlyTo={onFlyTo} />}
+									label={
+										<LayerLabel
+											layer={layer}
+											onJump={
+												onFlyTo &&
+												(() => {
+													// Springen schaltet die Ebene gleich mit ein
+													setOverlay(layer.id, { visible: true })
+													onFlyTo(...layer.jump)
+												})
+											}
+										/>
+									}
 									sx={{
 										alignItems: "flex-start",
 										"& .MuiSwitch-root": { mt: 0.25 },
@@ -124,6 +137,7 @@ export default function LayerPanel({ onFlyTo }) {
 										aria-label={`Deckkraft ${layer.label}`}
 									/>
 								)}
+								{state.visible && <OverlayStatus layer={layer} />}
 							</Box>
 						)
 					})}
@@ -214,8 +228,29 @@ function HelperSwitch({ checked, onChange, label, note }) {
 	)
 }
 
-function LayerLabel({ layer, onFlyTo }) {
-	const jump = layer.jump && onFlyTo
+/** Hinweis unter einer eingeschalteten Ebene: lädt, zu weit weg, außerhalb. */
+function OverlayStatus({ layer }) {
+	const status = useMapStore((s) => s.overlayStatus[layer.id])
+	if (!status) return null
+	const text = {
+		loading: "Lädt …",
+		zoom: `Erst ab Zoom ${Math.ceil(layer.minzoom)} sichtbar, näher heranzoomen`,
+		outside: "Liegt außerhalb des Ausschnitts",
+	}[status]
+	return (
+		<Stack
+			direction="row"
+			spacing={1}
+			sx={{ alignItems: "center", ml: 5, mt: -0.5, color: "text.secondary" }}
+		>
+			{status === "loading" && <CircularProgress size={12} />}
+			<Typography variant="caption">{text}</Typography>
+		</Stack>
+	)
+}
+
+function LayerLabel({ layer, onJump }) {
+	const jump = layer.jump && onJump
 	return (
 		<Box sx={{ py: 0.25 }}>
 			<Typography variant="body2">{layer.label}</Typography>
@@ -232,7 +267,7 @@ function LayerLabel({ layer, onFlyTo }) {
 								onClick={(e) => {
 									// sonst schaltet der Klick im Label auch den Schalter
 									e.preventDefault()
-									onFlyTo(...layer.jump)
+									onJump()
 								}}
 							>
 								Dorthin springen

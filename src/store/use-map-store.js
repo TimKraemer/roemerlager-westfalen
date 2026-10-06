@@ -88,6 +88,10 @@ export const useMapStore = create((set) => ({
 	searchHit: null,
 
 	setBaseLayer: (baseLayer) => set({ baseLayer }),
+	// Zustand eingeschalteter Ebenen aus der Karte: "loading", "zoom"
+	// (unter der Mindestzoomstufe) oder "outside" (außerhalb der Fläche)
+	overlayStatus: {},
+	setOverlayStatus: (overlayStatus) => set({ overlayStatus }),
 	setOverlay: (id, patch) =>
 		set((s) => ({
 			overlays: { ...s.overlays, [id]: { ...s.overlays[id], ...patch } },

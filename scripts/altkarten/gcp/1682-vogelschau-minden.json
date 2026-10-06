@@ -8,8 +8,8 @@
 	"accuracy": "8 Bauwerke (Dom, 5 Kirchen, Markt, Weserbrücke), Median-LOO etwa 17 m, perspektivische Ansicht, außerhalb der Wälle grob",
 	"method": "tps",
 	"smooth": 0,
-	"minzoom": 13,
-	"maxzoom": 17,
+	"minzoom": 12,
+	"maxzoom": 16,
 	"mask": [
 		[
 			3093,

@@ -1,6 +1,7 @@
 "use client"
 
 import "maplibre-gl/dist/maplibre-gl.css"
+import { Box, CircularProgress } from "@mui/material"
 import * as maplibregl from "maplibre-gl"
 import { useEffect, useRef, useState } from "react"
 import { BASE_PATH } from "@/config"
@@ -13,6 +14,7 @@ import {
 	FONT,
 	GLYPHS,
 	OVERLAYS,
+	partsOf,
 	styleFor,
 	styleLayersOf,
 } from "@/lib/layers"
@@ -448,6 +450,42 @@ function addCustomLayer(map, id, l) {
 // React StrictMode entfernt die erste Karte, bevor der State nachzieht
 const alive = (map) => map && !map._removed
 
+// Quellen und kleinste Zoomstufe je Ebene, für die Ladeanzeige
+const OVERLAY_SOURCES = Object.fromEntries(
+	OVERLAYS.map((l) => [l.id, Object.keys(styleFor(l).sources)]),
+)
+const OVERLAY_MINZOOM = Object.fromEntries(
+	OVERLAYS.map((l) => [
+		l.id,
+		Math.min(...partsOf(l).map((p) => p.minzoom ?? 0)),
+	]),
+)
+
+/** "loading", "zoom", "outside" oder nichts, je eingeschalteter Ebene. */
+function overlayStatus(map, overlays) {
+	const zoom = map.getZoom()
+	const view = map.getBounds()
+	const status = {}
+	for (const layer of OVERLAYS) {
+		if (!overlays[layer.id]?.visible) continue
+		const sources = OVERLAY_SOURCES[layer.id]
+		if (!sources.length) continue
+		const b = layer.bounds
+		if (zoom < OVERLAY_MINZOOM[layer.id]) status[layer.id] = "zoom"
+		else if (
+			b &&
+			(b[0] > view.getEast() ||
+				b[2] < view.getWest() ||
+				b[1] > view.getNorth() ||
+				b[3] < view.getSouth())
+		)
+			status[layer.id] = "outside"
+		else if (sources.some((id) => map.getSource(id) && !map.isSourceLoaded(id)))
+			status[layer.id] = "loading"
+	}
+	return status
+}
+
 function ringFeatures(ringSource, mean, sigma) {
 	const label = `1 Tagesmarsch (${Math.round(mean / 1000)} km)`
 	const features = []
@@ -665,6 +703,37 @@ export default function MapView({ onMapReady }) {
 			}
 		}
 	}, [overlays, map])
+
+	// Ladezustand der eingeschalteten Ebenen für Panel und Ladeanzeige
+	const setOverlayStatus = useMapStore((s) => s.setOverlayStatus)
+	useEffect(() => {
+		if (!alive(map)) return
+		let frame = 0
+		let last = ""
+		const update = () => {
+			frame = 0
+			if (!alive(map)) return
+			const status = overlayStatus(map, overlays)
+			const key = JSON.stringify(status)
+			if (key !== last) {
+				last = key
+				setOverlayStatus(status)
+			}
+		}
+		const schedule = () => {
+			frame ||= requestAnimationFrame(update)
+		}
+		const events = ["dataloading", "sourcedata", "idle", "moveend"]
+		for (const e of events) map.on(e, schedule)
+		schedule()
+		return () => {
+			for (const e of events) map.off(e, schedule)
+			cancelAnimationFrame(frame)
+		}
+	}, [overlays, map, setOverlayStatus])
+	const loading = useMapStore((s) =>
+		Object.values(s.overlayStatus).includes("loading"),
+	)
 
 	// Eigene Karten: Quellen und Layer anlegen, entfernen, schalten
 	const customLayers = useMapStore((s) => s.customLayers)
@@ -913,5 +982,34 @@ export default function MapView({ onMapReady }) {
 		}
 	}, [selectedSite, map])
 
-	return <div ref={container} style={{ position: "absolute", inset: 0 }} />
+	return (
+		<>
+			<div ref={container} style={{ position: "absolute", inset: 0 }} />
+			{loading && (
+				<Box
+					role="status"
+					sx={{
+						position: "absolute",
+						left: "50%",
+						bottom: 44,
+						transform: "translateX(-50%)",
+						display: "flex",
+						alignItems: "center",
+						gap: 1,
+						px: 1.5,
+						py: 0.5,
+						borderRadius: 4,
+						bgcolor: "rgba(255,255,255,0.92)",
+						boxShadow: 1,
+						fontSize: 13,
+						pointerEvents: "none",
+						zIndex: 2,
+					}}
+				>
+					<CircularProgress size={14} />
+					Karte lädt …
+				</Box>
+			)}
+		</>
+	)
 }
