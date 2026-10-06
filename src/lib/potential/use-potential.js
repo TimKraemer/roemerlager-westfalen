@@ -1,6 +1,7 @@
 "use client"
 
 import { useCallback, useEffect, useRef } from "react"
+import { BASE_PATH } from "@/config"
 import { DEFAULT_REGION, NETWORK } from "@/lib/regions"
 import { campsFor, routeCamps, routeWaypoints } from "@/lib/sites"
 import { useMapStore } from "@/store/use-map-store"
@@ -27,7 +28,7 @@ function message(type, extra = {}) {
 }
 
 async function loadPrecomputed(region) {
-	const base = `${process.env.NEXT_PUBLIC_BASE_PATH}/${region.file}`
+	const base = `${BASE_PATH}/${region.file}`
 	try {
 		const [meta, bin] = await Promise.all([
 			fetch(`${base}.json`).then((r) => (r.ok ? r.json() : null)),
@@ -87,13 +88,13 @@ export function usePotential(getMap) {
 	// Vorberechnetes Ergebnis der Standardregion und das Netz sofort anzeigen
 	useEffect(() => {
 		let cancelled = false
-		fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/${NETWORK.file}.json`)
+		fetch(`${BASE_PATH}/${NETWORK.file}.json`)
 			.then((r) => (r.ok ? r.json() : null))
 			.then((network) => {
 				if (!cancelled && network) useMapStore.getState().setNetwork(network)
 			})
 			.catch(() => {})
-		fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/precomputed/lineaments.json`)
+		fetch(`${BASE_PATH}/precomputed/lineaments.json`)
 			.then((r) => (r.ok ? r.json() : null))
 			.then((lineaments) => {
 				if (!cancelled && lineaments)

@@ -1,4 +1,5 @@
 import * as maplibregl from "maplibre-gl"
+import { BASE_PATH } from "@/config"
 import { FONT } from "@/lib/layers"
 
 /**
@@ -19,8 +20,8 @@ export const MODEL_LAYER = "oberaden-3d"
 // Erst nah heran, damit die Übersichtskarte frei bleibt
 export const MODEL_MIN_ZOOM = 15
 
-const URL_GLB = `${process.env.NEXT_PUBLIC_BASE_PATH}/models/oberaden.glb`
-const URL_DRACO = `${process.env.NEXT_PUBLIC_BASE_PATH}/draco/`
+const URL_GLB = `${BASE_PATH}/models/oberaden.glb`
+const URL_DRACO = `${BASE_PATH}/draco/`
 
 // Modellursprung, Meter je Modelleinheit, Drehung gegen den Uhrzeigersinn
 const ORIGIN = [7.581621, 51.610942]
@@ -115,8 +116,15 @@ export function oberadenModelLayer() {
 		renderingMode: "3d",
 		async onAdd(m) {
 			map = m
-			THREE = await import("three")
-			const model = await loadModel()
+			let model
+			try {
+				THREE = await import("three")
+				model = await loadModel()
+			} catch (error) {
+				// Fehlt z. B. public/draco (postinstall), bleibt nur das Modell weg
+				console.warn("3D-Modell Oberaden nicht geladen:", error)
+				return
+			}
 			// Während des Ladens wieder ausgeschaltet
 			if (removed) return
 			camera = new THREE.Camera()
@@ -172,8 +180,20 @@ export function oberadenModelLayer() {
 		},
 		onRemove() {
 			removed = true
+			// Geometrien und Texturen freigeben, sonst bleibt bei jedem
+			// Aus- und Einschalten GPU-Speicher liegen
+			scene?.traverse((node) => {
+				node.geometry?.dispose()
+				for (const material of [node.material ?? []].flat()) {
+					for (const value of Object.values(material)) {
+						if (value?.isTexture) value.dispose()
+					}
+					material.dispose()
+				}
+			})
 			renderer?.dispose()
 			renderer = null
+			scene = null
 		},
 	}
 }

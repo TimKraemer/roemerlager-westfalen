@@ -3,11 +3,8 @@
 	"configurations": [
 		{
 			"name": "roemerlager-dev",
-			"runtimeExecutable": "bash",
-			"runtimeArgs": [
-				"-c",
-				"cd /home/tk/Projects/roemerlager && exec node_modules/.bin/next dev --port 3047"
-			],
+			"runtimeExecutable": "node_modules/.bin/next",
+			"runtimeArgs": ["dev", "--port", "3047"],
 			"port": 3047
 		}
 	]

@@ -4,7 +4,7 @@
 # Vorrang vor *.erleben.app der Next-App. Zertifikat: Wildcard erleben.app,
 # deshalb kein LETSENCRYPT_HOST.
 #
-# Einrichten und starten: deploy/setup-server.sh
+# Einrichten und starten: deploy/erleben/setup-server.sh
 services:
   experiments:
     container_name: experiments

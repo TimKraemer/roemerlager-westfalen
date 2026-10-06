@@ -1,3 +1,4 @@
+import { BASE_PATH } from "@/config"
 import rivers from "@/data/fluesse.json"
 import sources from "@/data/quellen.json"
 import roads from "@/data/roemerstrassen.json"
@@ -437,7 +438,7 @@ let places = null
  * ersten Suchen geladen.
  */
 export function loadPlaces() {
-	const base = `${process.env.NEXT_PUBLIC_BASE_PATH}/precomputed`
+	const base = `${BASE_PATH}/precomputed`
 	const json = (file, required) =>
 		fetch(`${base}/${file}`).then((r) => {
 			if (r.ok) return r.json()

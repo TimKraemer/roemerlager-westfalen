@@ -1,16 +1,17 @@
 import { VectorTile } from "@mapbox/vector-tile"
 import { PbfReader } from "pbf"
+import { TILES } from "@/config"
 import { lonLatToPixel, pixelToLonLat } from "./geo"
 
 /**
- * Heutige Fließgewässer aus den OpenMapTiles-Kacheln von tiles.erleben.app
+ * Heutige Fließgewässer aus OpenMapTiles-Vektorkacheln (TILES.vector)
  * (OpenStreetMap, Planetiler). Bäche gibt es erst ab Zoom 13. Kanäle
  * (Mittellandkanal 1906–1938), Gräben und Drainagen bleiben außen vor, sie
  * sind neuzeitlich. Verrohrte Bäche zählen mit, ihr Tal gab es schon.
  * Läuft im Worker.
  */
 
-export const VECTOR_TILES = "https://tiles.erleben.app/germany/{z}/{x}/{y}"
+export const VECTOR_TILES = TILES.vector
 export const WATER_CLASSES = ["river", "stream"]
 const ZOOM = 13
 const TILE = 256
@@ -21,7 +22,7 @@ async function loadTile(x, y) {
 		.replace("{y}", y)
 	const res = await fetch(url)
 	if (res.status === 204 || res.status === 404) return []
-	if (!res.ok) throw new Error(`tiles.erleben.app antwortet mit ${res.status}`)
+	if (!res.ok) throw new Error(`Vektorkacheln: Antwort ${res.status}`)
 	const tile = new VectorTile(
 		new PbfReader(new Uint8Array(await res.arrayBuffer())),
 	)

@@ -189,9 +189,9 @@ function demWater(state, params) {
 async function waterFor(state, params, isStale) {
 	if (params.waterSource === "osm") {
 		if (!state.osm) {
-			state.onProgress("Gewässer aus tiles.erleben.app laden", 0)
+			state.onProgress("Gewässer aus OSM-Kacheln laden", 0)
 			state.osm = await fetchWaterways(gridBbox(state.grid), (v) =>
-				state.onProgress("Gewässer aus tiles.erleben.app laden", v),
+				state.onProgress("Gewässer aus OSM-Kacheln laden", v),
 			)
 			if (isStale()) return null
 		}
@@ -389,7 +389,7 @@ export async function evaluate(
 	)
 	// Abzüge: nasse Niederungen und frühere Moore (TWI), auf Wunsch heutiger Wald
 	if (params.forestPenalty > 0 && !state.forest) {
-		state.onProgress("Wald aus tiles.erleben.app laden", 0)
+		state.onProgress("Wald aus OSM-Kacheln laden", 0)
 		state.forest = await forestCover(grid)
 		if (isStale()) return null
 	}

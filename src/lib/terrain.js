@@ -1,12 +1,15 @@
 /**
  * Höhenmodell aus Terrarium-Kacheln (Höhe = R·256 + G + B/256 − 32768).
- * Zuerst tiles.erleben.app (eigener Cache, bis Zoom 12), bei Fehlern die
- * Originalquelle auf AWS (Mapzen Terrain Tiles: SRTM, EU-DEM).
+ * Zuerst der eingestellte Kacheldienst (src/config.js, Standard
+ * tiles.erleben.app als Cache bis Zoom 12), bei Fehlern die Originalquelle
+ * auf AWS (Mapzen Terrain Tiles: SRTM, EU-DEM).
  * Läuft im Worker: fetch -> createImageBitmap -> OffscreenCanvas.
  */
 
+import { TILES } from "@/config"
+
 export const TERRARIUM_URLS = [
-	"https://tiles.erleben.app/dem/{z}/{x}/{y}",
+	TILES.dem,
 	"https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png",
 ]
 const TILE = 256

@@ -3,6 +3,7 @@
 import "maplibre-gl/dist/maplibre-gl.css"
 import * as maplibregl from "maplibre-gl"
 import { useEffect, useRef, useState } from "react"
+import { BASE_PATH } from "@/config"
 import roads from "@/data/roemerstrassen.json"
 import { throughGates } from "@/lib/camp-gates"
 import { SHORT_CREDIT } from "@/lib/citation"
@@ -586,7 +587,7 @@ export default function MapView({ onMapReady }) {
 	useEffect(() => {
 		maplibregl.setWorkerUrl(
 			new URL(
-				`${process.env.NEXT_PUBLIC_BASE_PATH}/maplibre/maplibre-gl-worker.mjs?v=${maplibreVersion.version}`,
+				`${BASE_PATH}/maplibre/maplibre-gl-worker.mjs?v=${maplibreVersion.version}`,
 				window.location.origin,
 			).href,
 		)
@@ -715,7 +716,7 @@ export default function MapView({ onMapReady }) {
 				if (!map.getSource(id)) {
 					map.addSource(id, {
 						type: "image",
-						url: `${process.env.NEXT_PUBLIC_BASE_PATH}/precomputed/lrm/${w.id}.jpg`,
+						url: `${BASE_PATH}/precomputed/lrm/${w.id}.jpg`,
 						coordinates: w.imageCorners,
 					})
 					map.addLayer(

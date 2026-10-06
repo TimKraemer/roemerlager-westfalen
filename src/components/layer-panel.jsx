@@ -12,7 +12,13 @@ import {
 	Switch,
 	Typography,
 } from "@mui/material"
-import { BASE_LAYERS, OVERLAYS } from "@/lib/layers"
+import { useEffect, useState } from "react"
+import {
+	ALTKARTEN_GROUP,
+	altkartenAvailable,
+	BASE_LAYERS,
+	OVERLAYS,
+} from "@/lib/layers"
 import { SITE_TYPES } from "@/lib/sites"
 import { useMapStore } from "@/store/use-map-store"
 import CustomLayers from "./custom-layers"
@@ -49,7 +55,14 @@ export default function LayerPanel({ onFlyTo }) {
 	const setShowRoads = useMapStore((s) => s.setShowRoads)
 	const setShowWaterways = useMapStore((s) => s.setShowWaterways)
 
-	const groups = [...new Set(OVERLAYS.map((o) => o.group))]
+	const [hasAltkarten, setHasAltkarten] = useState(false)
+	useEffect(() => {
+		altkartenAvailable().then(setHasAltkarten)
+	}, [])
+
+	const groups = [...new Set(OVERLAYS.map((o) => o.group))].filter(
+		(g) => g !== ALTKARTEN_GROUP || hasAltkarten,
+	)
 
 	return (
 		<Box>

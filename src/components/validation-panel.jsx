@@ -10,6 +10,7 @@ import {
 	Typography,
 } from "@mui/material"
 import { useEffect, useState } from "react"
+import { BASE_PATH } from "@/config"
 import { SectionTitle } from "./layer-panel"
 
 const pct = (v) => `P${Math.round(v * 100)}`
@@ -18,7 +19,7 @@ const pct = (v) => `P${Math.round(v * 100)}`
 export default function ValidationPanel() {
 	const [data, setData] = useState(null)
 	useEffect(() => {
-		fetch(`${process.env.NEXT_PUBLIC_BASE_PATH}/precomputed/validation.json`)
+		fetch(`${BASE_PATH}/precomputed/validation.json`)
 			.then((r) => (r.ok ? r.json() : null))
 			.then(setData)
 			.catch(() => {})

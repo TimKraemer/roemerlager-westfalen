@@ -7,6 +7,7 @@
  */
 
 import { addProtocol } from "maplibre-gl"
+import { BASE_PATH, TILES } from "@/config"
 import ALTKARTEN from "@/data/altkarten.json"
 import RIVERS from "@/data/fluesse.json"
 import { VECTOR_TILES } from "./water"
@@ -16,9 +17,10 @@ const LGLN = "© LGLN (CC BY 4.0)"
 const BKG = "© BKG (CC BY 4.0)"
 const OSM = "© OpenStreetMap-Mitwirkende"
 
-export const DEM_TILES = "https://tiles.erleben.app/dem/{z}/{x}/{y}"
-export const GLYPHS = "https://tiles.erleben.app/font/{fontstack}/{range}"
+export const DEM_TILES = TILES.dem
+export const GLYPHS = TILES.glyphs
 export const FONT = ["Montserrat SemiBold"]
+export const ALTKARTEN_GROUP = "Altkarten (entzerrt)"
 
 const SENTINEL = {
 	tiles: [
@@ -100,7 +102,7 @@ export const OVERLAYS = [
 		kind: "relief",
 		group: "Gelände",
 		label: "Relief farbig",
-		note: "Höhenstufen und Schattierung aus dem Höhenmodell (tiles.erleben.app), NRW und Niedersachsen einheitlich",
+		note: "Höhenstufen und Schattierung aus dem Höhenmodell (Terrarium-Kacheln), NRW und Niedersachsen einheitlich",
 		attribution:
 			"Höhendaten: Mapzen Terrain Tiles (SRTM, EU-DEM, © Europäische Union)",
 		opacity: 0.35,
@@ -163,7 +165,7 @@ export const OVERLAYS = [
 		kind: "water",
 		group: "Gewässer",
 		label: "Heutige Bäche und Flüsse (OSM)",
-		note: "Aus tiles.erleben.app, ohne Kanäle, Gräben und Drainagen",
+		note: "Aus den OpenStreetMap-Vektorkacheln, ohne Kanäle, Gräben und Drainagen",
 		attribution: OSM,
 		opacity: 0.9,
 	},
@@ -326,14 +328,12 @@ export const OVERLAYS = [
 	// unbekannt, Angaben nur soweit auf dem Blatt oder im Dateinamen)
 	...ALTKARTEN.map((m) => ({
 		id: `alt-${m.id}`,
-		group: "Altkarten (entzerrt)",
+		group: ALTKARTEN_GROUP,
 		label: `${m.year} ${m.short}`,
 		note: [m.author, m.accuracy && `Passpunkte: ${m.accuracy}`]
 			.filter(Boolean)
 			.join(". "),
-		tiles: [
-			`${process.env.NEXT_PUBLIC_BASE_PATH ?? ""}/altkarten/${m.id}/{z}/{x}/{y}.webp`,
-		],
+		tiles: [`${BASE_PATH}/altkarten/${m.id}/{z}/{x}/{y}.webp`],
 		bounds: m.bounds,
 		jump: jumpToBounds(m.bounds, m.minzoom),
 		minzoom: m.minzoom,
@@ -342,6 +342,22 @@ export const OVERLAYS = [
 		opacity: 0.85,
 	})),
 ]
+
+let altkartenCheck
+/**
+ * Die Altkarten-Kacheln sind nicht eingecheckt (README, Abschnitt
+ * Altkarten). Prüft einmal, ob sie auf dem Server liegen.
+ */
+export function altkartenAvailable() {
+	altkartenCheck ??= ALTKARTEN.length
+		? fetch(`${BASE_PATH}/altkarten/${ALTKARTEN[0].id}/meta.json`, {
+				method: "HEAD",
+			})
+				.then((res) => res.ok)
+				.catch(() => false)
+		: Promise.resolve(false)
+	return altkartenCheck
+}
 
 /** Mitte und eine Zoomstufe, auf der die Kartenfläche etwa ins Bild passt. */
 function jumpToBounds([w, s, e, n], minzoom) {

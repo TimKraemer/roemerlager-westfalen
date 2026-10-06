@@ -30,5 +30,5 @@ const { version } = JSON.parse(
 )
 writeFileSync(
 	join(ROOT, "src", "lib", "maplibre-version.json"),
-	`${JSON.stringify({ version })}\n`,
+	`{ "version": ${JSON.stringify(version)} }\n`,
 )

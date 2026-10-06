@@ -1,6 +1,8 @@
-// Läuft als statische Seite unter experiments.erleben.app/roemer
-// (deploy/README.md). Alles rechnet im Browser, ein Server ist nicht nötig.
-const basePath = "/roemer"
+// Statischer Export: alles rechnet im Browser, ausgeliefert wird nur der
+// Ordner out/ (deploy/README.md). BASE_PATH legt den Unterpfad fest, z. B.
+// "/roemer" für experiments.erleben.app/roemer. Ohne Angabe liegt die App
+// im Wurzelpfad. Weitere Einstellungen: src/config.js und .env.example.
+const basePath = (process.env.BASE_PATH ?? "").replace(/\/+$/, "")
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {

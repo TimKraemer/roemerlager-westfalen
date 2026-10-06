@@ -1,8 +1,17 @@
+# Abhängigkeiten und Build
 node_modules
 .next
-public/maplibre
 out
-public/draco
-scripts/altkarten/.cache
-public/altkarten
 __pycache__
+
+# Von postinstall kopiert (scripts/copy-maplibre-worker.mjs)
+public/maplibre
+public/draco
+
+# Altkarten: Kacheln werden aus Scans gerechnet (README, Abschnitt Altkarten)
+public/altkarten
+scripts/altkarten/.cache
+
+# Lokale Einstellungen
+.env*.local
+deploy/deploy.env
