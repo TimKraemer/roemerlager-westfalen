@@ -94,8 +94,11 @@ in `.env.local` (Vorlage [.env.example](.env.example)), beim Deploy in
 | `NEXT_PUBLIC_VECTOR_TILES` | `https://tiles.erleben.app/germany/{z}/{x}/{y}` | Vektorkacheln im OpenMapTiles-Schema, z. B. von [OpenFreeMap](https://openfreemap.org) |
 | `NEXT_PUBLIC_GLYPHS` | `https://tiles.erleben.app/font/{fontstack}/{range}` | Schriften für Beschriftungen |
 
-Die Standard-Kacheldienste auf tiles.erleben.app erlauben Zugriffe von
-anderen Domains. Wer viel Last erzeugt, sollte eigene Dienste eintragen.
+Die Standard-Kacheldienste auf tiles.erleben.app beantworten Browser-Anfragen
+nur von den Domains von erleben.app und von localhost. Wer die App unter einer
+eigenen Domain betreibt, muss eigene Dienste für Vektorkacheln und Schriften
+eintragen. Das Höhenmodell fällt ohne eigenen Dienst auf AWS Terrain Tiles
+zurück.
 Inhaltliche Einstellungen (Regionen, Fundstellen, Ebenen, Modellgewichte)
 stehen im Code, siehe [CONTRIBUTING.md](CONTRIBUTING.md#erweitern).
 
