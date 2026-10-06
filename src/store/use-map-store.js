@@ -37,6 +37,8 @@ export const useMapStore = create((set) => ({
 	// Seitenleiste mit Einstellungen und Quellen, anfangs eingeklappt
 	panelOpen: false,
 	showRoads: true,
+	// 3D-Rekonstruktion des Lagers Oberaden, sichtbar ab Zoom 15
+	showModel: true,
 
 	// Potenzialanalyse
 	params: DEFAULT_PARAMS,
@@ -79,6 +81,7 @@ export const useMapStore = create((set) => ({
 	setShowRoutes: (showRoutes) => set({ showRoutes }),
 	setPanelOpen: (panelOpen) => set({ panelOpen }),
 	setShowRoads: (showRoads) => set({ showRoads }),
+	setShowModel: (showModel) => set({ showModel }),
 	setParams: (patch) => set((s) => ({ params: { ...s.params, ...patch } })),
 	setWeight: (key, value) =>
 		set((s) => ({

@@ -42,6 +42,8 @@ export default function LayerPanel() {
 	const showRoutes = useMapStore((s) => s.showRoutes)
 	const setShowRoutes = useMapStore((s) => s.setShowRoutes)
 	const showRoads = useMapStore((s) => s.showRoads)
+	const showModel = useMapStore((s) => s.showModel)
+	const setShowModel = useMapStore((s) => s.setShowModel)
 	const setShowRoads = useMapStore((s) => s.setShowRoads)
 	const setShowWaterways = useMapStore((s) => s.setShowWaterways)
 
@@ -153,6 +155,12 @@ export default function LayerPanel() {
 				onChange={setShowWaterways}
 				label="Natürliches Gewässernetz der Analyse"
 				note="Aus den Talzügen des Höhenmodells, ohne Kanäle"
+			/>
+			<HelperSwitch
+				checked={showModel}
+				onChange={setShowModel}
+				label="3D-Modell Römerlager Oberaden"
+				note="Ab Zoomstufe 15, Modell aus der Bergkamen-App, an den vier Toren eingepasst"
 			/>
 		</Box>
 	)

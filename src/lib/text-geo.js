@@ -338,13 +338,18 @@ export function textGeo(id) {
 	const features = []
 	const add = (geometry, props) =>
 		features.push({ type: "Feature", properties: props, geometry })
-	const label = (at, text, kind) =>
-		text &&
-		add(
-			{ type: "Point", coordinates: at },
-			{ kind: "label", label: text, of: kind },
-		)
 	for (const p of parts) {
+		const label = (at, text, kind) =>
+			text &&
+			add(
+				{ type: "Point", coordinates: at },
+				{
+					kind: "label",
+					label: text,
+					of: kind,
+					uncertain: Boolean(p.uncertain),
+				},
+			)
 		const props = { kind: p.kind, uncertain: Boolean(p.uncertain) }
 		if (p.kind === "river") {
 			const coords = rivers[p.name]

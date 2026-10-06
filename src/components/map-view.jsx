@@ -5,7 +5,7 @@ import * as maplibregl from "maplibre-gl"
 import { useEffect, useRef, useState } from "react"
 import roads from "@/data/roemerstrassen.json"
 import { SHORT_CREDIT } from "@/lib/citation"
-import { circlePolygon, metersPerPixel } from "@/lib/geo"
+import { circlePolygon } from "@/lib/geo"
 import {
 	BASE_LAYERS,
 	FONT,
@@ -22,6 +22,12 @@ import { DEFAULT_REGION } from "@/lib/regions"
 import { campsFor, SITE_TYPES, SITES } from "@/lib/sites"
 import { textGeo } from "@/lib/text-geo"
 import { useMapStore } from "@/store/use-map-store"
+import {
+	MODEL_LAYER,
+	MODEL_MIN_ZOOM,
+	oberadenModelLayer,
+} from "./oberaden-model"
+import { addTextLayers, showText } from "./text-overlay"
 
 // Startansicht aus dem URL-Hash (#zoom/lat/lon), sonst der Kreis
 function initialView() {
@@ -325,237 +331,6 @@ function addAnalysisLayers(map) {
 			"text-optional": true,
 		},
 		paint: { "text-color": "#212121", ...HALO },
-	})
-}
-
-const TEXT_COLOR = "#6a1b9a"
-const ARROW_COLOR = "#c62828"
-const kindIs = (...kinds) => ["in", ["get", "kind"], ["literal", kinds]]
-const sure = ["!", ["get", "uncertain"]]
-
-// Pfeilspitze (nach oben) und Winkel (nach rechts, entlang der Linie)
-function arrowImage(draw) {
-	const size = 48
-	const canvas = document.createElement("canvas")
-	canvas.width = size
-	canvas.height = size
-	const ctx = canvas.getContext("2d")
-	ctx.fillStyle = ARROW_COLOR
-	ctx.strokeStyle = "#fff"
-	ctx.lineWidth = 4
-	ctx.lineJoin = "round"
-	ctx.beginPath()
-	draw(ctx, size)
-	ctx.closePath()
-	ctx.stroke()
-	ctx.fill()
-	return ctx.getImageData(0, 0, size, size)
-}
-
-/** Orte, Räume und Richtungen der angeklickten Textstelle, ganz oben. */
-function addTextLayers(map) {
-	map.addImage(
-		"text-head",
-		arrowImage((c, s) => {
-			c.moveTo(s / 2, 4)
-			c.lineTo(s - 6, s - 6)
-			c.lineTo(s / 2, s - 16)
-			c.lineTo(6, s - 6)
-		}),
-		{ pixelRatio: 2 },
-	)
-	map.addImage(
-		"text-chevron",
-		arrowImage((c, s) => {
-			c.moveTo(s - 8, s / 2)
-			c.lineTo(12, 10)
-			c.lineTo(20, s / 2)
-			c.lineTo(12, s - 10)
-		}),
-		{ pixelRatio: 3 },
-	)
-	map.addSource("text-geo", { type: "geojson", data: EMPTY })
-	// Heller Schleier über allem anderen, damit die Textstelle hervortritt
-	map.addLayer({
-		id: "text-veil",
-		type: "background",
-		layout: { visibility: "none" },
-		paint: { "background-color": "#fff", "background-opacity": 0.55 },
-	})
-	// Breite in Metern, unabhängig von der Zoomstufe (MapLibre zählt Zoom
-	// in 512er-Kacheln, metersPerPixel in 256er)
-	const meters = (zoom) => [
-		"/",
-		["get", "width"],
-		metersPerPixel(51.8, zoom + 1),
-	]
-	map.addLayer({
-		id: "text-band",
-		type: "line",
-		source: "text-geo",
-		filter: kindIs("band"),
-		// Gehrungen statt runder Gelenke, sonst überlappt die halbtransparente Fläche
-		layout: { "line-cap": "round", "line-join": "miter" },
-		paint: {
-			"line-color": TEXT_COLOR,
-			"line-opacity": 0.25,
-			"line-width": [
-				"interpolate",
-				["exponential", 2],
-				["zoom"],
-				4,
-				meters(4),
-				14,
-				meters(14),
-			],
-		},
-	})
-	map.addLayer({
-		id: "text-area-fill",
-		type: "fill",
-		source: "text-geo",
-		filter: kindIs("area"),
-		paint: { "fill-color": TEXT_COLOR, "fill-opacity": 0.12 },
-	})
-	map.addLayer({
-		id: "text-outline",
-		type: "line",
-		source: "text-geo",
-		filter: ["all", kindIs("area", "ring", "line"), sure],
-		paint: { "line-color": TEXT_COLOR, "line-width": 2 },
-	})
-	map.addLayer({
-		id: "text-outline-uncertain",
-		type: "line",
-		source: "text-geo",
-		filter: ["all", kindIs("area", "ring", "line"), ["get", "uncertain"]],
-		paint: {
-			"line-color": TEXT_COLOR,
-			"line-width": 2,
-			"line-dasharray": [3, 2],
-		},
-	})
-	map.addLayer({
-		id: "text-river-casing",
-		type: "line",
-		source: "text-geo",
-		filter: kindIs("river"),
-		layout: { "line-cap": "round", "line-join": "round" },
-		paint: { "line-color": "#fff", "line-width": 8, "line-opacity": 0.9 },
-	})
-	map.addLayer({
-		id: "text-river",
-		type: "line",
-		source: "text-geo",
-		filter: kindIs("river"),
-		layout: { "line-cap": "round", "line-join": "round" },
-		paint: { "line-color": "#0288d1", "line-width": 4.5 },
-	})
-	map.addLayer({
-		id: "text-river-label",
-		type: "symbol",
-		source: "text-geo",
-		filter: kindIs("river"),
-		layout: {
-			"symbol-placement": "line",
-			"symbol-spacing": 400,
-			"text-field": ["get", "label"],
-			"text-font": FONT,
-			"text-size": 14,
-			"text-letter-spacing": 0.1,
-		},
-		paint: { "text-color": "#01579b", ...HALO },
-	})
-	const arrowLine = (id, filter, dash) => ({
-		id,
-		type: "line",
-		source: "text-geo",
-		filter: ["all", kindIs("arrow"), filter],
-		layout: { "line-cap": "round", "line-join": "round" },
-		paint: {
-			"line-color": ARROW_COLOR,
-			"line-width": 3.5,
-			...(dash ? { "line-dasharray": dash } : {}),
-		},
-	})
-	map.addLayer({
-		id: "text-arrow-casing",
-		type: "line",
-		source: "text-geo",
-		filter: kindIs("arrow"),
-		layout: { "line-cap": "round", "line-join": "round" },
-		paint: { "line-color": "#fff", "line-width": 6.5, "line-opacity": 0.85 },
-	})
-	map.addLayer(arrowLine("text-arrow", sure))
-	map.addLayer(
-		arrowLine("text-arrow-uncertain", ["get", "uncertain"], [2, 1.5]),
-	)
-	map.addLayer({
-		id: "text-arrow-chevrons",
-		type: "symbol",
-		source: "text-geo",
-		filter: kindIs("arrow"),
-		layout: {
-			"symbol-placement": "line",
-			"symbol-spacing": 90,
-			"icon-image": "text-chevron",
-			"icon-allow-overlap": true,
-			"icon-ignore-placement": true,
-		},
-	})
-	map.addLayer({
-		id: "text-head",
-		type: "symbol",
-		source: "text-geo",
-		filter: kindIs("head"),
-		layout: {
-			"icon-image": "text-head",
-			"icon-rotate": ["get", "bearing"],
-			"icon-rotation-alignment": "map",
-			"icon-allow-overlap": true,
-			"icon-ignore-placement": true,
-		},
-	})
-	map.addLayer({
-		id: "text-point",
-		type: "circle",
-		source: "text-geo",
-		filter: kindIs("point"),
-		paint: {
-			"circle-radius": 7,
-			"circle-color": ["case", ["get", "uncertain"], "#fff", TEXT_COLOR],
-			"circle-stroke-color": ["case", ["get", "uncertain"], TEXT_COLOR, "#fff"],
-			"circle-stroke-width": 2.5,
-		},
-	})
-	map.addLayer({
-		id: "text-label",
-		type: "symbol",
-		source: "text-geo",
-		filter: kindIs("label"),
-		layout: {
-			"text-field": ["get", "label"],
-			"text-font": FONT,
-			"text-size": ["match", ["get", "of"], "area", 14, 13],
-			"text-max-width": 14,
-			"text-anchor": ["match", ["get", "of"], "point", "left", "center"],
-			"text-offset": [
-				"match",
-				["get", "of"],
-				"point",
-				["literal", [1, 0]],
-				"arrow",
-				["literal", [0, -1.4]],
-				"band",
-				["literal", [0, 1.6]],
-				["literal", [0, 0]],
-			],
-			"text-allow-overlap": true,
-		},
-		paint: {
-			"text-color": ["match", ["get", "of"], "arrow", ARROW_COLOR, TEXT_COLOR],
-			...HALO,
-		},
 	})
 }
 
@@ -909,6 +684,23 @@ export default function MapView({ onMapReady }) {
 		map.setLayoutProperty("roads", "visibility", showRoads ? "visible" : "none")
 	}, [showRoads, map])
 
+	// 3D-Lager Oberaden: three.js und Modell erst beim ersten Heranzoomen laden
+	const showModel = useMapStore((s) => s.showModel)
+	useEffect(() => {
+		if (!alive(map)) return
+		if (!showModel) {
+			if (map.getLayer(MODEL_LAYER)) map.removeLayer(MODEL_LAYER)
+			return
+		}
+		const add = () => {
+			if (map.getZoom() < MODEL_MIN_ZOOM || map.getLayer(MODEL_LAYER)) return
+			map.addLayer(oberadenModelLayer(), "sites")
+		}
+		add()
+		map.on("zoomend", add)
+		return () => map.off("zoomend", add)
+	}, [showModel, map])
+
 	// Gewässer der Analyse: abgeleitetes Netz als Linien, OSM direkt aus den
 	// Vektorkacheln (Ebene "osm-gewaesser")
 	const waterSource = result?.waterSource
@@ -1000,35 +792,10 @@ export default function MapView({ onMapReady }) {
 		})
 	}, [result, heatmap, network, map])
 
-	// Angeklickte Textstelle zeigen und den Ausschnitt darauf einstellen
+	// Angeklickte Textstelle zeigen, mit Kamerafahrt und Animation
 	useEffect(() => {
 		if (!alive(map)) return
-		const geo = selectedText ? textGeo(selectedText) : null
-		map.getSource("text-geo").setData(geo?.data ?? EMPTY)
-		map.setLayoutProperty("text-veil", "visibility", geo ? "visible" : "none")
-		if (!geo) return
-		const [w, s, e, n] = geo.bounds
-		const fit = () =>
-			map.fitBounds(
-				[
-					[w, s],
-					[e, n],
-				],
-				{
-					padding: { top: 70, bottom: 70, left: 70, right: 170 },
-					maxZoom: 11,
-					duration: 1200,
-				},
-			)
-		fit()
-		// Öffnet sich gleichzeitig die Seitenleiste, ändert sich die Kartenbreite
-		// und die Animation bricht ab. Dann noch einmal einpassen.
-		map.on("resize", fit)
-		const stop = setTimeout(() => map.off("resize", fit), 1000)
-		return () => {
-			clearTimeout(stop)
-			map.off("resize", fit)
-		}
+		return showText(map, selectedText ? textGeo(selectedText) : null)
 	}, [selectedText, map])
 
 	useEffect(() => {

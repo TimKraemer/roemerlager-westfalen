@@ -8,3 +8,140 @@ body {
 .maplibregl-ctrl-attrib {
 	font-size: 11px;
 }
+
+/* Sprechblasen der antiken Texte auf der Karte (text-overlay.js) */
+.tg-marker {
+	pointer-events: none;
+	transition: opacity 250ms;
+}
+
+.tg-marker.tg-hidden {
+	opacity: 0;
+}
+
+.tg-bubble {
+	--accent: #6a1b9a;
+	position: relative;
+	max-width: 230px;
+	color: #241a2b;
+	background: rgba(255, 255, 255, 0.94);
+	-webkit-backdrop-filter: blur(6px);
+	backdrop-filter: blur(6px);
+	box-shadow:
+		0 8px 22px rgba(40, 20, 50, 0.18),
+		0 1px 3px rgba(40, 20, 50, 0.14);
+	font:
+		600 12px / 1.35 system-ui,
+		-apple-system,
+		"Segoe UI",
+		Roboto,
+		sans-serif;
+	animation: tg-pop 0.55s cubic-bezier(0.2, 0.9, 0.3, 1.25) both;
+}
+
+.tg-arrow {
+	--accent: #c62828;
+}
+
+.tg-callout {
+	padding: 6px 11px 7px 12px;
+	border-radius: 10px;
+	border-left: 3px solid var(--accent);
+}
+
+/* Spitze der Sprechblase nach unten zum Bezugspunkt */
+.tg-callout::after {
+	content: "";
+	position: absolute;
+	left: 50%;
+	bottom: -5px;
+	width: 10px;
+	height: 10px;
+	background: rgba(255, 255, 255, 0.94);
+	transform: translateX(-50%) rotate(45deg);
+	border-radius: 0 0 3px 0;
+	box-shadow: 3px 3px 5px rgba(40, 20, 50, 0.08);
+}
+
+.tg-band::after {
+	top: -5px;
+	bottom: auto;
+	border-radius: 3px 0 0 0;
+	box-shadow: -2px -2px 4px rgba(40, 20, 50, 0.06);
+}
+
+.tg-band {
+	animation-name: tg-drop;
+}
+
+.tg-pill {
+	padding: 4px 10px;
+	border-radius: 999px;
+	border: 1.5px solid rgba(106, 27, 154, 0.35);
+	white-space: nowrap;
+	animation-name: tg-slide;
+}
+
+.tg-pill.tg-uncertain {
+	border-style: dashed;
+	border-color: var(--accent);
+}
+
+.tg-kicker {
+	display: block;
+	margin-bottom: 2px;
+	font-size: 9.5px;
+	font-weight: 700;
+	letter-spacing: 0.09em;
+	text-transform: uppercase;
+	color: var(--accent);
+}
+
+.tg-pill .tg-kicker {
+	display: inline;
+	margin: 0 6px 0 0;
+}
+
+.tg-ring {
+	font-size: 11px;
+	padding: 2px 9px;
+}
+
+@keyframes tg-pop {
+	from {
+		opacity: 0;
+		transform: translateY(8px) scale(0.9);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes tg-slide {
+	from {
+		opacity: 0;
+		transform: translateX(-8px);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@keyframes tg-drop {
+	from {
+		opacity: 0;
+		transform: translateY(-8px) scale(0.9);
+	}
+	to {
+		opacity: 1;
+		transform: none;
+	}
+}
+
+@media (prefers-reduced-motion: reduce) {
+	.tg-bubble {
+		animation: none;
+	}
+}

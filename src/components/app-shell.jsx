@@ -115,7 +115,9 @@ export default function AppShell() {
 					/>
 				))}
 			</Tabs>
-			<Box sx={{ flex: 1, overflow: "auto", px: 2, pb: 3 }}>
+			<Box
+				sx={{ flex: 1, overflowY: "auto", overflowX: "hidden", px: 2, pb: 3 }}
+			>
 				{tab === "layers" && <LayerPanel />}
 				{tab === "sites" && <SitesPanel />}
 				{tab === "analysis" && (
