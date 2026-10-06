@@ -52,6 +52,8 @@ export default function LayerPanel({ onFlyTo }) {
 	const setShowRoutes = useMapStore((s) => s.setShowRoutes)
 	const showCandidates = useMapStore((s) => s.showCandidates)
 	const setShowCandidates = useMapStore((s) => s.setShowCandidates)
+	const showStages = useMapStore((s) => s.showStages)
+	const setShowStages = useMapStore((s) => s.setShowStages)
 	const showRoads = useMapStore((s) => s.showRoads)
 	const showModel = useMapStore((s) => s.showModel)
 	const modelOpacity = useMapStore((s) => s.modelOpacity)
@@ -184,8 +186,14 @@ export default function LayerPanel({ onFlyTo }) {
 				checked={showRoutes}
 				onChange={setShowRoutes}
 				id="routes"
-				label="Mögliche Marschwege und Etappenhalte"
+				label="Mögliche Marschwege"
 				note="Weg geringster Gehzeit zwischen bekannten Lagern (Modell), gestrichelt zu Kalkriese und zum vermuteten Lager Löhne"
+			/>
+			<HelperSwitch
+				checked={showStages}
+				onChange={setShowStages}
+				label="Mögliche Etappenhalte"
+				note="Nach je einem Tagesmarsch entlang der Marschwege, die beste Stelle im Umkreis von 3 km"
 			/>
 			<HelperSwitch
 				checked={showRoads}

@@ -43,6 +43,7 @@ export const useMapStore = create((set) => ({
 	showRoutes: true,
 	// Nummerierte Punkte der Analyse (vermutete Lagerplätze)
 	showCandidates: true,
+	showStages: true,
 	// Seitenleiste mit Einstellungen und Quellen, anfangs eingeklappt.
 	// Auf dem Handy ist es das Sheet am unteren Rand.
 	panelOpen: false,
@@ -104,6 +105,7 @@ export const useMapStore = create((set) => ({
 	setShowWaterways: (showWaterways) => set({ showWaterways }),
 	setShowRoutes: (showRoutes) => set({ showRoutes }),
 	setShowCandidates: (showCandidates) => set({ showCandidates }),
+	setShowStages: (showStages) => set({ showStages }),
 	setPanelOpen: (panelOpen) => set({ panelOpen }),
 	setPanelTab: (panelTab) => set({ panelTab }),
 	setSheetFrac: (sheetFrac) => set({ sheetFrac }),

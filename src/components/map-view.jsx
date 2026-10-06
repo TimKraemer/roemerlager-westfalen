@@ -609,6 +609,7 @@ export default function MapView({ onMapReady }) {
 	const showRoutes = useMapStore((s) => s.showRoutes)
 	const showRoads = useMapStore((s) => s.showRoads)
 	const showCandidates = useMapStore((s) => s.showCandidates)
+	const showStages = useMapStore((s) => s.showStages)
 	const ringSource = useMapStore((s) => s.ringSource)
 	const ringMean = useMapStore((s) => s.params.ringMean)
 	const ringSigma = useMapStore((s) => s.params.ringSigma)
@@ -904,16 +905,17 @@ export default function MapView({ onMapReady }) {
 	useEffect(() => {
 		if (!alive(map)) return
 		map.getSource("routes").setData(routes ? throughGates(routes) : EMPTY)
-		for (const id of [
-			"routes",
-			"routes-casing",
-			"routes-label",
-			"stages",
-			"stages-label",
-		]) {
+		for (const id of ["routes", "routes-casing", "routes-label"]) {
 			map.setLayoutProperty(id, "visibility", showRoutes ? "visible" : "none")
 		}
 	}, [routes, showRoutes, map])
+
+	useEffect(() => {
+		if (!alive(map)) return
+		for (const id of ["stages", "stages-label"]) {
+			map.setLayoutProperty(id, "visibility", showStages ? "visible" : "none")
+		}
+	}, [showStages, map])
 
 	useEffect(() => {
 		if (!alive(map)) return
