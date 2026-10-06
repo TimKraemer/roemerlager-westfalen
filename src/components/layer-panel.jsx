@@ -189,6 +189,7 @@ export default function LayerPanel({ onFlyTo }) {
 			<HelperSwitch
 				checked={heatmap.visible}
 				onChange={(visible) => setHeatmap({ visible })}
+				id="heatmap"
 				label="Potenzialkarte"
 				note="Farbfläche der Analyse, Schwelle und Deckkraft im Reiter Analyse"
 			/>
@@ -202,6 +203,7 @@ export default function LayerPanel({ onFlyTo }) {
 			<HelperSwitch
 				checked={showRegion}
 				onChange={setShowRegion}
+				id="boundary"
 				label="Grenze des Untersuchungsgebiets"
 				note={`${DEFAULT_REGION.label}, für den die Analyse rechnet`}
 			/>
@@ -221,6 +223,7 @@ export default function LayerPanel({ onFlyTo }) {
 			<HelperSwitch
 				checked={showStages}
 				onChange={setShowStages}
+				id="stops"
 				label="Mögliche Etappenhalte"
 				note="Nach je einem Tagesmarsch entlang der Marschwege, die beste Stelle im Umkreis von 3 km"
 			/>

@@ -3,13 +3,17 @@
 import { Box, Link, Typography } from "@mui/material"
 import { useMemo } from "react"
 import { CITATION, projectCsl } from "@/lib/citation"
-import { CitationView } from "./cite-dialog"
+import { CitationSummary } from "./cite-dialog"
 
 export default function CitationBox() {
 	const items = useMemo(() => [projectCsl()], [])
 	return (
 		<Box sx={{ mt: 1 }}>
-			<CitationView items={items} base="roemerlager-westfalen" dense />
+			<CitationSummary
+				items={items}
+				base="roemerlager-westfalen"
+				title="Karte und Modell zitieren"
+			/>
 			<Typography variant="caption" color="text.secondary" component="p">
 				Code, Modell und Texte sind unter Anleitung von {CITATION.author} mit KI
 				(Claude, Anthropic) entstanden und nicht durchgehend fachlich geprüft.

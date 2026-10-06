@@ -156,6 +156,53 @@ export function htmlToText(html) {
 		.join("\n")
 }
 
+// Akzentbefehle aus citation-js, z. B. {\" a} für ä oder {\" {U}} für Ü
+const ACCENT = /\{\\(["'`^~=.vcuHrk]) (?:\{(\w)\}|(\w))\}/g
+const COMBINING = {
+	'"': "̈",
+	"'": "́",
+	"`": "̀",
+	"^": "̂",
+	"~": "̃",
+	"=": "̄",
+	".": "̇",
+	v: "̌",
+	c: "̧",
+	u: "̆",
+	H: "̋",
+	r: "̊",
+	k: "̨",
+}
+const LETTERS = {
+	"\\ss{}": "ß",
+	"\\o{}": "ø",
+	"\\O{}": "Ø",
+	"\\ae{}": "æ",
+	"\\AE{}": "Æ",
+	"\\l{}": "ł",
+	"\\L{}": "Ł",
+	"\\quotedblbase{}": "„",
+	"\\textquoteright{}": "’",
+}
+
+/** Klassisches BibTeX: Akzente in der üblichen Form {\"a}. */
+export function tidyAccents(text) {
+	return text.replace(ACCENT, (_, acc, a, b) => `{\\${acc}${a ?? b}}`)
+}
+
+/**
+ * BibLaTeX mit biber liest UTF-8, deshalb Umlaute und Sonderzeichen als
+ * Zeichen statt als Befehl. Maskierte Zeichen wie \& bleiben, wie sie sind.
+ */
+export function latexToUnicode(text) {
+	let out = text.replace(ACCENT, (_, acc, a, b) =>
+		`${a ?? b}${COMBINING[acc]}`.normalize("NFC"),
+	)
+	for (const [cmd, ch] of Object.entries(LETTERS)) out = out.replaceAll(cmd, ch)
+	// citation-js setzt das schließende „““ als ``
+	return out.replaceAll("``", "“")
+}
+
 /**
  * Formatiert CSL-JSON-Einträge. Zitierstile liefern { text, html },
  * Exportformate nur { text }. Der Schlüssel in BibTeX ist bibKey(id).
@@ -178,12 +225,14 @@ export async function formatCitations(items, formatId) {
 		// BibLaTeX kennt urldate, klassisches BibTeX druckt den Hinweis wörtlich
 		text =
 			format.id === "biblatex"
-				? text.replace(accessed, "")
-				: text.replace(
-						accessed,
-						(_, y, m, d) => `\tnote = {Abgerufen am ${d}.${m}.${y}},\n`,
+				? latexToUnicode(text.replace(accessed, ""))
+				: tidyAccents(
+						text.replace(
+							accessed,
+							(_, y, m, d) => `\tnote = {Abgerufen am ${d}.${m}.${y}},\n`,
+						),
 					)
-		return { text }
+		return { text: text.replace(/^\t/gm, "  ") }
 	}
 
 	await ensureStyle(plugins, format.style)

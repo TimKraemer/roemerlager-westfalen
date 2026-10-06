@@ -37,9 +37,14 @@ const SOURCES = {
 		refs: ["lwl2023paderborn", "juengerich2022"],
 	},
 	routes: {
-		own: "Mögliche Marschwege und Etappenhalte",
+		own: "Mögliche Marschwege",
 		refs: ["tobler1993", "lewis2021", "mapzen-terrain", "osm"],
 	},
+	stops: {
+		own: "Mögliche Etappenhalte",
+		refs: [...new Set(["tobler1993", "lewis2021", ...MODEL_REFS])],
+	},
+	boundary: { refs: ["osm"] },
 	roads: { own: "Römerstraßen", refs: ["itinere2025", "osm"] },
 	waterways: {
 		own: "Natürliches Gewässernetz",

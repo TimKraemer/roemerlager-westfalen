@@ -59,6 +59,19 @@ describe("shortLabel", () => {
 describe("Ebenen", () => {
 	test("jede zuschaltbare Ebene hat Quellen", () => {
 		for (const o of OVERLAYS) expect(hasLayerSources(o.id)).toBe(true)
+		// Schalter unter „Analyse und Wege“ in layer-panel.jsx
+		for (const id of [
+			"heatmap",
+			"candidates",
+			"boundary",
+			"rings",
+			"routes",
+			"stops",
+			"roads",
+			"waterways",
+			"model3d",
+		])
+			expect(hasLayerSources(id)).toBe(true)
 	})
 	test("eigene Ebenen stehen vorn, alle Verweise lösen auf", () => {
 		for (const id of LAYER_SOURCE_IDS) {

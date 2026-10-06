@@ -36,6 +36,18 @@ describe("formatCitations", () => {
 		const { text } = await formatCitations(sample, "biblatex")
 		expect(text).toContain("urldate = {2026-10-06}")
 		expect(text).not.toContain("[Online; accessed")
+		expect(text).toContain("„{Auf} der {Lake}“")
+		expect(text).not.toContain("\\")
+		expect(text).not.toContain("\t")
+	})
+
+	test("BibTeX mit Akzenten in der üblichen Form", async () => {
+		const { text } = await formatCitations(
+			[projectCsl(new Date(2026, 9, 6))],
+			"bibtex",
+		)
+		expect(text).toContain('author = {Kr{\\"a}mer, Tim}')
+		expect(text).toContain("note = {Abgerufen am 06.10.2026}")
 	})
 
 	test("DAI behält Groß- und Kleinschreibung in URLs", async () => {
