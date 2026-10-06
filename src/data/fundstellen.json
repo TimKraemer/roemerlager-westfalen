@@ -903,31 +903,6 @@
 		{
 			"type": "Feature",
 			"properties": {
-				"id": "remeringhausen",
-				"name": "Remeringhausen",
-				"type": "verdacht",
-				"status": "Verdacht (unbelegt)",
-				"inModel": false,
-				"precision": "Lagermitte, etwa ±200–300 m",
-				"size_ha": null,
-				"dating": "unbekannt",
-				"place": "Stadthagen, Landkreis Schaumburg",
-				"description": "Einige Historiker vermuten hier einen römischen Spähposten über dem Hellweg (B 65). Archäologisch ist nichts belegt.",
-				"sources": [
-					{
-						"label": "Wikipedia: Rittergut Remeringhausen",
-						"url": "https://de.wikipedia.org/wiki/Rittergut_Remeringhausen"
-					}
-				]
-			},
-			"geometry": {
-				"type": "Point",
-				"coordinates": [9.27028, 52.32861]
-			}
-		},
-		{
-			"type": "Feature",
-			"properties": {
 				"id": "gehrden",
 				"name": "Schatzfund von Gehrden",
 				"type": "fund",
@@ -961,20 +936,19 @@
 				"id": "ilten",
 				"name": "Römische Militaria Ilten",
 				"type": "fund",
-				"status": "bestätigt",
+				"status": "nicht publiziert",
 				"inModel": false,
 				"precision": "nur Ortsmittelpunkt, Fundstelle mehrere km entfernt möglich",
 				"size_ha": null,
 				"dating": "augusteisch (Gaius-Lucius-Denar)",
 				"place": "Sehnde-Ilten, Region Hannover",
-				"description": "Militärausrüstung und ein Gaius-Lucius-Denar, etwa 20 km östlich von Gehrden.",
+				"description": "Militärausrüstung und ein Gaius-Lucius-Denar, etwa 20 km östlich von Gehrden. Die Funde sind nur im Wikipedia-Artikel zum Schatzfund von Gehrden genannt, ein Fundbericht ist nicht nachgewiesen. Deshalb kein Wegpunkt für die Marschrouten.",
 				"sources": [
 					{
 						"label": "Wikipedia: Schatzfund von Gehrden",
 						"url": "https://de.wikipedia.org/wiki/Schatzfund_von_Gehrden"
 					}
-				],
-				"waypoint": true
+				]
 			},
 			"geometry": {
 				"type": "Point",
@@ -1021,7 +995,7 @@
 				"id": "costedt",
 				"name": "Spätrömische Münzen Costedt",
 				"type": "fund",
-				"status": "bestätigt",
+				"status": "Fundmeldung",
 				"inModel": false,
 				"precision": "nur Ortsmittelpunkt, Fundstelle mehrere km entfernt möglich",
 				"size_ha": null,
@@ -1300,6 +1274,14 @@
 					{
 						"label": "Wikipedia: Römisches Marschlager bei Hachelbich",
 						"url": "https://de.wikipedia.org/wiki/R%C3%B6misches_Marschlager_bei_Hachelbich"
+					},
+					{
+						"label": "Küßner 2014: Truppen in Thüringen. Nordöstlichste römische Militäranlage entdeckt. Archäologie in Deutschland 30, Heft 3, S. 6",
+						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=785789022"
+					},
+					{
+						"label": "Hellwing 2016: Römische Präsenz im Südharz. Beiträge zur Geschichte aus Stadt und Landkreis Nordhausen 41, S. 21–34",
+						"url": "https://opac.k10plus.de/DB=2.1/PPNSET?PPN=875857329"
 					}
 				]
 			},

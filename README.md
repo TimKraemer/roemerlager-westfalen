@@ -24,7 +24,7 @@ Live: https://experiments.erleben.app/roemer/
 
 ## Inhalt
 
-- 40 Fundstellen von Vetera am Rhein bis Hachelbich in Thüringen, mit Typ, Datierung, Genauigkeit der Lage und Quellen
+- 39 Fundstellen von Vetera am Rhein bis Hachelbich in Thüringen, mit Typ, Datierung, Genauigkeit der Lage und Quellen
 - Potenzialkarte aus sieben Kriterien mit einstellbaren Gewichten, vorberechnet für den Kreis Minden-Lübbecke und für jeden Ausschnitt im Browser rechenbar
 - Marschwege-Netz als Weg geringster Gehzeit zwischen den Lagern, mit Etappenhalten und Schiffsstrecke auf der Lippe
 - Gegenprobe des Modells, bei der je ein bekanntes Lager weggelassen wird
