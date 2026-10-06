@@ -31,7 +31,7 @@ export default function ValidationPanel() {
 	const above = full.rows.filter((r) => r.percentile > 0.5).length
 	return (
 		<Box>
-			<SectionTitle>Modellprüfung: je ein Lager weggelassen</SectionTitle>
+			<SectionTitle>Je ein Lager weggelassen</SectionTitle>
 			<Typography variant="body2" color="text.secondary">
 				Für jedes bekannte augusteische Lager im Netzgebiet wurde das Lager samt
 				Begleitanlagen im Umkreis von 3 km aus dem Modell genommen und alles neu

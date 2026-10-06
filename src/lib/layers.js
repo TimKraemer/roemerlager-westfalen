@@ -11,12 +11,6 @@ import { assetUrl, assetVersion, BASE_PATH, TILES } from "@/config"
 import ALTKARTEN from "@/data/altkarten.json"
 import ALTKARTEN_QUELLEN from "@/data/altkarten-quellen.json"
 import RIVERS from "@/data/fluesse.json"
-import {
-	MOOR_LAYER,
-	TIME_WATER_LAYER,
-	WALD_LAYER,
-	WEGE_LAYER,
-} from "./zeitstrahl"
 
 const GEOBASIS_NRW = "© Geobasis NRW (dl-de/zero-2-0)"
 const LGLN = "© LGLN (CC BY 4.0)"
@@ -25,6 +19,13 @@ const OSM = "© OpenStreetMap-Mitwirkende"
 
 export const DEM_TILES = TILES.dem
 const VECTOR_TILES = TILES.vector
+
+// Gewässer, Moore, Wald und Hauptwege aus den historischen Karten, alle im
+// Stand um 1840. Die Stände um 1900 und heute stecken in der Git-Historie.
+export const TIME_WATER_LAYER = "gewaesser-zeit"
+export const MOOR_LAYER = "moor-zeit"
+export const WALD_LAYER = "wald-zeit"
+export const WEGE_LAYER = "wege-zeit"
 export const GLYPHS = TILES.glyphs
 export const FONT = ["Montserrat SemiBold"]
 // Dienste von Geobasis NRW und eigene entzerrte Scans in einer Gruppe,
@@ -111,6 +112,8 @@ export const BASE_LAYERS = [
 	},
 ]
 
+// main: steht in der Seitenleiste oben unter „Auf der Karte“, alle übrigen
+// außer den historischen Karten unter „Weitere Ebenen“.
 // jump: [Länge, Breite, Zoom] für den Link „Dorthin springen“ bei regional
 // begrenzten Ebenen. Gewählt ist eine Stelle und Stufe, an der der Dienst
 // sicher etwas zeigt. minzoom bei WMS ist die Kartenzoomstufe, ab der der
@@ -127,6 +130,7 @@ export const OVERLAYS = [
 			"Höhendaten: Mapzen Terrain Tiles (SRTM, EU-DEM, © Europäische Union)",
 		opacity: 0.35,
 		visible: true,
+		main: true,
 	},
 	{
 		id: "schummerung-nrw",
@@ -138,16 +142,20 @@ export const OVERLAYS = [
 		wms: "https://www.wms.nrw.de/geobasis/wms_nw_dgm-schummerung",
 		layers: "nw_dgm-schummerung_pan",
 		attribution: GEOBASIS_NRW,
-		opacity: 0.85,
+		opacity: 0.5,
+		visible: true,
+		main: true,
 	},
 	{
 		id: "lrm",
 		kind: "lrm",
 		group: "Gelände",
 		label: "Laserscan-Ansicht an Kandidaten und Lagern",
-		note: "Local Relief Model aus dem DGM1 NRW (2 m): Gräben dunkel, Wälle hell. Fenster von 2,4 km an Kandidaten, Etappenhalten und allen bestätigten Lagern in NRW.",
+		note: "Local Relief Model aus dem DGM1 NRW (2 m): Gräben dunkel, Wälle hell. Fenster von 2,4 km an Kandidaten, Etappenhalten und allen bestätigten Lagern in NRW, geladen ab Zoomstufe 11.",
 		attribution: GEOBASIS_NRW,
-		opacity: 0.85,
+		opacity: 0.5,
+		visible: true,
+		main: true,
 	},
 	{
 		id: "lines",
@@ -169,6 +177,7 @@ export const OVERLAYS = [
 		attribution: GEOBASIS_NRW,
 		opacity: 0.5,
 		visible: true,
+		main: true,
 	},
 	{
 		id: "schummerung-de",
@@ -381,13 +390,13 @@ export const OVERLAYS = [
 		opacity: 0.85,
 	})),
 	// Über den Karten: Gewässer, die scripts/altkarten/gewaesser.py aus
-	// ihnen gelesen hat, je Stand des Zeitstrahls (src/lib/zeitstrahl.js)
+	// ihnen gelesen hat, Stand um 1840
 	{
 		id: TIME_WATER_LAYER,
 		kind: "timewater",
 		group: HISTORIC_GROUP,
-		label: "Gewässer aus den Karten (Kreis Minden-Lübbecke)",
-		note: "Je Stand des Zeitstrahls: um 1840 aus der Uraufnahme entlang der heutigen Bäche, um 1900 alle blauen Linien der Karte des Deutschen Reiches (Blatt Lübbecke) samt Gräben, heller gezeichnet.",
+		label: "Gewässer um 1840 (Kreis Minden-Lübbecke)",
+		note: "Aus der Preußischen Uraufnahme entlang der heutigen Bäche gelesen. Gräben ohne heutigen Bach und verschwundene Bäche fehlen.",
 		attribution: `${GEOBASIS_NRW}, ${OSM}`,
 		opacity: 0.95,
 	},
@@ -395,26 +404,26 @@ export const OVERLAYS = [
 		id: MOOR_LAYER,
 		kind: "timemoor",
 		group: HISTORIC_GROUP,
-		label: "Moore und nasse Flächen",
-		note: "Immer: Moorböden nach BK50 NRW und GUM50 Niedersachsen (braun Hochmoor, grün Niedermoor), dort war vor der Kultivierung Moor. Um 1840 zusätzlich Überschwemmungsgebiete der preußischen Aufnahme (blau) und Moore der Kreiskarte Lübbecke 1844, die heute kein Moorboden mehr sind. Heute Feuchtgebiete aus OpenStreetMap.",
-		attribution: `© GD NRW (dl-de/by-2-0), © LBEG Niedersachsen, © Land NRW, ${OSM}`,
+		label: "Moore und nasse Flächen um 1840",
+		note: "Moorböden nach BK50 NRW und GUM50 Niedersachsen (braun Hochmoor, grün Niedermoor), dort war vor der Kultivierung Moor. Dazu Überschwemmungsgebiete der preußischen Aufnahme (blau) und, dunkelbraun gestrichelt, Moore der Kreiskarte Lübbecke 1844, die heute kein Moorboden mehr sind.",
+		attribution: "© GD NRW (dl-de/by-2-0), © LBEG Niedersachsen, © Land NRW",
 		opacity: 0.5,
 	},
 	{
 		id: WALD_LAYER,
 		kind: "timewald",
 		group: HISTORIC_GROUP,
-		label: "Wald",
-		note: "Um 1840 die Waldflächen der Preußischen Uraufnahme (Landesamt für Natur, Umwelt und Klima NRW, nur NRW). Um 1900 dieselben Flächen unverändert, weil es für diese Zeit keine Walddaten gibt, der damalige Wald ist also unklar. Heute Wald aus OpenStreetMap, dazu der Umriss von 1840: Wo beides zusammenfällt, liegen historisch alte Waldstandorte.",
-		attribution: `© LANUK NRW, ${OSM}`,
+		label: "Wald um 1840",
+		note: "Waldflächen der Preußischen Uraufnahme (Landesamt für Natur, Umwelt und Klima NRW, nur NRW).",
+		attribution: "© LANUK NRW",
 		opacity: 0.55,
 	},
 	{
 		id: WEGE_LAYER,
 		kind: "timewege",
 		group: HISTORIC_GROUP,
-		label: "Hauptwege",
-		note: "Um 1840 die heutigen Bundes-, Landes- und Kreisstraßen, die die Uraufnahme schon als Weg zeigt, im alten Verlauf (aus der Karte gelesen, Feldgrenzen können mitlaufen). Heute die Straßen aus OpenStreetMap, darüber die Wege von 1840. Wege, die es heute nicht mehr gibt, fehlen.",
+		label: "Hauptwege um 1840",
+		note: "Die heutigen Bundes-, Landes- und Kreisstraßen, die die Uraufnahme schon als Weg zeigt, im alten Verlauf (aus der Karte gelesen, Feldgrenzen können mitlaufen). Wege, die es heute nicht mehr gibt, fehlen.",
 		attribution: `${GEOBASIS_NRW}, ${OSM}`,
 		opacity: 0.9,
 	},
@@ -519,7 +528,6 @@ export function styleLayersOf(layer) {
 	if (layer.kind === "water") return [{ id: layer.id, opacity: "line-opacity" }]
 	if (layer.kind === "timewege") {
 		return [
-			{ id: `${layer.id}-heute`, opacity: "line-opacity" },
 			{ id: `${layer.id}-ura-casing`, opacity: "line-opacity" },
 			{ id: `${layer.id}-ura`, opacity: "line-opacity" },
 		]
@@ -528,7 +536,6 @@ export function styleLayersOf(layer) {
 		return [
 			{ id: `${layer.id}-ura`, opacity: "fill-opacity" },
 			{ id: `${layer.id}-ura-line`, opacity: "line-opacity" },
-			{ id: `${layer.id}-heute`, opacity: "fill-opacity" },
 		]
 	}
 	if (layer.kind === "timemoor") {
@@ -682,16 +689,11 @@ export const MOOR_FILE = "precomputed/moor-zeit.geojson"
 export const MOOR_1844_FILE = "precomputed/moor-1844.geojson"
 export const WALD_FILE = "precomputed/wald-zeit.geojson"
 export const WEGE_FILE = "precomputed/wege-zeit.geojson"
-export const MAIN_ROADS = ["trunk", "primary", "secondary", "tertiary"]
 
-/**
- * Hauptwege um 1840 (scripts/altkarten/wege.py) und heutige Hauptstraßen
- * (OSM). Welche Teile sichtbar sind, setzt die Karte je Stand (map-view.jsx).
- */
+/** Hauptwege um 1840 (scripts/altkarten/wege.py). */
 function timeWegeStyle(layer) {
 	const empty = { type: "FeatureCollection", features: [] }
 	const none = { visibility: "none", "line-cap": "round", "line-join": "round" }
-	const hidden = ["==", ["get", "kind"], "-"]
 	const width = (lo, hi) => ["interpolate", ["linear"], ["zoom"], 9, lo, 15, hi]
 	return {
 		sources: {
@@ -701,32 +703,12 @@ function timeWegeStyle(layer) {
 				data: empty,
 				attribution: layer.attribution,
 			},
-			[`${layer.id}-heute`]: {
-				type: "vector",
-				tiles: [VECTOR_TILES],
-				maxzoom: 14,
-			},
 		},
 		layers: [
-			{
-				id: `${layer.id}-heute`,
-				type: "line",
-				source: `${layer.id}-heute`,
-				"source-layer": "transportation",
-				minzoom: 8,
-				filter: hidden,
-				layout: none,
-				paint: {
-					"line-color": "#6d6d6d",
-					"line-opacity": layer.opacity,
-					"line-width": width(1, 3),
-				},
-			},
 			{
 				id: `${layer.id}-ura-casing`,
 				type: "line",
 				source: layer.id,
-				filter: hidden,
 				layout: none,
 				paint: {
 					"line-color": "#fff",
@@ -738,7 +720,6 @@ function timeWegeStyle(layer) {
 				id: `${layer.id}-ura`,
 				type: "line",
 				source: layer.id,
-				filter: hidden,
 				layout: none,
 				paint: {
 					"line-color": "#a0522d",
@@ -750,15 +731,10 @@ function timeWegeStyle(layer) {
 	}
 }
 
-/**
- * Wald um 1840 (scripts/altkarten/wald.py) und heute (OSM). Um 1840 die
- * Flächen, heute der OSM-Wald mit dem Umriss von 1840 darüber. Welche
- * Teile sichtbar sind, setzt die Karte je Stand (map-view.jsx).
- */
+/** Wald um 1840 (scripts/altkarten/wald.py), Flächen mit Umriss. */
 function timeWaldStyle(layer) {
 	const empty = { type: "FeatureCollection", features: [] }
 	const none = { visibility: "none" }
-	const hidden = ["==", ["get", "kind"], "-"]
 	return {
 		sources: {
 			// Die Karte lädt die Datei erst beim Einschalten (map-view.jsx)
@@ -767,28 +743,12 @@ function timeWaldStyle(layer) {
 				data: empty,
 				attribution: layer.attribution,
 			},
-			[`${layer.id}-heute`]: {
-				type: "vector",
-				tiles: [VECTOR_TILES],
-				maxzoom: 14,
-			},
 		},
 		layers: [
-			{
-				id: `${layer.id}-heute`,
-				type: "fill",
-				source: `${layer.id}-heute`,
-				"source-layer": "landcover",
-				minzoom: 8,
-				filter: hidden,
-				layout: none,
-				paint: { "fill-color": "#2e7d32", "fill-opacity": layer.opacity },
-			},
 			{
 				id: `${layer.id}-ura`,
 				type: "fill",
 				source: layer.id,
-				filter: hidden,
 				layout: none,
 				paint: { "fill-color": "#1b5e20", "fill-opacity": layer.opacity },
 			},
@@ -796,7 +756,6 @@ function timeWaldStyle(layer) {
 				id: `${layer.id}-ura-line`,
 				type: "line",
 				source: layer.id,
-				filter: hidden,
 				layout: none,
 				paint: {
 					"line-color": "#0d3b10",
@@ -815,20 +774,18 @@ const MOOR_PARTS = [
 	["nass", "fill-opacity"],
 	["1844", "fill-opacity"],
 	["1844-line", "line-opacity"],
-	["heute", "fill-opacity"],
 ]
 const MOOR_COLORS = {
 	hochmoor: "#8a5a2b",
 	niedermoor: "#6f9a35",
 	nass: "#2f7bd6",
 	moor1844: "#5b3412",
-	heute: "#178a8a",
 }
 
 /**
  * Moore und nasse Flächen (scripts/altkarten/moor.py, moor-1844.geojson
- * aus scripts/altkarten/moor1844.py, heute OSM). Moorböden immer, die
- * übrigen Teile setzt die Karte je Stand des Zeitstrahls (map-view.jsx).
+ * aus scripts/altkarten/moor1844.py): Moorböden, Überschwemmungsgebiete
+ * der preußischen Aufnahme um 1840 und Moore der Kreiskarte 1844.
  */
 function timeMoorStyle(layer) {
 	const empty = { type: "FeatureCollection", features: [] }
@@ -849,11 +806,6 @@ function timeMoorStyle(layer) {
 				attribution: layer.attribution,
 			},
 			[`${layer.id}-1844`]: { type: "geojson", data: empty },
-			[`${layer.id}-heute`]: {
-				type: "vector",
-				tiles: [VECTOR_TILES],
-				maxzoom: 14,
-			},
 		},
 		layers: [
 			{
@@ -880,7 +832,7 @@ function timeMoorStyle(layer) {
 				id: `${layer.id}-nass`,
 				type: "fill",
 				source: layer.id,
-				filter: ["==", ["get", "slice"], ""],
+				filter: ["==", ["get", "slice"], "ura"],
 				layout: none,
 				paint: {
 					"fill-color": MOOR_COLORS.nass,
@@ -891,7 +843,6 @@ function timeMoorStyle(layer) {
 				id: `${layer.id}-1844`,
 				type: "fill",
 				source: `${layer.id}-1844`,
-				filter: ["==", ["get", "kind"], "-"],
 				layout: none,
 				paint: {
 					"fill-color": MOOR_COLORS.moor1844,
@@ -902,7 +853,6 @@ function timeMoorStyle(layer) {
 				id: `${layer.id}-1844-line`,
 				type: "line",
 				source: `${layer.id}-1844`,
-				filter: ["==", ["get", "kind"], "-"],
 				layout: none,
 				paint: {
 					"line-color": MOOR_COLORS.moor1844,
@@ -911,26 +861,13 @@ function timeMoorStyle(layer) {
 					"line-dasharray": [3, 2],
 				},
 			},
-			{
-				id: `${layer.id}-heute`,
-				type: "fill",
-				source: `${layer.id}-heute`,
-				"source-layer": "landcover",
-				minzoom: 9,
-				filter: ["==", ["get", "kind"], "-"],
-				layout: none,
-				paint: {
-					"fill-color": MOOR_COLORS.heute,
-					"fill-opacity": layer.opacity,
-				},
-			},
 		],
 	}
 }
 
 /**
- * Gewässer aus den historischen Karten (public/precomputed/gewaesser-zeit.geojson).
- * Die Karte setzt den Filter auf den Stand des Zeitstrahls (map-view.jsx).
+ * Gewässer aus den historischen Karten (public/precomputed/gewaesser-zeit.geojson),
+ * gezeigt wird der Stand um 1840 aus der Uraufnahme.
  */
 function timeWaterStyle(layer) {
 	const width = (lo, hi) => ["interpolate", ["linear"], ["zoom"], 9, lo, 15, hi]
@@ -955,7 +892,7 @@ function timeWaterStyle(layer) {
 				stream[1],
 			],
 		)
-	const filter = ["==", ["get", "slice"], ""]
+	const filter = ["==", ["get", "slice"], "ura"]
 	const layout = {
 		visibility: "none",
 		"line-cap": "round",

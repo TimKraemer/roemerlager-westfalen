@@ -29,7 +29,7 @@ Live: https://experiments.erleben.app/roemer/
 - Marschwege-Netz als Weg geringster Gehzeit zwischen den Lagern, mit Etappenhalten und Schiffsstrecke auf der Lippe
 - Gegenprobe des Modells, bei der je ein bekanntes Lager weggelassen wird
 - antike Textstellen (Tacitus, Velleius, Florus, Cassius Dio, Ps.-Hyginus, Vegetius) mit Übersetzung und Kartenbezug
-- Ebenen für Luftbild, Laserscan-Schummerung, Preußische Uraufnahme, Bodenkarten, Moore, Römerstraßen, alte Flussläufe und entzerrte Altkarten, Zeitstrahl über die historischen Karten mit den Gewässern der jeweiligen Zeit
+- Ebenen für Luftbild, Laserscan-Schummerung, Preußische Uraufnahme, Bodenkarten, Moore, Römerstraßen, alte Flussläufe und entzerrte Altkarten, historische Karten nach Jahr, dazu Gewässer, Moore, Wald und Wege um 1840
 - Suche über Fundstellen, Texte, Ebenen und heutige Orte, eigene Karten per WMS, GeoJSON, KML oder Bild mit World-File
 
 Anstoß war der Vortrag von Dr. Bettina Tremmel (LWL-Archäologie für
@@ -135,7 +135,7 @@ Einrichtungsskript, Einstellungen) liegen in [deploy/erleben/](deploy/erleben/).
 
 Die Kacheln der Altkarten sind nicht im Repository, weil sie aus Scans
 gerechnet werden (177 MB). Ohne sie blendet die App diese Karten unter
-„Historische Karten“ und im Zeitstrahl aus. Wie man sie erzeugt, steht in [docs/daten.md](docs/daten.md#altkarten).
+„Historische Karten“ aus. Wie man sie erzeugt, steht in [docs/daten.md](docs/daten.md#altkarten).
 
 ## Aufbau
 

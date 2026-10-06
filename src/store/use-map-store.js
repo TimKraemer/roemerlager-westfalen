@@ -21,15 +21,13 @@ function saveServices(layers) {
 import { BASE_LAYERS, OVERLAYS } from "@/lib/layers"
 import { DEFAULT_PARAMS } from "@/lib/potential/model"
 import { SITE_TYPES } from "@/lib/sites"
-import {
-	MOOR_LAYER,
-	STAND_MAPS,
-	standById,
-	standOverlays,
-	TIME_WATER_LAYER,
-	WALD_LAYER,
-	WEGE_LAYER,
-} from "@/lib/zeitstrahl"
+
+const DEFAULT_RING_SOURCE = "marching"
+
+/** Weichen Modell oder Tagesmarsch von den Standardwerten ab? */
+export const paramsChanged = (s) =>
+	s.ringSource !== DEFAULT_RING_SOURCE ||
+	JSON.stringify(s.params) !== JSON.stringify(DEFAULT_PARAMS)
 
 // Auf dem Handy erscheinen Infokarten im Sheet, das dafür weit genug aufgeht.
 // Schon hier, damit Kamerafahrten die neue Sheethöhe kennen.
@@ -110,7 +108,8 @@ export const useMapStore = create((set) => ({
 	showRoutes: true,
 	// Nummerierte Punkte der Analyse (vermutete Lagerplätze)
 	showCandidates: true,
-	showStages: true,
+	// Etappenhalte beim Start aus, sie stehen unter „Weitere Ebenen“
+	showStages: false,
 	// Umriss des Kreises, für den die Analyse rechnet
 	showRegion: true,
 	// Sichtbarkeit vor „Alle Ebenen aus“, zum Wiederherstellen
@@ -123,6 +122,9 @@ export const useMapStore = create((set) => ({
 		typeof window !== "undefined" && window.innerWidth < 900
 			? "start"
 			: "layers",
+	// Aufgeklappte Abschnitte der Seitenleiste: weitere Ebenen, eigene
+	// Karten, Experteneinstellungen und Modellprüfung der Analyse
+	folds: { more: false, custom: false, expert: false, check: false },
 	// Höhe des aufgeklappten Sheets als Anteil der Fensterhöhe (Handy)
 	sheetFrac: 0.5,
 	showRoads: true,
@@ -133,7 +135,7 @@ export const useMapStore = create((set) => ({
 	// Potenzialanalyse
 	params: DEFAULT_PARAMS,
 	// Welche Fundstellen als Ausgangspunkt der Tagesmarsch-Ringe dienen
-	ringSource: "marching",
+	ringSource: DEFAULT_RING_SOURCE,
 	heatmap: { visible: true, opacity: 0.7, threshold: 0.5 },
 	analysis: {
 		status: "idle",
@@ -160,17 +162,6 @@ export const useMapStore = create((set) => ({
 	selectedText: null,
 	// Hervorgehobener Suchtreffer (GeoJSON-Feature) auf der Karte
 	searchHit: null,
-	// Zeitstrahl über die historischen Karten (src/lib/zeitstrahl.js): Leiste
-	// offen, gewählter Stand, darin gezeigte Karte, Gewässer und Moore dazu an
-	timeline: {
-		open: false,
-		stand: "1840",
-		map: null,
-		water: true,
-		moor: true,
-		wald: false,
-		wege: false,
-	},
 
 	setBaseLayer: (baseLayer) => set({ baseLayer }),
 	// Zustand eingeschalteter Ebenen aus der Karte: "loading", "zoom"
@@ -183,6 +174,12 @@ export const useMapStore = create((set) => ({
 		})),
 	toggleSiteType: (id) =>
 		set((s) => ({ siteTypes: { ...s.siteTypes, [id]: !s.siteTypes[id] } })),
+	setAllSiteTypes: (on) =>
+		set((s) => ({
+			siteTypes: Object.fromEntries(
+				Object.keys(s.siteTypes).map((k) => [k, on]),
+			),
+		})),
 	setShowRings: (showRings) => set({ showRings }),
 	setShowWaterways: (showWaterways) => set({ showWaterways }),
 	setShowRoutes: (showRoutes) => set({ showRoutes }),
@@ -215,11 +212,15 @@ export const useMapStore = create((set) => ({
 		}),
 	setPanelOpen: (panelOpen) => set({ panelOpen }),
 	setPanelTab: (panelTab) => set({ panelTab }),
+	setFold: (id, open) => set((s) => ({ folds: { ...s.folds, [id]: open } })),
 	setSheetFrac: (sheetFrac) => set({ sheetFrac }),
 	setShowRoads: (showRoads) => set({ showRoads }),
 	setShowModel: (showModel) => set({ showModel }),
 	setModelOpacity: (modelOpacity) => set({ modelOpacity }),
 	setParams: (patch) => set((s) => ({ params: { ...s.params, ...patch } })),
+	// Modell und Tagesmarsch-Ausgangspunkte auf die Standardwerte
+	resetParams: () =>
+		set({ params: DEFAULT_PARAMS, ringSource: DEFAULT_RING_SOURCE }),
 	setWeight: (key, value) =>
 		set((s) => ({
 			params: { ...s.params, weights: { ...s.params.weights, [key]: value } },
@@ -266,39 +267,4 @@ export const useMapStore = create((set) => ({
 		set((s) => ({ inspect, ...(inspect && showCard(s)) })),
 	setSelectedText: (selectedText) => set({ selectedText }),
 	setSearchHit: (searchHit) => set({ searchHit }),
-	// Stand, Karte oder Gewässer wählen; schaltet die Karten des Zeitstrahls
-	setTimeline: (patch) =>
-		set((s) => {
-			const timeline = { ...s.timeline, ...patch }
-			if (patch.stand && !patch.map) timeline.map = null
-			if (!timeline.open && patch.open !== false) return { timeline }
-			// Schließen blendet die Karten des Zeitstrahls wieder aus
-			const vis = timeline.open
-				? standOverlays(
-						standById(timeline.stand),
-						timeline.map,
-						timeline.water,
-						timeline.moor,
-						timeline.wald,
-						timeline.wege,
-					)
-				: Object.fromEntries(
-						[
-							...STAND_MAPS,
-							TIME_WATER_LAYER,
-							MOOR_LAYER,
-							WALD_LAYER,
-							WEGE_LAYER,
-						].map((id) => [id, false]),
-					)
-			return {
-				timeline,
-				overlays: Object.fromEntries(
-					Object.entries(s.overlays).map(([id, o]) => [
-						id,
-						id in vis ? { ...o, visible: vis[id] } : o,
-					]),
-				),
-			}
-		}),
 }))

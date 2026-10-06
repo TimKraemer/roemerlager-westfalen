@@ -25,6 +25,7 @@ import {
 	Typography,
 } from "@mui/material"
 import { useEffect, useLayoutEffect, useMemo, useRef, useState } from "react"
+import { HISTORIC_GROUP, OVERLAYS } from "@/lib/layers"
 import { prefetchBounds, prefetchView } from "@/lib/prefetch"
 import {
 	correction,
@@ -484,6 +485,10 @@ export default function SearchBox({ getMap, desktop }) {
 		} else if (o.kind === "layer") {
 			if (o.base) s.setBaseLayer(o.id)
 			else s.setOverlay(o.id, { visible: true })
+			// Nebenebenen stehen in der Seitenleiste unter „Weitere Ebenen“
+			const layer = OVERLAYS.find((l) => l.id === o.id)
+			if (layer && !layer.main && layer.group !== HISTORIC_GROUP)
+				s.setFold("more", true)
 			if (desktop) openPanel("layers", `ebene-${o.id}`)
 		} else if (o.kind === "source") {
 			openPanel("sources", o.anchor)

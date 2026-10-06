@@ -12,6 +12,7 @@ import {
 	Paper,
 	Skeleton,
 	Stack,
+	Tooltip,
 	Typography,
 } from "@mui/material"
 import { useState } from "react"
@@ -26,6 +27,114 @@ import { anyLayerVisible, useMapStore } from "@/store/use-map-store"
 const level = (score) =>
 	score >= 0.85 ? "sehr hoch" : score >= 0.7 ? "hoch" : "mittel"
 
+// Kurze Namen der Fundstellen-Arten für die zweispaltige Legende
+const SHORT_TYPE = {
+	legionslager: "Legionslager",
+	kastell: "Kastell",
+	marschlager: "Marschlager",
+	posten: "Wachposten",
+	schlachtfeld: "Schlachtfeld",
+	fund: "Römische Funde",
+	verdacht: "Verdacht",
+}
+
+const dot = (bg, border, label = "") => (
+	<Box
+		sx={{
+			width: 14,
+			height: 14,
+			borderRadius: "50%",
+			bgcolor: bg,
+			border: `2px solid ${border}`,
+			fontSize: 8,
+			fontWeight: 700,
+			lineHeight: "10px",
+			textAlign: "center",
+			color: border,
+		}}
+	>
+		{label}
+	</Box>
+)
+const line = (color, outline) => (
+	<Box
+		sx={{
+			width: 20,
+			height: 4,
+			bgcolor: color,
+			borderRadius: 1,
+			outline: `1px solid ${outline}`,
+		}}
+	/>
+)
+const dashed = (color, width = 3) => (
+	<Box sx={{ width: 20, borderTop: `${width}px dashed ${color}` }} />
+)
+
+/** Ein Eintrag: Symbol und kurzer Name, die Erläuterung im Tooltip. */
+function LegendItem({ symbol, text, hint }) {
+	const row = (
+		<Stack
+			direction="row"
+			spacing={1}
+			sx={{ alignItems: "center", minWidth: 0 }}
+		>
+			<Box
+				sx={{
+					width: 20,
+					height: 18,
+					flexShrink: 0,
+					display: "flex",
+					alignItems: "center",
+					justifyContent: "center",
+				}}
+			>
+				{symbol}
+			</Box>
+			<Typography variant="caption" noWrap sx={{ lineHeight: "18px" }}>
+				{text}
+			</Typography>
+		</Stack>
+	)
+	return hint ? (
+		<Tooltip title={hint} placement="top-start">
+			{row}
+		</Tooltip>
+	) : (
+		row
+	)
+}
+
+/** Gruppe der Legende, zweispaltig; leere Gruppen fallen weg. */
+function LegendGroup({ title, items }) {
+	const shown = items.filter(Boolean)
+	if (!shown.length) return null
+	return (
+		<Box>
+			<Typography
+				variant="caption"
+				color="text.secondary"
+				component="div"
+				sx={{ fontWeight: 600, mb: 0.25 }}
+			>
+				{title}
+			</Typography>
+			<Box
+				sx={{
+					display: "grid",
+					gridTemplateColumns: "1fr 1fr",
+					columnGap: 1.5,
+					rowGap: 0.25,
+				}}
+			>
+				{shown.map((item) => (
+					<LegendItem key={item.text} {...item} />
+				))}
+			</Box>
+		</Box>
+	)
+}
+
 function Legend() {
 	const heatmap = useMapStore((s) => s.heatmap.visible)
 	const siteTypes = useMapStore((s) => s.siteTypes)
@@ -37,67 +146,7 @@ function Legend() {
 	const showRings = useMapStore((s) => s.showRings)
 	const showRegion = useMapStore((s) => s.showRegion)
 	const anyVisible = useMapStore(anyLayerVisible)
-	const shownTypes = SITE_TYPES.filter((t) => siteTypes[t.id])
 
-	const item = (symbol, text, detail) => (
-		<Stack direction="row" spacing={1.25} sx={{ alignItems: "flex-start" }}>
-			<Box
-				sx={{
-					width: 22,
-					height: 20,
-					flexShrink: 0,
-					display: "flex",
-					alignItems: "center",
-					justifyContent: "center",
-				}}
-			>
-				{symbol}
-			</Box>
-			<Typography variant="caption" sx={{ lineHeight: "20px" }}>
-				{text}
-				{detail && (
-					<Box
-						component="span"
-						sx={{ display: "block", lineHeight: 1.35, color: "text.secondary" }}
-					>
-						{detail}
-					</Box>
-				)}
-			</Typography>
-		</Stack>
-	)
-	const dot = (bg, border, label = "") => (
-		<Box
-			sx={{
-				width: 16,
-				height: 16,
-				borderRadius: "50%",
-				bgcolor: bg,
-				border: `2px solid ${border}`,
-				fontSize: 9,
-				fontWeight: 700,
-				lineHeight: "12px",
-				textAlign: "center",
-				color: border,
-			}}
-		>
-			{label}
-		</Box>
-	)
-	const line = (color, outline) => (
-		<Box
-			sx={{
-				width: 22,
-				height: 4,
-				bgcolor: color,
-				borderRadius: 1,
-				outline: `1px solid ${outline}`,
-			}}
-		/>
-	)
-	const dashed = (color, width = 3) => (
-		<Box sx={{ width: 22, borderTop: `${width}px dashed ${color}` }} />
-	)
 	if (!anyVisible)
 		return (
 			<Typography variant="caption" color="text.secondary">
@@ -105,72 +154,94 @@ function Legend() {
 			</Typography>
 		)
 	return (
-		<Stack spacing={0.75}>
+		<Stack spacing={1.25}>
 			{heatmap && (
-				<Box sx={{ mb: 0.5 }}>
+				<Stack direction="row" spacing={1} sx={{ alignItems: "center" }}>
+					<Typography variant="caption" color="text.secondary">
+						möglich
+					</Typography>
 					<Box
 						sx={{
+							flex: 1,
 							height: 8,
 							borderRadius: 1,
 							background:
 								"linear-gradient(90deg, rgba(255,241,118,0.6), #fb8c00, #b71c1c)",
 						}}
 					/>
-					<Stack direction="row" sx={{ justifyContent: "space-between" }}>
-						<Typography variant="caption" color="text.secondary">
-							möglich
-						</Typography>
-						<Typography variant="caption" color="text.secondary">
-							sehr wahrscheinlich
-						</Typography>
-					</Stack>
-				</Box>
+					<Typography variant="caption" color="text.secondary">
+						sehr wahrscheinlich
+					</Typography>
+				</Stack>
 			)}
-			{shownTypes.map((t) => (
-				<Box key={t.id}>{item(dot(t.color, "#fff"), t.label)}</Box>
-			))}
-			{showCandidates &&
-				item(dot("#fff", "#d84315", "1"), "Vermuteter Lagerplatz")}
-			{showRoutes && (
-				<>
-					{item(
-						line("#ffca28", "#3e2723"),
-						"Möglicher Marschweg zwischen zwei Lagern",
-					)}
-					{item(
-						dashed("#ffca28"),
-						"Marschweg nach Kalkriese oder zum vermuteten Lager Löhne",
-					)}
-					{item(dashed("#4fc3f7"), "Schiffsstrecke auf der Lippe")}
-				</>
-			)}
-			{showStages &&
-				item(
-					dot("#ffca28", "#3e2723", "E"),
-					"Möglicher Etappenhalt nach einem Tagesmarsch",
-				)}
-			{showRoads &&
-				item(
-					line("#5d4037", "#5d4037"),
-					"Römerstraße",
-					"Belegt durchgezogen, vermutet gestrichelt",
-				)}
-			{showWaterways &&
-				item(
-					line("#1565c0", "#fff"),
-					"Flusslauf vor der Begradigung",
-					"Lippe, Weser und Ems wie um 1840, sonst aus dem Gelände",
-				)}
-			{showRings &&
-				item(
-					dashed("#6a1b9a", 2),
-					"Ein Tagesmarsch (rund 20 km) um ein Marschlager",
-				)}
-			{showRegion &&
-				item(
-					dashed("#4a148c", 2),
-					`Untersuchungsgebiet (${DEFAULT_REGION.label})`,
-				)}
+			<LegendGroup
+				title="Bekannte Fundstellen"
+				items={SITE_TYPES.filter((t) => siteTypes[t.id]).map((t) => ({
+					symbol: dot(t.color, "#fff"),
+					text: SHORT_TYPE[t.id] ?? t.label,
+					hint: t.label,
+				}))}
+			/>
+			<LegendGroup
+				title="Modell"
+				items={[
+					showCandidates && {
+						symbol: dot("#fff", "#d84315", "1"),
+						text: "Vermutetes Lager",
+						hint: "Am besten bewertete Stelle, nummeriert nach Rang",
+					},
+					showStages && {
+						symbol: dot("#ffca28", "#3e2723", "E"),
+						text: "Etappenhalt",
+						hint: "Möglicher Halt nach einem Tagesmarsch entlang der Marschwege",
+					},
+					showRoutes && {
+						symbol: line("#ffca28", "#3e2723"),
+						text: "Marschweg",
+						hint: "Möglicher Marschweg zwischen zwei bekannten Lagern",
+					},
+					showRoutes && {
+						symbol: dashed("#ffca28"),
+						text: "Marschweg, offen",
+						hint: "Marschweg nach Kalkriese oder zum vermuteten Lager Löhne",
+					},
+					showRings && {
+						symbol: dashed("#6a1b9a", 2),
+						text: "Tagesmarsch",
+						hint: "Ein Tagesmarsch (rund 20 km) um ein Marschlager",
+					},
+					showWaterways && {
+						symbol: line("#1565c0", "#fff"),
+						text: "Gewässer, alter Lauf",
+						hint: "Bäche und Flüsse vor der Begradigung, mit denen das Modell rechnet",
+					},
+				]}
+			/>
+			<LegendGroup
+				title="Wege und Grenzen"
+				items={[
+					showRoads && {
+						symbol: line("#5d4037", "#5d4037"),
+						text: "Römerstraße",
+						hint: "Belegte Römerstraße",
+					},
+					showRoads && {
+						symbol: dashed("#5d4037"),
+						text: "Straße, vermutet",
+						hint: "Vermutete Römerstraße",
+					},
+					showRoutes && {
+						symbol: dashed("#4fc3f7"),
+						text: "Schiff auf der Lippe",
+						hint: "Schiffsstrecke auf der Lippe",
+					},
+					showRegion && {
+						symbol: dashed("#4a148c", 2),
+						text: "Untersuchungsgebiet",
+						hint: DEFAULT_REGION.label,
+					},
+				]}
+			/>
 		</Stack>
 	)
 }
@@ -256,7 +327,7 @@ export function EasyContent({ onFlyTo, heading = false }) {
 							<ListItemButton
 								key={c.index}
 								onClick={() => open(c, c.rank)}
-								sx={{ borderRadius: 1, px: 1, py: 0.5, minHeight: 36 }}
+								sx={{ borderRadius: 1, px: 1, py: 0.25, minHeight: 32 }}
 							>
 								<Box
 									sx={{
@@ -326,11 +397,11 @@ export default function EasyPanel({ onFlyTo }) {
 			sx={{
 				position: "absolute",
 				left: 16,
-				// Unter der Suchleiste
-				top: 72,
+				// Unter der Suchleiste (16 px Rand + 52 px hoch), mit Luft dazwischen
+				top: 84,
 				width: 340,
 				maxWidth: "calc(100vw - 32px)",
-				maxHeight: "calc(100dvh - 176px)",
+				maxHeight: "calc(100dvh - 188px)",
 				display: "flex",
 				flexDirection: "column",
 				overflow: "hidden",
@@ -372,7 +443,12 @@ export default function EasyPanel({ onFlyTo }) {
 					fullWidth
 					variant="outlined"
 					startIcon={<TuneIcon />}
-					onClick={() => setPanelOpen(true)}
+					onClick={() => {
+						// Die Startkarte selbst steht schon hier, also gleich die Ebenen
+						const s = useMapStore.getState()
+						if (s.panelTab === "start") s.setPanelTab("layers")
+						setPanelOpen(true)
+					}}
 				>
 					Ebenen, Einstellungen und Quellen
 				</Button>

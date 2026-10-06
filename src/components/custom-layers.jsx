@@ -30,7 +30,6 @@ import {
 	serviceLayer,
 } from "@/lib/imports"
 import { useMapStore } from "@/store/use-map-store"
-import { SectionTitle } from "./layer-panel"
 
 /** Liste der eigenen Karten in der Seitenleiste. */
 export default function CustomLayers() {
@@ -40,7 +39,6 @@ export default function CustomLayers() {
 	const [open, setOpen] = useState(false)
 	return (
 		<Box>
-			<SectionTitle>Eigene Karten</SectionTitle>
 			{layers.length === 0 && (
 				<Typography variant="caption" color="text.secondary" component="p">
 					Luftbilder, gescannte Pläne oder GIS-Daten hinzufügen. Dateien bleiben

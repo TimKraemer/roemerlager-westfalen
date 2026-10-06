@@ -27,7 +27,6 @@ import BottomSheet from "./bottom-sheet"
 import EasyPanel, { EasyContent } from "./easy-panel"
 import SearchBox from "./search-box"
 import TextsPanel, { TextChip } from "./texts-panel"
-import Zeitstrahl from "./zeitstrahl"
 
 const MapView = dynamic(() => import("./map-view"), { ssr: false })
 
@@ -73,6 +72,7 @@ function preloadPanels() {
 const WIDTH = 360
 
 const TABS = [
+	{ id: "start", label: "Start", icon: <ExploreIcon fontSize="small" /> },
 	{ id: "layers", label: "Ebenen", icon: <LayersIcon fontSize="small" /> },
 	{ id: "sites", label: "Fundorte", icon: <PlaceIcon fontSize="small" /> },
 	{
@@ -82,12 +82,6 @@ const TABS = [
 	},
 	{ id: "texts", label: "Texte", icon: <HistoryEduIcon fontSize="small" /> },
 	{ id: "sources", label: "Quellen", icon: <MenuBookIcon fontSize="small" /> },
-]
-
-// Auf dem Handy gibt es keine schwebende Startkarte, sie wird zum ersten Reiter
-const MOBILE_TABS = [
-	{ id: "start", label: "Start", icon: <ExploreIcon fontSize="small" /> },
-	...TABS,
 ]
 
 function PanelTabs({ tabs, value, onSelect }) {
@@ -182,9 +176,6 @@ export default function AppShell() {
 		setOpen(true)
 	}
 
-	// Die Übersicht ist am Desktop die schwebende Karte, kein Reiter
-	const deskTab = tab === "start" ? "layers" : tab
-
 	// Karte bleibt beim Wechsel zwischen Handy- und Desktopansicht dasselbe
 	// Element, sonst würde sie neu aufgebaut
 	return (
@@ -223,7 +214,7 @@ export default function AppShell() {
 									Römerlager in Westfalen
 								</Typography>
 								<Typography variant="caption" color="text.secondary">
-									Ebenen, Modell-Einstellungen und Quellen
+									Karte, Analyse und Quellen
 								</Typography>
 							</Box>
 							<IconButton
@@ -234,7 +225,7 @@ export default function AppShell() {
 								<ChevronLeftIcon />
 							</IconButton>
 						</Box>
-						<PanelTabs tabs={TABS} value={deskTab} onSelect={setTab} />
+						<PanelTabs tabs={TABS} value={tab} onSelect={setTab} />
 						<Box
 							sx={{
 								flex: 1,
@@ -244,7 +235,7 @@ export default function AppShell() {
 								pb: 3,
 							}}
 						>
-							{content(deskTab)}
+							{content(tab)}
 						</Box>
 					</Box>
 				</Drawer>
@@ -258,7 +249,6 @@ export default function AppShell() {
 				{desktop && !open && !textShown && <EasyPanel onFlyTo={flyTo} />}
 				{desktop && <InfoCards />}
 				<TextChip />
-				<Zeitstrahl />
 				{!desktop && (
 					<BottomSheet
 						open={open}
@@ -269,7 +259,7 @@ export default function AppShell() {
 						}}
 						header={
 							<PanelTabs
-								tabs={MOBILE_TABS}
+								tabs={TABS}
 								value={hasCard ? false : tab}
 								onSelect={select}
 							/>

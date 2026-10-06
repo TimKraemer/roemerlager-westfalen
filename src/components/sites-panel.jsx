@@ -18,7 +18,6 @@ import { useMapStore } from "@/store/use-map-store"
 import CitationBox from "./citation-box"
 import { openCite } from "./cite-dialog"
 import { SectionTitle } from "./layer-panel"
-import ValidationPanel from "./validation-panel"
 
 export function SitesPanel() {
 	const setSelectedSite = useMapStore((s) => s.setSelectedSite)
@@ -76,7 +75,6 @@ export function SourcesPanel() {
 				Karte, Modell und Zusammenstellung der Quellen von Tim Krämer, 2026.
 			</Typography>
 			<CitationBox />
-			<ValidationPanel />
 			<SectionTitle>Literatur und Daten</SectionTitle>
 			<Typography variant="body2" color="text.secondary">
 				Alle {ALL_REFS.length} Titel und Datenquellen mit geprüften Angaben

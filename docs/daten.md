@@ -151,7 +151,7 @@ Netz (Kacheldienste in `src/config.js`).
 | `bun scripts/validate-lineaments.mjs` | kurz | Prüfung der Linienerkennung an bekannten Lagern |
 | `bun scripts/build-roads.mjs` | kurz | Römerstraßen, lädt Itiner-e von Zenodo |
 | `bun scripts/build-rivers.mjs [Fluss …] [--roemisch]` | beim ersten Mal etwa 1 h | Alte Flussläufe |
-| `scripts/altkarten/gewaesser.sh [--quelle ura,kdr1904]` | Uraufnahme beim ersten Mal etwa 20 min, danach wenige Minuten | Gewässer je Stand des Zeitstrahls |
+| `scripts/altkarten/gewaesser.sh [--quelle ura,kdr1904]` | Uraufnahme beim ersten Mal etwa 20 min, danach wenige Minuten | Gewässer um 1840 und um 1900 (die Karte zeigt um 1840) |
 | `bun scripts/build-places.mjs` | einige Minuten | Ortsverzeichnis der Suche |
 | `bun scripts/build-areas.mjs` | je nach Overpass-Last | Höhenzüge und Verwaltungsgebiete der Suche |
 
@@ -175,7 +175,7 @@ denen das Modell Moore oder Gewässer liest. Dreizehn weitere Karten von 1650
 bis 1898 und die Ebene TK25 1936–1945 stehen im Git-Tag `vor-trennung`. Weder die Scans noch die daraus gerechneten Kacheln
 liegen im Repository, nur die Passpunkte (`scripts/altkarten/gcp/`) und das
 Verzeichnis (`src/data/altkarten.json`). Ohne Kacheln blendet die App diese
-Karten in der Gruppe „Historische Karten“ und im Zeitstrahl aus.
+Karten in der Gruppe „Historische Karten“ aus.
 
 Bestandsnachweis und Rechteangabe je Scan stehen in
 `src/data/altkarten-quellen.json` und erscheinen in der Attribution der
@@ -197,11 +197,11 @@ scripts/altkarten/alt.sh tiles 1844-kreis-luebbecke
 scripts/altkarten/alt.sh index                  # schreibt src/data/altkarten.json
 ```
 
-### Zeitstrahl und Gewässer aus den Karten
+### Gewässer, Moore, Wald und Wege aus den Karten
 
-Der Zeitstrahl (`src/lib/zeitstrahl.js`) fasst die historischen Karten zu
-Ständen zusammen: um 1840, um 1900 und heute.
-Jeder Stand hat eine Leitkarte und weitere Karten derselben Zeit.
+Die Karte zeigt Gewässer, Moore, Wald und Hauptwege im Stand um 1840.
+Die Gewässer um 1900 liegen weiter in den Daten, werden aber nicht
+gezeigt. Die Umschaltung auf um 1900 und heute steckt in der Git-Historie.
 
 `scripts/altkarten/gewaesser.sh` liest für den Kreis Minden-Lübbecke die
 Gewässer aus zwei Karten:
@@ -232,17 +232,12 @@ Fehnkultur) und außerhalb NRW nach GUM50; im Torfkörper steckt die
 Ausdehnung vor der Kultivierung, abgetorfte Flächen fehlen teils. In der
 GUM50 fehlt ein Kartenblatt am Dümmer. Um 1840 kommen die
 Überschwemmungsgebiete nach der preußischen Aufnahme dazu (der Dienst
-zeichnet sie schraffiert, das Skript füllt die Umrisse), heute die
-Feuchtgebiete aus OpenStreetMap.
+zeichnet sie schraffiert, das Skript füllt die Umrisse).
 
 Wald um 1840 kommt aus dem Datensatz „Waldflächen in Nordrhein-Westfalen
 während der Preußischen Uraufnahme“ des Landesamts für Natur, Umwelt und
 Klima (`scripts/altkarten/wald.sh` lädt das GeoPackage und schneidet es
-zu), heute aus OpenStreetMap. Im Stand „heute“ liegen die Umrisse von 1840
-über dem heutigen Wald. Für die Zeit um 1900 gibt es keinen solchen
-Datensatz, der Stand „um 1900“ zeigt deshalb die Flächen von 1840
-unverändert. Wie viel Wald bis 1900 gerodet oder aufgeforstet wurde, ist
-damit offen. Orte um 1840 gibt es nicht als amtliche Daten, und
+zu). Orte um 1840 gibt es nicht als amtliche Daten, und
 die Uraufnahme färbt Häuser je Blatt anders (teils rot, teils schwarz), eine
 automatische Erkennung war nicht verlässlich.
 

@@ -47,7 +47,7 @@ const SOURCES = {
 	boundary: { refs: ["osm"] },
 	roads: { own: "Römerstraßen", refs: ["itinere2025", "osm"] },
 	waterways: {
-		own: "Natürliches Gewässernetz",
+		own: "Bäche und Flüsse vor der Begradigung",
 		refs: [
 			"barnes2014",
 			"mapzen-terrain",
@@ -121,23 +121,21 @@ for (const m of ALTKARTEN) {
 	}
 }
 
-// Aus Uraufnahme und Karte des Deutschen Reiches gelesene Gewässer
-const KDR = ALTKARTEN.find((m) => m.id === "1904-kdr-luebbecke")
+// Aus der Uraufnahme um 1840 gelesene Themen
 SOURCES["wege-zeit"] = {
 	own: "Hauptwege um 1840 entlang heutiger Straßen, Kreis Minden-Lübbecke",
 	refs: ["geobasis-uraufnahme", "osm"],
 }
 SOURCES["wald-zeit"] = {
-	own: "Wald je Stand, Kreis Minden-Lübbecke",
-	refs: ["lanuk-wald-uraufnahme", "osm"],
+	own: "Wald um 1840, Kreis Minden-Lübbecke",
+	refs: ["lanuk-wald-uraufnahme"],
 }
 SOURCES["moor-zeit"] = {
-	own: "Moore und nasse Flächen je Stand, Kreis Minden-Lübbecke",
-	refs: ["gd-bk50", "lbeg-gum50", "nrw-uesg", "osm"],
+	own: "Moore und nasse Flächen um 1840, Kreis Minden-Lübbecke",
+	refs: ["gd-bk50", "lbeg-gum50", "nrw-uesg"],
 }
 SOURCES["gewaesser-zeit"] = {
-	own: "Gewässer aus den historischen Karten, Kreis Minden-Lübbecke",
-	extra: () => (KDR ? [altkarteCsl(KDR)] : []),
+	own: "Gewässer um 1840 aus der Uraufnahme, Kreis Minden-Lübbecke",
 	refs: ["geobasis-uraufnahme", "osm"],
 }
 

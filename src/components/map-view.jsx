@@ -13,16 +13,19 @@ import {
 	BASE_LAYERS,
 	FONT,
 	GLYPHS,
-	MAIN_ROADS,
 	MOOR_1844_FILE,
 	MOOR_FILE,
+	MOOR_LAYER,
 	OVERLAYS,
 	partsOf,
 	styleFor,
 	styleLayersOf,
 	TIME_WATER_FILE,
+	TIME_WATER_LAYER,
 	WALD_FILE,
+	WALD_LAYER,
 	WEGE_FILE,
+	WEGE_LAYER,
 } from "@/lib/layers"
 import maplibreVersion from "@/lib/maplibre-version.json"
 import { rankedCandidates } from "@/lib/potential/candidates"
@@ -34,13 +37,6 @@ import { DEFAULT_REGION, MAP_BOUNDS } from "@/lib/regions"
 import { centerOffset, isMobile, mapInsets } from "@/lib/sheet"
 import { campsFor, SITE_TYPES, SITES } from "@/lib/sites"
 import { textGeo } from "@/lib/text-geo"
-import {
-	MOOR_LAYER,
-	standById,
-	TIME_WATER_LAYER,
-	WALD_LAYER,
-	WEGE_LAYER,
-} from "@/lib/zeitstrahl"
 import { useMapStore } from "@/store/use-map-store"
 import {
 	addModelAnnotations,
@@ -464,6 +460,9 @@ function addCustomLayer(map, id, l) {
 // React StrictMode entfernt die erste Karte, bevor der State nachzieht
 const alive = (map) => map && !map._removed
 
+// Ab dieser Zoomstufe holt die Karte die Laserscan-Bilder im Ausschnitt
+const LRM_MIN_ZOOM = 11
+
 // Quellen und kleinste Zoomstufe je Ebene, für die Ladeanzeige
 const OVERLAY_SOURCES = Object.fromEntries(
 	OVERLAYS.map((l) => [l.id, Object.keys(styleFor(l).sources)]),
@@ -733,8 +732,7 @@ export default function MapView({ onMapReady }) {
 		map.getSource(TIME_WATER_LAYER).setData(assetUrl(TIME_WATER_FILE))
 	}, [timeWaterOn, map])
 
-	// Moore und nasse Flächen: Dateien beim ersten Einschalten laden, dann je
-	// Stand die passenden Teile zeigen (Moorböden immer)
+	// Moore und nasse Flächen: Dateien beim ersten Einschalten laden
 	const moorOn = overlays[MOOR_LAYER]?.visible
 	const moorLoaded = useRef(null)
 	useEffect(() => {
@@ -743,27 +741,8 @@ export default function MapView({ onMapReady }) {
 		map.getSource(MOOR_LAYER).setData(assetUrl(MOOR_FILE))
 		map.getSource(`${MOOR_LAYER}-1844`).setData(assetUrl(MOOR_1844_FILE))
 	}, [moorOn, map])
-	const moorStand = useMapStore((s) => s.timeline.stand)
-	useEffect(() => {
-		if (!alive(map)) return
-		const parts = standById(moorStand).moor ?? []
-		// Kein Merkmal hat den Wert "-": Teil ausblenden
-		const never = ["==", ["get", "kind"], "-"]
-		map.setFilter(`${MOOR_LAYER}-nass`, [
-			"==",
-			["get", "slice"],
-			parts.includes("ura") ? "ura" : "",
-		])
-		for (const id of [`${MOOR_LAYER}-1844`, `${MOOR_LAYER}-1844-line`])
-			map.setFilter(id, parts.includes("1844") ? null : never)
-		map.setFilter(
-			`${MOOR_LAYER}-heute`,
-			parts.includes("heute") ? ["==", ["get", "class"], "wetland"] : never,
-		)
-	}, [moorStand, map])
 
-	// Wald: Datei beim ersten Einschalten laden, je Stand Flächen 1840 oder
-	// heutiger Wald mit dem Umriss von 1840
+	// Wald um 1840: Datei beim ersten Einschalten laden
 	const waldOn = overlays[WALD_LAYER]?.visible
 	const waldLoaded = useRef(null)
 	useEffect(() => {
@@ -771,20 +750,8 @@ export default function MapView({ onMapReady }) {
 		waldLoaded.current = map
 		map.getSource(WALD_LAYER).setData(assetUrl(WALD_FILE))
 	}, [waldOn, map])
-	useEffect(() => {
-		if (!alive(map)) return
-		const parts = standById(moorStand).wald ?? []
-		const hidden = ["==", ["get", "kind"], "-"]
-		map.setFilter(`${WALD_LAYER}-ura`, parts.includes("ura") ? null : hidden)
-		map.setFilter(`${WALD_LAYER}-ura-line`, parts.length ? null : hidden)
-		map.setFilter(
-			`${WALD_LAYER}-heute`,
-			parts.includes("heute") ? ["==", ["get", "class"], "wood"] : hidden,
-		)
-	}, [moorStand, map])
 
-	// Hauptwege: Datei beim ersten Einschalten laden, je Stand Wege von 1840
-	// und heutige Hauptstraßen
+	// Hauptwege um 1840: Datei beim ersten Einschalten laden
 	const wegeOn = overlays[WEGE_LAYER]?.visible
 	const wegeLoaded = useRef(null)
 	useEffect(() => {
@@ -792,28 +759,6 @@ export default function MapView({ onMapReady }) {
 		wegeLoaded.current = map
 		map.getSource(WEGE_LAYER).setData(assetUrl(WEGE_FILE))
 	}, [wegeOn, map])
-	useEffect(() => {
-		if (!alive(map)) return
-		const parts = standById(moorStand).wege ?? []
-		const hidden = ["==", ["get", "kind"], "-"]
-		for (const id of [`${WEGE_LAYER}-ura`, `${WEGE_LAYER}-ura-casing`])
-			map.setFilter(id, parts.includes("ura") ? null : hidden)
-		map.setFilter(
-			`${WEGE_LAYER}-heute`,
-			parts.includes("heute")
-				? ["in", ["get", "class"], ["literal", MAIN_ROADS]]
-				: hidden,
-		)
-	}, [moorStand, map])
-
-	// Gewässer aus den historischen Karten: nur die des gewählten Stands
-	const stand = useMapStore((s) => s.timeline.stand)
-	useEffect(() => {
-		if (!alive(map)) return
-		const filter = ["==", ["get", "slice"], standById(stand).water ?? ""]
-		for (const id of [TIME_WATER_LAYER, `${TIME_WATER_LAYER}-casing`])
-			map.setFilter(id, filter)
-	}, [stand, map])
 
 	// Ladezustand der eingeschalteten Ebenen für Panel und Ladeanzeige
 	const setOverlayStatus = useMapStore((s) => s.setOverlayStatus)
@@ -883,7 +828,9 @@ export default function MapView({ onMapReady }) {
 		}
 	}, [customLayers, map])
 
-	// Laserscan-Fenster erst beim Einschalten laden (je Bild rund 400 KB)
+	// Laserscan-Fenster: 36 Bilder, zusammen 15 MB. Ein Bild wird erst
+	// geholt, wenn die Ebene an ist, sein Fenster im Ausschnitt liegt und
+	// die Karte nah genug ist, darunter wären die 2,4 km nur ein Fleck.
 	const lineaments = useMapStore((s) => s.lineaments)
 	const lrm = overlays.lrm
 	const lines = overlays.lines
@@ -891,30 +838,49 @@ export default function MapView({ onMapReady }) {
 		if (lrm.visible || lines.visible) ensureLineaments()
 	}, [lrm.visible, lines.visible])
 	useEffect(() => {
-		if (!alive(map) || !lineaments) return
+		if (!alive(map) || !lineaments || !lrm.visible) return
 		const windows = lineaments.windows.filter((w) => w.imageCorners)
-		if (lrm.visible) {
+		const addInView = () => {
+			if (!alive(map) || map.getZoom() < LRM_MIN_ZOOM) return
+			const b = map.getBounds()
 			for (const w of windows) {
 				const id = `lrm-${w.id}`
-				if (!map.getSource(id)) {
-					map.addSource(id, {
-						type: "image",
-						url: assetUrl(`precomputed/lrm/${w.id}.jpg`),
-						coordinates: w.imageCorners,
-					})
-					map.addLayer(
-						{
-							id,
-							type: "raster",
-							source: id,
-							paint: { "raster-fade-duration": 0 },
+				if (map.getSource(id)) continue
+				const lons = w.imageCorners.map((c) => c[0])
+				const lats = w.imageCorners.map((c) => c[1])
+				if (
+					Math.max(...lons) < b.getWest() ||
+					Math.min(...lons) > b.getEast() ||
+					Math.max(...lats) < b.getSouth() ||
+					Math.min(...lats) > b.getNorth()
+				)
+					continue
+				map.addSource(id, {
+					type: "image",
+					url: assetUrl(`precomputed/lrm/${w.id}.jpg`),
+					coordinates: w.imageCorners,
+				})
+				map.addLayer(
+					{
+						id,
+						type: "raster",
+						source: id,
+						paint: {
+							"raster-fade-duration": 0,
+							"raster-opacity": useMapStore.getState().overlays.lrm.opacity,
 						},
-						"heatmap",
-					)
-				}
+					},
+					"heatmap",
+				)
 			}
 		}
-		for (const w of windows) {
+		addInView()
+		map.on("moveend", addInView)
+		return () => map.off("moveend", addInView)
+	}, [lineaments, lrm.visible, map])
+	useEffect(() => {
+		if (!alive(map) || !lineaments) return
+		for (const w of lineaments.windows) {
 			const id = `lrm-${w.id}`
 			if (!map.getLayer(id)) continue
 			map.setLayoutProperty(id, "visibility", lrm.visible ? "visible" : "none")
@@ -989,7 +955,6 @@ export default function MapView({ onMapReady }) {
 	// Vektorkacheln (Ebene "osm-gewaesser")
 	const waterSource = result?.waterSource
 	const oldRivers = useMapStore((s) => s.params.oldRivers)
-	const timeWater = useMapStore((s) => s.timeline.open && s.timeline.water)
 	useEffect(() => {
 		if (!alive(map)) return
 		const dem = waterSource !== "osm"
@@ -1003,9 +968,9 @@ export default function MapView({ onMapReady }) {
 			? [...withoutOldRivers(derived), ...oldRiverFeatures()]
 			: derived
 		map.getSource("waterways").setData({ type: "FeatureCollection", features })
-		// Zeigt der Zeitstrahl Gewässer einer Zeit, tritt das abgeleitete Netz
-		// zurück, sonst mischen sich zwei Sorten blauer Linien
-		const visible = showWaterways && !timeWater
+		// Sind Gewässer aus den Karten an, tritt das abgeleitete Netz zurück,
+		// sonst mischen sich zwei Sorten blauer Linien
+		const visible = showWaterways && !timeWaterOn
 		for (const id of ["waterways", "waterways-casing"]) {
 			map.setLayoutProperty(id, "visibility", visible ? "visible" : "none")
 		}
@@ -1018,7 +983,7 @@ export default function MapView({ onMapReady }) {
 		showWaterways,
 		waterSource,
 		oldRivers,
-		timeWater,
+		timeWaterOn,
 		map,
 	])
 
