@@ -284,18 +284,22 @@ export default function SearchBox({ getMap, desktop }) {
 		}
 		const fix = correction(query, [...local, ...places])
 		// Gruppen in der Reihenfolge ihres besten Treffers, Orte zuletzt.
-		// Heißt ein Ort genau so wie gesucht und trägt kein Fundort, Fluss
-		// oder keine Straße den Namen, kommen die Orte zuerst ("Minden",
-		// aber "Barkhausen" bleibt beim Lager).
+		// Orte und Gebiete kommen zuerst, wenn einer genau so heißt und kein
+		// Fundort, Fluss oder keine Straße den Namen trägt ("Minden", aber
+		// "Barkhausen" bleibt beim Lager), oder wenn einer so anfängt und
+		// kein lokaler Treffer den Begriff im Titel hat ("Kreis Minden",
+		// aber "Varus" bleibt bei den Texten statt beim Varusberg).
 		const kinds = [...new Set(local.map((h) => h.kind))]
 		const typed = normalize(query).text
+		const label = (o) => normalize(o.label).text
 		const onMap = local.some(
 			(h) =>
-				["site", "river", "road"].includes(h.kind) &&
-				normalize(h.label).text.includes(typed),
+				["site", "river", "road"].includes(h.kind) && label(h).includes(typed),
 		)
+		const inTitle = local.some((h) => label(h).includes(typed))
 		const placesFirst =
-			!onMap && places.some((o) => normalize(o.label).text === typed)
+			(!onMap && places.some((o) => label(o) === typed)) ||
+			(!inTitle && places.some((o) => label(o).startsWith(typed)))
 		const grouped = kinds.flatMap((k) => local.filter((h) => h.kind === k))
 		// Gebiete und Orte kommen gemischt, jede Gruppe nur einmal
 		const placeHits = [
