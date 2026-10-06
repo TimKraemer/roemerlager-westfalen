@@ -1,32 +1,64 @@
 import { evaluate, prepare } from "./pipeline"
 
-/** Web Worker um die Rechenkette in pipeline.js. */
+/**
+ * Web Worker um die Rechenkette in pipeline.js.
+ *
+ * "analyze" lädt das Gelände für einen Ausschnitt (prepare) und bewertet
+ * es, "update" bewertet das geladene Gelände mit neuen Reglern neu. Nur
+ * die jüngste Anfrage zählt: ein neues "analyze" bricht ein laufendes ab,
+ * ein "update" während des Ladens wird danach mit seinen Reglern gerechnet.
+ */
 
 let state = null
-// Nur die jüngste Anfrage zählt, ältere brechen nach dem Laden ab
-let generation = 0
+let preparing = false
+// Zuletzt angefragte Einstellungen, gelten für die nächste Bewertung
+let latest = null
+let analyzeGen = 0
+let evaluateGen = 0
 
-const onProgress = (stage, value = 0) =>
-	self.postMessage({ type: "progress", stage, value })
+const post = (msg) => self.postMessage(msg)
+const fail = (error) =>
+	post({ type: "error", message: error?.message ?? String(error) })
+
+async function evaluateLatest() {
+	const gen = ++evaluateGen
+	const isStale = () => gen !== evaluateGen
+	const result = await evaluate(state, latest, { isStale })
+	if (result && !isStale()) post({ type: "result", ...result })
+}
+
+async function analyze(msg) {
+	const gen = ++analyzeGen
+	const isStale = () => gen !== analyzeGen
+	evaluateGen++
+	latest = msg
+	preparing = true
+	try {
+		const prepared = await prepare(msg.bbox, msg.params, {
+			onProgress: (stage, value = 0) => {
+				if (!isStale()) post({ type: "progress", stage, value })
+			},
+			isStale,
+		})
+		if (!prepared || isStale()) return
+		state = prepared
+	} finally {
+		if (!isStale()) preparing = false
+	}
+	await evaluateLatest()
+}
 
 self.onmessage = async (event) => {
 	const msg = event.data
-	const gen = ++generation
-	const isStale = () => gen !== generation
 	try {
 		if (msg.type === "analyze") {
-			const prepared = await prepare(msg.bbox, msg.params, {
-				onProgress,
-				isStale,
-			})
-			if (!prepared) return
-			state = prepared
-		} else if (msg.type !== "update" || !state) {
-			return
+			await analyze(msg)
+		} else if (msg.type === "update") {
+			latest = { ...latest, ...msg }
+			// Während des Ladens übernimmt analyze() die neuen Regler
+			if (state && !preparing) await evaluateLatest()
 		}
-		const result = await evaluate(state, msg, { isStale })
-		if (result && !isStale()) self.postMessage({ type: "result", ...result })
 	} catch (error) {
-		self.postMessage({ type: "error", message: error.message ?? String(error) })
+		fail(error)
 	}
 }

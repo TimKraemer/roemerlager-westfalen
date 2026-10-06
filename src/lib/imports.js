@@ -149,7 +149,10 @@ export async function readWorldFile(imageFile, worldFile, epsg) {
 	const img = await new Promise((resolve, reject) => {
 		const im = new Image()
 		im.onload = () => resolve(im)
-		im.onerror = () => reject(new Error("Bild nicht lesbar"))
+		im.onerror = () => {
+			URL.revokeObjectURL(url)
+			reject(new Error("Bild nicht lesbar"))
+		}
 		im.src = url
 	})
 	const w = img.naturalWidth

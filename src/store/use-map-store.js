@@ -137,6 +137,9 @@ export const useMapStore = create((set) => ({
 		}),
 	removeCustomLayer: (id) =>
 		set((s) => {
+			// Eigene Bilder liegen als blob:-URL im Speicher
+			const url = s.customLayers.find((l) => l.id === id)?.url
+			if (url?.startsWith("blob:")) URL.revokeObjectURL(url)
 			const customLayers = s.customLayers.filter((l) => l.id !== id)
 			saveServices(customLayers)
 			return { customLayers }

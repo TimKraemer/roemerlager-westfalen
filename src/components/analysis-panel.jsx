@@ -239,7 +239,7 @@ export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
 			>
 				{params.waterSource === "dem"
 					? "Gewässernetz aus den Talzügen berechnet, ohne Kanäle und Begradigungen. Unter „Ebenen“ einblendbar."
-					: "Heutige Bäche und Flüsse aus OSM. Die Overpass-Server sind oft langsam oder überlastet."}
+					: "Heutige Bäche und Flüsse aus den OpenStreetMap-Vektorkacheln, ohne Kanäle und Gräben."}
 			</Typography>
 			<Stack direction="row" sx={{ alignItems: "center" }}>
 				<Switch
