@@ -313,7 +313,7 @@
 				"id": "oberaden",
 				"name": "Bergkamen-Oberaden",
 				"type": "legionslager",
-				"precision": "Lagermitte, etwa ±200–300 m",
+				"precision": "Schwerpunkt der Lagerfläche (Mauerumriss aus Grabungsplan und erhaltenem Nordgraben), etwa ±20 m",
 				"size_ha": "56",
 				"dating": "11 – 8/7 v. Chr.",
 				"place": "Bergkamen, Kreis Unna",
@@ -338,7 +338,7 @@
 			},
 			"geometry": {
 				"type": "Point",
-				"coordinates": [7.5844, 51.6125]
+				"coordinates": [7.58193, 51.61053]
 			}
 		},
 		{
