@@ -64,7 +64,34 @@ const fade = {
 }
 
 const MUTE_KEY = "roemer-erzaehlung-stumm"
+const PLACE_KEY = "roemer-erzaehlung-stelle"
 let player = null
+
+// Wo man in der Erzählung war, Text und Sekunde im Vorlesen. Bleibt beim
+// Einklappen und Wegklicken stehen, im Browser auch über das Neuladen hinaus.
+let place
+function getPlace() {
+	if (place === undefined) {
+		try {
+			place = JSON.parse(localStorage.getItem(PLACE_KEY))
+		} catch {
+			place = null
+		}
+		if (!place?.id || !chapterOf(place.id)) place = null
+	}
+	return place
+}
+function setPlace(id, time = 0) {
+	const sec = Math.floor(time)
+	const same = place?.id === id && Math.floor(place.time) === sec
+	place = { id, time }
+	if (same) return
+	try {
+		localStorage.setItem(PLACE_KEY, JSON.stringify({ id, time: sec }))
+	} catch {
+		// nur für diese Sitzung
+	}
+}
 
 /**
  * Liest jeden Schritt der Erzählung vor (scripts/build-audio.mjs), sobald
@@ -86,23 +113,37 @@ function useNarration(id) {
 		const entry = id && !muted ? audioIndex[id] : null
 		if (!entry) {
 			player?.pause()
-			setProgress(null)
+			// Pausiert bleibt der Ring stehen, stumm verschwindet er
+			if (muted || id) setProgress(null)
 			return
 		}
 		player ??= new Audio()
 		const a = player
 		a.src = assetUrl(`audio/erzaehlung/${id}.mp3`)
-		const tick = () => setProgress(a.duration ? a.currentTime / a.duration : 0)
-		const end = () => setProgress(null)
+		// War man in diesem Text schon, geht es an der Stelle weiter
+		const from = getPlace()?.id === id ? getPlace().time : 0
+		const seek = () => {
+			if (from) a.currentTime = from
+		}
+		const tick = () => {
+			setProgress(a.duration ? a.currentTime / a.duration : 0)
+			setPlace(id, a.currentTime)
+		}
+		const end = () => {
+			setProgress(null)
+			setPlace(id, 0)
+		}
+		a.addEventListener("loadedmetadata", seek, { once: true })
 		a.addEventListener("timeupdate", tick)
 		a.addEventListener("ended", end)
 		// Ohne vorherigen Klick blockiert der Browser das Abspielen, dann
 		// bleibt es still, bis man weiterblättert
 		a.play()
-			.then(() => setProgress(0))
+			.then(() => setProgress((p) => (from ? p : 0)))
 			.catch(() => setProgress(null))
 		return () => {
 			a.pause()
+			a.removeEventListener("loadedmetadata", seek)
 			a.removeEventListener("timeupdate", tick)
 			a.removeEventListener("ended", end)
 		}
@@ -141,6 +182,11 @@ export default function TextsTimeline() {
 	const reading = Boolean(selected && chapterOf(selected))
 	const shown = open || reading
 	const narration = useNarration(reading ? selected : null)
+
+	// Neuer Text: von hier an merken. Ein Wiedersehen behält die Stelle.
+	useEffect(() => {
+		if (reading && getPlace()?.id !== selected) setPlace(selected)
+	}, [reading, selected])
 
 	// Was unten liegt, verdeckt Karte. Die Karte rechnet damit beim
 	// Einpassen der Textorte, auf dem Handy auch beim Zentrieren, und
@@ -195,6 +241,7 @@ export default function TextsTimeline() {
 			selected={reading ? selected : null}
 			onSelect={select}
 			narration={narration}
+			resume={getPlace()?.id}
 			onCollapse={() => {
 				select(null)
 				setOpen(false)
@@ -206,7 +253,9 @@ export default function TextsTimeline() {
 		<Pill
 			onClick={() => {
 				setOpen(true)
-				if (!desktop) select(FIRST)
+				// Weiter, wo man war, sonst auf dem Handy gleich der erste Text
+				const at = getPlace()?.id
+				if (at || !desktop) select(at ?? FIRST)
 			}}
 		/>
 	)
@@ -296,16 +345,19 @@ function Pill({ onClick }) {
  * Leiste mit den Kapiteln von links nach rechts in zeitlicher Folge. Jeder
  * Punkt ist ein Text, gefüllt ist, was schon gelesen ist.
  */
-function Bar({ selected, onSelect, onCollapse, narration, mobile }) {
+function Bar({ selected, onSelect, onCollapse, narration, resume, mobile }) {
 	const [info, setInfo] = useState(null)
-	const { index, prev, next } = selected
-		? neighbours(selected)
+	// Eingeklappt oder weggeklickt zeigt die Leiste weiter, wo man war
+	const at = selected ?? resume
+	const { index, prev, next } = at
+		? neighbours(at)
 		: { index: -1, prev: null, next: null }
-	const current = selected ? chapterOf(selected) : null
+	const current = at ? chapterOf(at) : null
 	const accent = current?.accent ?? CHAPTERS[0].accent
 	const atEnd = selected && !next
 
-	const forward = () => onSelect(selected ? (next?.id ?? FIRST) : FIRST)
+	const forward = () =>
+		onSelect(selected ? (next?.id ?? FIRST) : (resume ?? FIRST))
 
 	return (
 		<Paper
@@ -386,7 +438,7 @@ function Bar({ selected, onSelect, onCollapse, narration, mobile }) {
 								key={c.id}
 								c={c}
 								index={index}
-								selected={selected}
+								selected={at}
 								active={c === current}
 								onSelect={onSelect}
 							/>
@@ -417,7 +469,13 @@ function Bar({ selected, onSelect, onCollapse, narration, mobile }) {
 					"&:hover": { bgcolor: accent, filter: "brightness(1.1)" },
 				}}
 			>
-				{!selected ? "Starten" : atEnd ? "Von vorn" : "Weiter"}
+				{!selected
+					? resume
+						? "Weiter"
+						: "Starten"
+					: atEnd
+						? "Von vorn"
+						: "Weiter"}
 			</Button>
 
 			<Popover

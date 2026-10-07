@@ -1,6 +1,7 @@
 "use client"
 
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
+import ChevronRightIcon from "@mui/icons-material/ChevronRight"
 import ExploreIcon from "@mui/icons-material/Explore"
 import LayersIcon from "@mui/icons-material/Layers"
 import MenuBookIcon from "@mui/icons-material/MenuBook"
@@ -11,8 +12,10 @@ import {
 	CircularProgress,
 	Drawer,
 	IconButton,
+	Paper,
 	Tab,
 	Tabs,
+	Tooltip,
 	Typography,
 	useMediaQuery,
 } from "@mui/material"
@@ -244,6 +247,31 @@ export default function AppShell() {
 				<MapView onMapReady={onMapReady} />
 				<SearchBox getMap={getMap} desktop={desktop} />
 				{desktop && !open && !textShown && <EasyPanel onFlyTo={flyTo} />}
+				{desktop && !open && textShown && (
+					// Die Startkarte mit ihrem Knopf weicht der Lesekarte, die
+					// Leiste muss trotzdem aufgehen, auch während der Erzählung
+					<Paper
+						elevation={4}
+						sx={{
+							position: "absolute",
+							top: 16,
+							// rechts neben der Suchleiste
+							left: 16 + 340 + 8,
+							zIndex: 4,
+							borderRadius: 2,
+						}}
+					>
+						<Tooltip title="Ebenen, Einstellungen und Quellen">
+							<IconButton
+								onClick={() => setOpen(true)}
+								aria-label="Seitenleiste ausklappen"
+								sx={{ width: 52, height: 52, borderRadius: 2 }}
+							>
+								<ChevronRightIcon />
+							</IconButton>
+						</Tooltip>
+					</Paper>
+				)}
 				{desktop && <InfoCards />}
 				<TextsTimeline />
 				{!desktop && (
