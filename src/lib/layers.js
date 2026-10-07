@@ -143,7 +143,6 @@ export const OVERLAYS = [
 		layers: "nw_dgm-schummerung_pan",
 		attribution: GEOBASIS_NRW,
 		opacity: 0.5,
-		visible: true,
 		main: true,
 	},
 	{
