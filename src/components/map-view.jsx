@@ -302,6 +302,21 @@ function addAnalysisLayers(map) {
 	})
 
 	map.addSource("candidates", { type: "geojson", data: EMPTY })
+	// Hof um den Ort, über dem in der Liste die Maus steht
+	map.addLayer({
+		id: "candidates-hover",
+		type: "circle",
+		source: "candidates",
+		filter: ["==", ["get", "rank"], -1],
+		paint: {
+			"circle-radius": 22,
+			"circle-color": "#d84315",
+			"circle-opacity": 0.25,
+			"circle-stroke-color": "#d84315",
+			"circle-stroke-width": 2,
+			"circle-stroke-opacity": 0.8,
+		},
+	})
 	map.addLayer({
 		id: "candidates",
 		type: "circle",
@@ -622,6 +637,7 @@ export default function MapView({ onMapReady }) {
 	const showRoutes = useMapStore((s) => s.showRoutes)
 	const showRoads = useMapStore((s) => s.showRoads)
 	const showCandidates = useMapStore((s) => s.showCandidates)
+	const hoveredCandidate = useMapStore((s) => s.hoveredCandidate)
 	const showStages = useMapStore((s) => s.showStages)
 	const showRegion = useMapStore((s) => s.showRegion)
 	const ringSource = useMapStore((s) => s.ringSource)
@@ -922,14 +938,33 @@ export default function MapView({ onMapReady }) {
 
 	useEffect(() => {
 		if (!alive(map)) return
-		for (const id of ["candidates", "candidates-label"]) {
+		const hovered = hoveredCandidate ?? -1
+		const isHovered = ["==", ["get", "rank"], hovered]
+		// Bei ausgeschalteter Ebene erscheint nur der Ort unter der Maus
+		const filter = showCandidates ? null : isHovered
+		for (const id of ["candidates", "candidates-label", "candidates-hover"]) {
 			map.setLayoutProperty(
 				id,
 				"visibility",
-				showCandidates ? "visible" : "none",
+				showCandidates || hoveredCandidate != null ? "visible" : "none",
 			)
 		}
-	}, [showCandidates, map])
+		map.setFilter("candidates-hover", isHovered)
+		map.setFilter("candidates", filter)
+		map.setFilter("candidates-label", filter)
+		map.setPaintProperty("candidates", "circle-color", [
+			"case",
+			isHovered,
+			"#d84315",
+			"#fff",
+		])
+		map.setPaintProperty("candidates-label", "text-color", [
+			"case",
+			isHovered,
+			"#fff",
+			"#d84315",
+		])
+	}, [showCandidates, hoveredCandidate, map])
 
 	// 3D-Lager Oberaden: three.js und Modell erst beim ersten Heranzoomen laden
 	const showModel = useMapStore((s) => s.showModel)

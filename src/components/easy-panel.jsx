@@ -15,7 +15,7 @@ import {
 	Tooltip,
 	Typography,
 } from "@mui/material"
-import { useState } from "react"
+import { useEffect, useState } from "react"
 import { SHORT_CREDIT } from "@/lib/citation"
 import { placeLabel } from "@/lib/criteria"
 import { rankedCandidates } from "@/lib/potential/candidates"
@@ -284,6 +284,15 @@ export function EasyContent({ onFlyTo, heading = false }) {
 	const setInspect = useMapStore((s) => s.setInspect)
 	const setSelectedSite = useMapStore((s) => s.setSelectedSite)
 	const setShowCandidates = useMapStore((s) => s.setShowCandidates)
+	const setHovered = useMapStore((s) => s.setHoveredCandidate)
+
+	// Beim Schließen der Liste keinen Hof auf der Karte zurücklassen
+	useEffect(() => () => setHovered(null), [setHovered])
+
+	// Nur echte Maus: auf Touch-Geräten käme kein pointerleave
+	const hover = (rank) => (e) => {
+		if (e.pointerType === "mouse") setHovered(rank)
+	}
 
 	const top = rankedCandidates(result)
 		.filter((c) => c.rank)
@@ -327,6 +336,8 @@ export function EasyContent({ onFlyTo, heading = false }) {
 							<ListItemButton
 								key={c.index}
 								onClick={() => open(c, c.rank)}
+								onPointerEnter={hover(c.rank)}
+								onPointerLeave={hover(null)}
 								sx={{ borderRadius: 1, px: 1, py: 0.25, minHeight: 32 }}
 							>
 								<Box

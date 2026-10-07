@@ -166,6 +166,8 @@ export const useMapStore = create((set) => ({
 	timelineInset: { bottom: 0, left: 0 },
 	// Hervorgehobener Suchtreffer (GeoJSON-Feature) auf der Karte
 	searchHit: null,
+	// Rang des Kandidaten, über dem in der Liste die Maus steht
+	hoveredCandidate: null,
 
 	setBaseLayer: (baseLayer) => set({ baseLayer }),
 	// Zustand eingeschalteter Ebenen aus der Karte: "loading", "zoom"
@@ -188,6 +190,7 @@ export const useMapStore = create((set) => ({
 	setShowWaterways: (showWaterways) => set({ showWaterways }),
 	setShowRoutes: (showRoutes) => set({ showRoutes }),
 	setShowCandidates: (showCandidates) => set({ showCandidates }),
+	setHoveredCandidate: (hoveredCandidate) => set({ hoveredCandidate }),
 	setShowStages: (showStages) => set({ showStages }),
 	setShowRegion: (showRegion) => set({ showRegion }),
 	// Hauptschalter: alles aus und merken, beim Einschalten zurück
