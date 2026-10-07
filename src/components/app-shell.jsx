@@ -2,7 +2,6 @@
 
 import ChevronLeftIcon from "@mui/icons-material/ChevronLeft"
 import ExploreIcon from "@mui/icons-material/Explore"
-import HistoryEduIcon from "@mui/icons-material/HistoryEdu"
 import LayersIcon from "@mui/icons-material/Layers"
 import MenuBookIcon from "@mui/icons-material/MenuBook"
 import PlaceIcon from "@mui/icons-material/Place"
@@ -26,7 +25,7 @@ import { useMapStore } from "@/store/use-map-store"
 import BottomSheet from "./bottom-sheet"
 import EasyPanel, { EasyContent } from "./easy-panel"
 import SearchBox from "./search-box"
-import TextsPanel, { TextChip } from "./texts-panel"
+import TextsTimeline from "./texts-timeline"
 
 const MapView = dynamic(() => import("./map-view"), { ssr: false })
 
@@ -80,7 +79,6 @@ const TABS = [
 		label: "Analyse",
 		icon: <TravelExploreIcon fontSize="small" />,
 	},
-	{ id: "texts", label: "Texte", icon: <HistoryEduIcon fontSize="small" /> },
 	{ id: "sources", label: "Quellen", icon: <MenuBookIcon fontSize="small" /> },
 ]
 
@@ -122,7 +120,7 @@ export default function AppShell() {
 	const setOpen = useMapStore((s) => s.setPanelOpen)
 	const sheetFrac = useMapStore((s) => s.sheetFrac)
 	const setSheetFrac = useMapStore((s) => s.setSheetFrac)
-	// Solange eine Textstelle gezeigt wird, hat sie die Karte für sich
+	// Solange ein Text aufgeschlagen ist, liegt seine Lesekarte links
 	const textShown = useMapStore((s) => Boolean(s.selectedText))
 	const hasCard = useMapStore((s) => Boolean(s.selectedSite || s.inspect))
 
@@ -160,7 +158,6 @@ export default function AppShell() {
 			{id === "analysis" && (
 				<AnalysisPanel onAnalyze={analyze} onFlyTo={flyTo} />
 			)}
-			{id === "texts" && <TextsPanel />}
 			{id === "sources" && <SourcesPanel />}
 		</>
 	)
@@ -248,7 +245,7 @@ export default function AppShell() {
 				<SearchBox getMap={getMap} desktop={desktop} />
 				{desktop && !open && !textShown && <EasyPanel onFlyTo={flyTo} />}
 				{desktop && <InfoCards />}
-				<TextChip />
+				<TextsTimeline />
 				{!desktop && (
 					<BottomSheet
 						open={open}

@@ -479,9 +479,10 @@ export default function SearchBox({ getMap, desktop }) {
 		} else if (o.kind === "text") {
 			s.setSearchHit(null)
 			s.setSelectedSite(null)
-			if (o.geo) s.setSelectedText(o.id)
-			// Auf dem Handy reicht die Karte, ohne Ortsbezug die Textkarte
-			if (desktop || !o.geo) openPanel("texts", `text-${o.id}`)
+			// Die Lesekarte der Zeitleiste öffnet sich, auf dem Handy über dem
+			// eingeklappten Sheet
+			s.setSelectedText(o.id)
+			if (!desktop) s.setPanelOpen(false)
 		} else if (o.kind === "layer") {
 			if (o.base) s.setBaseLayer(o.id)
 			else s.setOverlay(o.id, { visible: true })

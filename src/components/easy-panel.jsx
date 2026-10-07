@@ -389,6 +389,7 @@ export function EasyContent({ onFlyTo, heading = false }) {
 /** Schwebende Startkarte am Desktop. */
 export default function EasyPanel({ onFlyTo }) {
 	const setPanelOpen = useMapStore((s) => s.setPanelOpen)
+	const timelineBottom = useMapStore((s) => s.timelineInset.bottom)
 	const [collapsed, setCollapsed] = useState(false)
 
 	return (
@@ -401,7 +402,8 @@ export default function EasyPanel({ onFlyTo }) {
 				top: 84,
 				width: 340,
 				maxWidth: "calc(100vw - 32px)",
-				maxHeight: "calc(100dvh - 188px)",
+				// Unten Luft für die Zeitleiste der Texte
+				maxHeight: `calc(100dvh - ${84 + Math.max(104, timelineBottom + 12)}px)`,
 				display: "flex",
 				flexDirection: "column",
 				overflow: "hidden",

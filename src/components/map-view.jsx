@@ -636,6 +636,9 @@ export default function MapView({ onMapReady }) {
 	const routes = network?.routes ?? localRoutes
 	const selectedSite = useMapStore((s) => s.selectedSite)
 	const selectedText = useMapStore((s) => s.selectedText)
+	const timelineBottom = useMapStore((s) =>
+		isMobile() ? 0 : s.timelineInset.bottom,
+	)
 	const searchHit = useMapStore((s) => s.searchHit)
 
 	useEffect(() => {
@@ -1108,7 +1111,8 @@ export default function MapView({ onMapReady }) {
 					sx={{
 						position: "absolute",
 						left: "50%",
-						bottom: 44,
+						// Über der Zeitleiste der Texte
+						bottom: Math.max(44, timelineBottom + 12),
 						transform: "translateX(-50%)",
 						display: "flex",
 						alignItems: "center",

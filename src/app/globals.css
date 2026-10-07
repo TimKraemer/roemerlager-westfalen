@@ -15,11 +15,13 @@ body {
 }
 
 /* Handy: Zoom, Maßstab und Quellenangabe sitzen über dem Sheet
-   (bottom-sheet.jsx setzt --sheet-h) und verschwinden, wenn es hoch steht */
+   (bottom-sheet.jsx setzt --sheet-h) und der Leiste der Texte
+   (texts-timeline.jsx setzt --timeline-h) und verschwinden, wenn das
+   Sheet hoch steht */
 @media (max-width: 899.95px) {
 	main .maplibregl-ctrl-bottom-left,
 	main .maplibregl-ctrl-bottom-right {
-		bottom: var(--sheet-h, 0px);
+		bottom: calc(var(--sheet-h, 0px) + var(--timeline-h, 0px));
 		transition:
 			bottom 320ms cubic-bezier(0.32, 0.72, 0, 1),
 			opacity 200ms;

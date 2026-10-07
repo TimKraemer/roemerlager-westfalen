@@ -1,0 +1,60 @@
+[
+	{
+		"id": "drusus",
+		"title": "Drusus öffnet den Weg",
+		"years": "12–9 v. Chr.",
+		"intro": "Ab 12 v. Chr. führt Drusus, der Stiefsohn des Augustus, die ersten Feldzüge über den Rhein. Seine Heere folgen den Flüssen, an der Lippe entstehen die ersten Lager, und er zieht bis an die Weser.",
+		"texts": ["florus-2-30", "dio-54-33"]
+	},
+	{
+		"id": "tiberius",
+		"title": "Ein Winter im Land",
+		"years": "4 n. Chr.",
+		"intro": "Nach dem Tod des Drusus übernimmt sein Bruder Tiberius. Im Winter 4/5 n. Chr. bleibt das Heer mitten im Land, in einem Lager an der oberen Lippe.",
+		"texts": ["vell-2-105"]
+	},
+	{
+		"id": "varus",
+		"title": "Varus scheitert",
+		"years": "9 n. Chr.",
+		"intro": "Im Sommer 9 n. Chr. zieht Varus mit drei Legionen an die Weser. Auf dem Rückweg werden sie vernichtet. Die Besatzungen der Lager an der Lippe sind danach auf sich gestellt.",
+		"texts": ["vell-2-120"]
+	},
+	{
+		"id": "germanicus",
+		"title": "Germanicus kehrt zurück",
+		"years": "15–16 n. Chr.",
+		"intro": "Sechs Jahre später zieht Germanicus mit großen Heeren durch dasselbe Land. Er findet die Lager des Varus. Sein Legat Caecina muss auf dem Rückweg alte Dämme durchs Moor erneuern, im Jahr darauf entsetzt Germanicus ein belagertes Kastell an der Lippe. Tacitus schreibt das rund hundert Jahre später auf.",
+		"texts": ["tac-ann-1-60", "tac-ann-1-61", "tac-ann-1-63", "tac-ann-2-7"]
+	},
+	{
+		"id": "handwerk",
+		"title": "Wie ein Lager entsteht",
+		"years": "1.–5. Jh. n. Chr.",
+		"intro": "Wo genau die Heere lagerten, sagen die Berichte selten. Römische Militärhandbücher nennen aber die Regeln, nach denen ein Platz gewählt und befestigt wurde. Aus ihnen stammen die Kriterien der Karte.",
+		"texts": [
+			"hyginus-54",
+			"hyginus-56-57",
+			"vegetius-1-9",
+			"vegetius-1-22",
+			"vegetius-3-8"
+		]
+	},
+	{
+		"id": "spurensuche",
+		"title": "Spurensuche heute",
+		"years": "2009–2023",
+		"intro": "Im Kreis Minden-Lübbecke ist bisher ein Lager bekannt, Barkhausen an der Porta, entdeckt 2008. Seitdem fragen Archäologie und Lokalpresse, welchen Weg die Heere nahmen. Vieles davon ist Vermutung.",
+		"texts": [
+			"wiki-hellwege",
+			"lwl-2009-barkhausen",
+			"lwl-2015-porta",
+			"nw-2017-wiegel",
+			"lwl-2019-sennestadt",
+			"lwl-2021-lerbeck",
+			"lwl-2023-varus",
+			"wb-2023-varus",
+			"wb-2023-germanicus"
+		]
+	}
+]

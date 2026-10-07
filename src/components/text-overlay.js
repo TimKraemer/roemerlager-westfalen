@@ -2,6 +2,7 @@ import * as maplibregl from "maplibre-gl"
 import { metersPerPixel } from "@/lib/geo"
 import { prefetchBounds } from "@/lib/prefetch"
 import { isMobile, mapInsets } from "@/lib/sheet"
+import { useMapStore } from "@/store/use-map-store"
 
 /**
  * Kartenbezug der antiken Texte: Ebenen, Kamerafahrt und Animation.
@@ -471,6 +472,12 @@ function placeBubbles(map, items) {
 	}
 }
 
+/** Am Desktop liegen links die Lesekarte und unten die Zeitleiste. */
+function desktopPadding() {
+	const { bottom, left } = useMapStore.getState().timelineInset
+	return { top: 90, bottom: bottom + 40, left: left + 50, right: 150 }
+}
+
 /**
  * Textstelle zeigen (geo) oder ausblenden (null). Gibt eine Aufräum-
  * funktion zurück, die Animation und Sprechblasen beendet.
@@ -531,7 +538,7 @@ export function showText(map, geo) {
 							left: 40,
 							right: 90,
 						}
-					: { top: 110, bottom: 60, left: 70, right: 190 },
+					: desktopPadding(),
 				maxZoom: 11,
 				duration: reduced ? 0 : 1400,
 			},

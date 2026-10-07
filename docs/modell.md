@@ -12,7 +12,7 @@ Kreisheimatbundes Minden-Lübbecke. Marschlager lagen danach etwa einen
 Tagesmarsch (18–20 km) auseinander, nahe fließendem Wasser und meist auf
 Anhöhen oder in leichter Hanglage. Antike Vorgaben zur Lagerwahl
 (Ps.-Hyginus, De munitionibus castrorum 56–57, Vegetius 1,22 und 3,8)
-ergänzen das, sie stehen im Reiter „Texte“ der App und in
+ergänzen das, sie stehen in der Zeitleiste der Texte am unteren Kartenrand und in
 `src/data/texte.json`.
 
 ## Rechengang
