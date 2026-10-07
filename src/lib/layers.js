@@ -129,7 +129,6 @@ export const OVERLAYS = [
 		attribution:
 			"Höhendaten: Mapzen Terrain Tiles (SRTM, EU-DEM, © Europäische Union)",
 		opacity: 0.35,
-		visible: true,
 		main: true,
 	},
 	{
@@ -142,8 +141,7 @@ export const OVERLAYS = [
 		wms: "https://www.wms.nrw.de/geobasis/wms_nw_dgm-schummerung",
 		layers: "nw_dgm-schummerung_pan",
 		attribution: GEOBASIS_NRW,
-		opacity: 0.5,
-		main: true,
+		opacity: 0.85,
 	},
 	{
 		id: "lrm",
@@ -175,7 +173,6 @@ export const OVERLAYS = [
 		layers: "nw_dgm-schummerung_col",
 		attribution: GEOBASIS_NRW,
 		opacity: 0.5,
-		visible: true,
 		main: true,
 	},
 	{
