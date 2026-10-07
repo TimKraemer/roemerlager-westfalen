@@ -54,6 +54,7 @@ Was das für die Nutzung heißt:
 
 - Literaturangaben wurden per DOI, Crossref, DataCite oder Bibliothekskatalog nachgeschlagen, wo das ging. Sprachmodelle erfinden Quellen. Bitte jede Angabe vor dem Zitieren am Original prüfen.
 - Die Übersetzungen der antiken Texte sind mit KI erstellt und nicht philologisch geprüft.
+- Die Erzählung der Texte (Kapitel in `src/data/kapitel.json`, Sprechtexte in `src/data/vertonung.json`) ist mit KI geschrieben und mit einer KI-Stimme vertont (ElevenLabs v3 über fal.ai, erzeugt mit `scripts/build-audio.mjs`).
 - Das Modell ist eine nachvollziehbare Rechenvorschrift, kein archäologisches Gutachten. Seine Annahmen und Grenzen stehen in [docs/modell.md](docs/modell.md).
 - Fehler bitte als [Issue](https://github.com/TimKraemer/roemerlager-westfalen/issues) melden, möglichst mit Beleg.
 

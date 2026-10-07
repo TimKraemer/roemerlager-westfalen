@@ -1,0 +1,90 @@
+{
+	"florus-2-30": {
+		"hash": "f00cb951d2c9",
+		"seconds": 31.1
+	},
+	"vell-2-105": {
+		"hash": "a7190935c49c",
+		"seconds": 27.8
+	},
+	"vell-2-120": {
+		"hash": "1910a7156a67",
+		"seconds": 32
+	},
+	"dio-54-33": {
+		"hash": "9c0781956a14",
+		"seconds": 35.1
+	},
+	"tac-ann-1-60": {
+		"hash": "f98cd3111cc5",
+		"seconds": 28.3
+	},
+	"tac-ann-1-61": {
+		"hash": "b2c2b3a7d7d2",
+		"seconds": 34.1
+	},
+	"tac-ann-1-63": {
+		"hash": "9b8bc631480b",
+		"seconds": 31.5
+	},
+	"tac-ann-2-7": {
+		"hash": "46a5fe30fcea",
+		"seconds": 26.8
+	},
+	"hyginus-54": {
+		"hash": "752c6fcc5909",
+		"seconds": 28.8
+	},
+	"hyginus-56-57": {
+		"hash": "f5b4bd1fc4f0",
+		"seconds": 35.6
+	},
+	"vegetius-1-9": {
+		"hash": "d28d76f9340b",
+		"seconds": 26
+	},
+	"vegetius-1-22": {
+		"hash": "2b98755d1b50",
+		"seconds": 20.4
+	},
+	"vegetius-3-8": {
+		"hash": "e0e7d9b889bf",
+		"seconds": 27.7
+	},
+	"lwl-2009-barkhausen": {
+		"hash": "f826248d4f61",
+		"seconds": 24.1
+	},
+	"wiki-hellwege": {
+		"hash": "5db193c291d5",
+		"seconds": 35.8
+	},
+	"lwl-2015-porta": {
+		"hash": "7dd9b9dd5c1a",
+		"seconds": 21.6
+	},
+	"nw-2017-wiegel": {
+		"hash": "e82a9fe6a423",
+		"seconds": 27.6
+	},
+	"lwl-2019-sennestadt": {
+		"hash": "1812b4a46ba7",
+		"seconds": 22.3
+	},
+	"lwl-2021-lerbeck": {
+		"hash": "d4b4470db07e",
+		"seconds": 23.3
+	},
+	"lwl-2023-varus": {
+		"hash": "fc50b6ce6564",
+		"seconds": 28.9
+	},
+	"wb-2023-varus": {
+		"hash": "a977440c62e9",
+		"seconds": 24
+	},
+	"wb-2023-germanicus": {
+		"hash": "bb6ccf7718ac",
+		"seconds": 27.2
+	}
+}

@@ -30,7 +30,7 @@ function assetHashes() {
 			else if (e.isFile()) add(rel)
 		}
 	}
-	for (const dir of ["precomputed", "models", "csl"]) walk(dir)
+	for (const dir of ["precomputed", "models", "csl", "audio"]) walk(dir)
 	const alt = path.join(pub, "altkarten")
 	if (existsSync(alt)) {
 		for (const id of readdirSync(alt)) {

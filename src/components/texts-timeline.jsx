@@ -11,10 +11,13 @@ import MapIcon from "@mui/icons-material/MapOutlined"
 import OpenInNewIcon from "@mui/icons-material/OpenInNew"
 import PlayArrowIcon from "@mui/icons-material/PlayArrow"
 import ReplayIcon from "@mui/icons-material/Replay"
+import VolumeOffIcon from "@mui/icons-material/VolumeOff"
+import VolumeUpIcon from "@mui/icons-material/VolumeUp"
 import {
 	Box,
 	Button,
 	ButtonBase,
+	CircularProgress,
 	Collapse,
 	IconButton,
 	Link,
@@ -25,6 +28,7 @@ import {
 	useMediaQuery,
 } from "@mui/material"
 import { useEffect, useLayoutEffect, useRef, useState } from "react"
+import { assetUrl } from "@/config"
 import { DESKTOP_QUERY } from "@/lib/sheet"
 import { hasTextGeo } from "@/lib/text-geo"
 import {
@@ -36,6 +40,7 @@ import {
 	splitWritten,
 } from "@/lib/text-timeline"
 import { useMapStore } from "@/store/use-map-store"
+import audioIndex from "../../public/audio/erzaehlung/index.json"
 
 const SERIF = "var(--font-serif), Georgia, 'Times New Roman', serif"
 // Farbe der Textorte auf der Karte (text-overlay.js)
@@ -56,6 +61,62 @@ const fade = {
 	},
 	animation: "tt-in 260ms cubic-bezier(0.2, 0.8, 0.2, 1) both",
 	"@media (prefers-reduced-motion: reduce)": { animation: "none" },
+}
+
+const MUTE_KEY = "roemer-erzaehlung-stumm"
+let player = null
+
+/**
+ * Liest jeden Schritt der Erzählung vor (scripts/build-audio.mjs), sobald
+ * er aufgeschlagen wird. progress ist 0 bis 1, solange vorgelesen wird.
+ */
+function useNarration(id) {
+	const [muted, setMutedState] = useState(false)
+	const [progress, setProgress] = useState(null)
+
+	useEffect(() => {
+		try {
+			setMutedState(localStorage.getItem(MUTE_KEY) === "1")
+		} catch {
+			// ohne Speicher bleibt der Ton an
+		}
+	}, [])
+
+	useEffect(() => {
+		const entry = id && !muted ? audioIndex[id] : null
+		if (!entry) {
+			player?.pause()
+			setProgress(null)
+			return
+		}
+		player ??= new Audio()
+		const a = player
+		a.src = assetUrl(`audio/erzaehlung/${id}.mp3`)
+		const tick = () => setProgress(a.duration ? a.currentTime / a.duration : 0)
+		const end = () => setProgress(null)
+		a.addEventListener("timeupdate", tick)
+		a.addEventListener("ended", end)
+		// Ohne vorherigen Klick blockiert der Browser das Abspielen, dann
+		// bleibt es still, bis man weiterblättert
+		a.play()
+			.then(() => setProgress(0))
+			.catch(() => setProgress(null))
+		return () => {
+			a.pause()
+			a.removeEventListener("timeupdate", tick)
+			a.removeEventListener("ended", end)
+		}
+	}, [id, muted])
+
+	const setMuted = (next) => {
+		setMutedState(next)
+		try {
+			localStorage.setItem(MUTE_KEY, next ? "1" : "0")
+		} catch {
+			// nur für diese Sitzung
+		}
+	}
+	return { muted, setMuted, progress }
 }
 
 /**
@@ -79,6 +140,7 @@ export default function TextsTimeline() {
 	const hidden = !desktop && sheetUp
 	const reading = Boolean(selected && chapterOf(selected))
 	const shown = open || reading
+	const narration = useNarration(reading ? selected : null)
 
 	// Was unten liegt, verdeckt Karte. Die Karte rechnet damit beim
 	// Einpassen der Textorte, auf dem Handy auch beim Zentrieren, und
@@ -132,6 +194,7 @@ export default function TextsTimeline() {
 		<Bar
 			selected={reading ? selected : null}
 			onSelect={select}
+			narration={narration}
 			onCollapse={() => {
 				select(null)
 				setOpen(false)
@@ -233,7 +296,7 @@ function Pill({ onClick }) {
  * Leiste mit den Kapiteln von links nach rechts in zeitlicher Folge. Jeder
  * Punkt ist ein Text, gefüllt ist, was schon gelesen ist.
  */
-function Bar({ selected, onSelect, onCollapse, mobile }) {
+function Bar({ selected, onSelect, onCollapse, narration, mobile }) {
 	const [info, setInfo] = useState(null)
 	const { index, prev, next } = selected
 		? neighbours(selected)
@@ -279,6 +342,8 @@ function Bar({ selected, onSelect, onCollapse, mobile }) {
 				)}
 			</Box>
 
+			<Mute narration={narration} accent={accent} />
+
 			<IconButton
 				onClick={() => prev && onSelect(prev.id)}
 				disabled={!prev}
@@ -306,18 +371,27 @@ function Bar({ selected, onSelect, onCollapse, mobile }) {
 							: `${CHAPTERS.length} Kapitel, ${ORDERED.length} Texte`}
 					</Typography>
 				) : null}
-				<Box sx={{ display: "flex", gap: mobile ? 0.75 : 1 }}>
-					{CHAPTERS.map((c) => (
-						<Chapter
-							key={c.id}
-							c={c}
-							index={index}
-							selected={selected}
-							active={c === current}
-							onSelect={onSelect}
-							mobile={mobile}
-						/>
-					))}
+				<Box sx={{ display: "flex", gap: mobile ? 0.5 : 1 }}>
+					{CHAPTERS.map((c) =>
+						mobile ? (
+							<ChapterProgress
+								key={c.id}
+								c={c}
+								index={index}
+								active={c === current}
+								onSelect={onSelect}
+							/>
+						) : (
+							<Chapter
+								key={c.id}
+								c={c}
+								index={index}
+								selected={selected}
+								active={c === current}
+								onSelect={onSelect}
+							/>
+						),
+					)}
 				</Box>
 			</Box>
 
@@ -360,64 +434,133 @@ function Bar({ selected, onSelect, onCollapse, mobile }) {
 	)
 }
 
-function Chapter({ c, index, selected, active, onSelect, mobile }) {
+/** Stumm-Knopf, ein Ring zeigt, wie weit der Schritt vorgelesen ist. */
+function Mute({ narration, accent }) {
+	const { muted, setMuted, progress } = narration
+	return (
+		<Tooltip
+			title={muted ? "Vorlesen an" : "Vorlesen aus"}
+			disableTouchListener
+		>
+			<Box sx={{ position: "relative", flexShrink: 0, display: "flex" }}>
+				<IconButton
+					onClick={() => setMuted(!muted)}
+					aria-label={muted ? "Vorlesen an" : "Vorlesen aus"}
+					aria-pressed={muted}
+					sx={{ color: muted ? "text.disabled" : accent }}
+				>
+					{muted ? <VolumeOffIcon /> : <VolumeUpIcon />}
+				</IconButton>
+				{progress !== null && (
+					<CircularProgress
+						variant="determinate"
+						value={progress * 100}
+						size={40}
+						thickness={2.5}
+						aria-hidden
+						sx={{
+							position: "absolute",
+							inset: 0,
+							color: accent,
+							pointerEvents: "none",
+							"& circle": { transition: "stroke-dashoffset 250ms linear" },
+						}}
+					/>
+				)}
+			</Box>
+		</Tooltip>
+	)
+}
+
+/** Handy: je Kapitel ein schmaler Balken, gefüllt bis zum aktuellen Text. */
+function ChapterProgress({ c, index, active, onSelect }) {
+	const start = ORDERED.indexOf(c.texts[0])
+	const done = Math.min(c.texts.length, Math.max(0, index - start + 1))
+	return (
+		<ButtonBase
+			onClick={() => onSelect(c.texts[0].id)}
+			aria-label={`Kapitel ${c.number}: ${c.title}`}
+			sx={{ flex: `${c.texts.length + 1} 1 0`, minWidth: 0, py: 0.75 }}
+		>
+			<Box
+				sx={{
+					width: "100%",
+					height: active ? 6 : 4,
+					borderRadius: 3,
+					bgcolor: TRACK,
+					overflow: "hidden",
+					transition: "height 200ms",
+				}}
+			>
+				<Box
+					sx={{
+						height: "100%",
+						width: `${(done / c.texts.length) * 100}%`,
+						bgcolor: c.accent,
+						transition: "width 300ms",
+					}}
+				/>
+			</Box>
+		</ButtonBase>
+	)
+}
+
+function Chapter({ c, index, selected, active, onSelect }) {
 	const start = ORDERED.indexOf(c.texts[0])
 	return (
 		<Box
 			sx={{
 				// Kurze Kapitel brauchen Platz für den Titel
-				flex: `${c.texts.length + (mobile ? 0 : 3)} 1 0`,
+				flex: `${Math.max(c.texts.length, 3) + 1} 1 0`,
 				minWidth: 0,
 				borderRadius: 2,
-				px: mobile ? 0.25 : 0.75,
-				pt: mobile ? 0 : 0.5,
-				pb: mobile ? 0.25 : 0.5,
-				bgcolor: active && !mobile ? `${c.accent}12` : "transparent",
+				px: 0.75,
+				pt: 0.5,
+				pb: 0.5,
+				bgcolor: active ? `${c.accent}12` : "transparent",
 				transition: "background-color 200ms",
 			}}
 		>
-			{!mobile && (
-				<ButtonBase
-					onClick={() => onSelect(c.texts[0].id)}
+			<ButtonBase
+				onClick={() => onSelect(c.texts[0].id)}
+				sx={{
+					display: "block",
+					width: "100%",
+					textAlign: "left",
+					borderRadius: 1,
+				}}
+			>
+				<Typography
+					noWrap
 					sx={{
-						display: "block",
-						width: "100%",
-						textAlign: "left",
-						borderRadius: 1,
+						fontSize: 10,
+						fontWeight: 700,
+						letterSpacing: "0.06em",
+						color: c.accent,
 					}}
 				>
-					<Typography
-						noWrap
-						sx={{
-							fontSize: 10,
-							fontWeight: 700,
-							letterSpacing: "0.06em",
-							color: c.accent,
-						}}
-					>
-						{c.years}
-					</Typography>
-					<Typography
-						title={c.title}
-						sx={{
-							fontFamily: SERIF,
-							fontSize: 13.5,
-							fontWeight: 600,
-							lineHeight: 1.15,
-							// immer zwei Zeilen hoch, damit die Spuren auf einer Linie liegen
-							height: "2.3em",
-							display: "-webkit-box",
-							WebkitLineClamp: 2,
-							WebkitBoxOrient: "vertical",
-							overflow: "hidden",
-							hyphens: "auto",
-							color: active ? c.accent : "text.primary",
-						}}
-					>
-						{c.title}
-					</Typography>
-				</ButtonBase>
-			)}
+					{c.years}
+				</Typography>
+				<Typography
+					title={c.title}
+					sx={{
+						fontFamily: SERIF,
+						fontSize: 13.5,
+						fontWeight: 600,
+						lineHeight: 1.15,
+						// immer zwei Zeilen hoch, damit die Spuren auf einer Linie liegen
+						height: "2.3em",
+						display: "-webkit-box",
+						WebkitLineClamp: 2,
+						WebkitBoxOrient: "vertical",
+						overflow: "hidden",
+						hyphens: "auto",
+						color: active ? c.accent : "text.primary",
+					}}
+				>
+					{c.title}
+				</Typography>
+			</ButtonBase>
 			{/* Spur mit einem Punkt je Text */}
 			<Box
 				sx={{
@@ -425,8 +568,8 @@ function Chapter({ c, index, selected, active, onSelect, mobile }) {
 					display: "flex",
 					justifyContent: "space-between",
 					alignItems: "center",
-					height: mobile ? 16 : 20,
-					mt: mobile ? 0 : 0.5,
+					height: 20,
+					mt: 0.5,
 				}}
 			>
 				<Box
@@ -454,7 +597,6 @@ function Chapter({ c, index, selected, active, onSelect, mobile }) {
 									: "todo"
 						}
 						onSelect={onSelect}
-						mobile={mobile}
 					/>
 				))}
 			</Box>
@@ -462,8 +604,8 @@ function Chapter({ c, index, selected, active, onSelect, mobile }) {
 	)
 }
 
-function Pip({ t, accent, state, onSelect, mobile }) {
-	const size = state === "current" ? (mobile ? 12 : 14) : mobile ? 8 : 10
+function Pip({ t, accent, state, onSelect }) {
+	const size = state === "current" ? 14 : 10
 	return (
 		<Tooltip
 			arrow
@@ -487,8 +629,8 @@ function Pip({ t, accent, state, onSelect, mobile }) {
 				aria-current={state === "current" ? "step" : undefined}
 				sx={{
 					position: "relative",
-					width: mobile ? 12 : 18,
-					height: mobile ? 16 : 20,
+					width: 18,
+					height: 20,
 					borderRadius: "50%",
 					"&:hover .dot, &:focus-visible .dot": { transform: "scale(1.3)" },
 				}}
@@ -532,7 +674,9 @@ function About() {
 				Die antiken Texte stehen im Original und in eigener, mit KI erstellter
 				und nicht philologisch geprüfter Übersetzung (2026). Neuere Thesen aus
 				Archäologie und Presse sind in eigenen Worten zusammengefasst, die
-				Kapiteltexte ebenfalls mit KI geschrieben.
+				Kapiteltexte ebenfalls mit KI geschrieben. Vorgelesen wird jeder Schritt
+				von einer KI-Stimme (ElevenLabs v3), der Lautsprecher in der Leiste
+				schaltet das ab.
 			</Typography>
 		</>
 	)
