@@ -762,7 +762,7 @@ function Reader({ id, onClose, mobile }) {
 			aria-label={t.title}
 			sx={{
 				...(mobile
-					? { maxHeight: "58dvh" }
+					? { maxHeight: more ? "58dvh" : "38dvh" }
 					: {
 							position: "absolute",
 							left: 16,
@@ -810,140 +810,105 @@ function Reader({ id, onClose, mobile }) {
 				>
 					Kapitel {c.number} · {c.title}
 				</Typography>
-				{mobile && (
-					<IconButton
-						size="small"
-						onClick={() => setMore(!more)}
-						aria-label={more ? "Text einklappen" : "Text aufklappen"}
-					>
-						{more ? (
-							<ExpandMoreIcon fontSize="small" />
-						) : (
-							<ExpandLessIcon fontSize="small" />
-						)}
-					</IconButton>
-				)}
 				<IconButton size="small" onClick={onClose} aria-label="Text schließen">
 					<CloseIcon fontSize="small" />
 				</IconButton>
 			</Box>
 
-			{compact ? (
-				// Handy: schmal, damit die Karte frei bleibt. Vorgelesen wird
-				// trotzdem, der Text klappt auf Tipp auf.
-				<ButtonBase
-					key={id}
-					onClick={() => setMore(true)}
-					aria-label={`${t.title}, Text aufklappen`}
-					sx={{
-						...fade,
-						display: "block",
-						width: "100%",
-						textAlign: "left",
-						px: 2,
-						pb: 1.25,
-					}}
-				>
+			<Box
+				ref={scroller}
+				sx={{ flex: 1, minHeight: 0, overflowY: "auto", px: 2, pb: 1.75 }}
+			>
+				<Box key={id} sx={fade}>
+					{opening && (
+						<Box
+							sx={{
+								mt: 0.25,
+								mb: 1.5,
+								pb: 1.5,
+								borderBottom: 1,
+								borderColor: "divider",
+							}}
+						>
+							<Typography
+								component="h2"
+								sx={{
+									fontFamily: SERIF,
+									fontSize: mobile ? 22 : 26,
+									fontWeight: 600,
+									lineHeight: 1.1,
+									color: c.accent,
+								}}
+							>
+								{c.title}
+							</Typography>
+							<Typography
+								sx={{ fontSize: 12, fontWeight: 600, color: INK, mt: 0.25 }}
+							>
+								{c.years}
+							</Typography>
+							<Typography
+								sx={{
+									fontFamily: SERIF,
+									fontStyle: "italic",
+									fontSize: 15.5,
+									lineHeight: 1.45,
+									mt: 0.75,
+									color: "#4a3b2a",
+								}}
+							>
+								{c.intro}
+							</Typography>
+						</Box>
+					)}
 					<Typography
 						variant="overline"
 						color="text.secondary"
-						noWrap
 						sx={{ display: "block", lineHeight: 1.4, letterSpacing: 0.8 }}
 					>
 						{citation(t)}
 					</Typography>
 					<Typography
+						component={opening ? "h3" : "h2"}
 						sx={{
 							fontFamily: SERIF,
 							fontWeight: 600,
-							fontSize: 18,
+							fontSize: mobile ? 19 : 21,
 							lineHeight: 1.15,
+							mt: 0.25,
 						}}
 					>
 						{t.title}
 					</Typography>
-				</ButtonBase>
-			) : (
-				<Box
-					ref={scroller}
-					sx={{ flex: 1, minHeight: 0, overflowY: "auto", px: 2, pb: 1.75 }}
-				>
-					<Box key={id} sx={fade}>
-						{opening && (
-							<Box
-								sx={{
-									mt: 0.25,
-									mb: 1.5,
-									pb: 1.5,
-									borderBottom: 1,
-									borderColor: "divider",
-								}}
-							>
-								<Typography
-									component="h2"
-									sx={{
-										fontFamily: SERIF,
-										fontSize: mobile ? 22 : 26,
-										fontWeight: 600,
-										lineHeight: 1.1,
-										color: c.accent,
-									}}
-								>
-									{c.title}
-								</Typography>
-								<Typography
-									sx={{ fontSize: 12, fontWeight: 600, color: INK, mt: 0.25 }}
-								>
-									{c.years}
-								</Typography>
-								<Typography
-									sx={{
-										fontFamily: SERIF,
-										fontStyle: "italic",
-										fontSize: 15.5,
-										lineHeight: 1.45,
-										mt: 0.75,
-										color: "#4a3b2a",
-									}}
-								>
-									{c.intro}
-								</Typography>
-							</Box>
-						)}
-						<Typography
-							variant="overline"
-							color="text.secondary"
-							sx={{ display: "block", lineHeight: 1.4, letterSpacing: 0.8 }}
+					<When t={t} accent={c.accent} />
+					<Typography
+						sx={{
+							fontFamily: SERIF,
+							fontSize: 16.5,
+							lineHeight: 1.5,
+							mt: 1.25,
+							...(compact && {
+								display: "-webkit-box",
+								WebkitLineClamp: opening ? 2 : 3,
+								WebkitBoxOrient: "vertical",
+								overflow: "hidden",
+							}),
+						}}
+					>
+						{t.german}
+					</Typography>
+					{compact ? (
+						<ButtonBase
+							onClick={() => setMore(true)}
+							sx={{ mt: 0.5, fontSize: 13, fontWeight: 600, color: PURPLE }}
 						>
-							{citation(t)}
-						</Typography>
-						<Typography
-							component={opening ? "h3" : "h2"}
-							sx={{
-								fontFamily: SERIF,
-								fontWeight: 600,
-								fontSize: mobile ? 19 : 21,
-								lineHeight: 1.15,
-								mt: 0.25,
-							}}
-						>
-							{t.title}
-						</Typography>
-						<When t={t} accent={c.accent} />
-						<Typography
-							sx={{
-								fontFamily: SERIF,
-								fontSize: 16.5,
-								lineHeight: 1.5,
-								mt: 1.25,
-							}}
-						>
-							{t.german}
-						</Typography>
+							Weiterlesen
+						</ButtonBase>
+					) : (
 						<Details t={t} />
-					</Box>
+					)}
 				</Box>
-			)}
+			</Box>
 		</Paper>
 	)
 }
