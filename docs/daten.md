@@ -241,8 +241,16 @@ falsche Punkte von Hand gesetzt, etwa die heute abgeschnittene
 Werreschleife bei Werste. Weser und Werre laufen als Mittellinie zwischen
 den gezeichneten Ufern. Bei Bächen, die nicht einzeln durchgesehen sind
 (ohne `"geprueft": true`), fallen Abschnitte weg, die glatt wie ein Weg
-verlaufen. Dort fehlt der Bach lieber, als dass er auf einem Weg liegt.
-Bäche ohne heutigen Lauf findet das Verfahren nicht.
+verlaufen. Dort gilt lieber der heutige Lauf, als dass der Bach auf einem
+Weg liegt.
+
+Aus den nachgezeichneten Stücken wird ein Netz ohne Lücken: Gerüst ist der
+heutige Lauf jedes benannten Gewässers, die Stücke der Kreiskarten
+ersetzen ihn dort, wo es sie gibt. Wo die Karte nichts Sicheres hergibt,
+bleibt der heutige Lauf, in der Karte hellblau statt dunkelblau. Freie
+Enden münden in den nächsten Lauf, und es bleiben nur Läufe, die mit einem
+Fluss verbunden sind oder den Kreis verlassen. Bäche ohne heutigen Lauf
+findet das Verfahren nicht.
 
 Die Karten des 17. und 18. Jahrhunderts liegen örtlich 0,3–1 km neben der
 heutigen Lage, aus ihnen werden keine Linien gelesen.
@@ -286,13 +294,13 @@ liegt, außerhalb des Kreises also überall. Große Flüsse ab 150 km²
 Einzugsgebiet kommen weiter aus dem Höhenmodell, Lippe, Weser und Ems im
 alten Lauf.
 
-Die Ebene „Bäche und Flüsse vor der Begradigung“ zeigt davon nur die
-gezeichneten Läufe: im Kreis die Kreiskarten, in der Region die heutigen
-Flüsse aus OSM, je Name zusammengefügt (OSM führt einen Fluss abschnittsweise
-als Bach) und ab 1 km Länge, sonst die alten Läufe der großen Flüsse. Kleine
-heutige Bäche und die aus dem Höhenmodell abgeleiteten Flüsse zählen im
-Modell, erscheinen aber nicht, das grobe Westfalen-Netz nur unterhalb
-Zoomstufe 10.
+Die Ebene „Bäche und Flüsse vor der Begradigung“ zeigt davon nur
+gezeichnete Läufe, dunkelblau der alte, hellblau der heutige: im Kreis das
+Netz der Kreiskarten, in der Region die heutigen Flüsse aus OSM, je Name
+zusammengefügt (OSM führt einen Fluss abschnittsweise als Bach) und ab 1 km
+Länge, dazu die alten Läufe der großen Flüsse. Kleine heutige Bäche und die
+aus dem Höhenmodell abgeleiteten Flüsse zählen im Modell, erscheinen aber
+nicht, weil ihre Rasterlinien neben den echten Läufen lägen.
 
 Das aus dem Höhenmodell abgeleitete Netz bleibt als Wahl „Aus
 Höhenmodell“. Ein Abgleich im Kreis (Oktober 2026) zeigt, warum es nicht

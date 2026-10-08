@@ -271,7 +271,12 @@ function mappedWater(state, params) {
 		features: [
 			...mapped.old.map((l) => ({
 				type: "Feature",
-				properties: { kind: l.kind, name: l.name, source: "1840" },
+				properties: {
+					kind: l.kind,
+					name: l.name,
+					herkunft: l.herkunft,
+					source: "1840",
+				},
 				geometry: { type: "LineString", coordinates: l.coords },
 			})),
 			// Heutige Flüsse ohne alten Lauf, etwa jenseits des Kreisrands. Wo
@@ -290,6 +295,7 @@ function mappedWater(state, params) {
 					: []
 				return {
 					...f,
+					properties: { ...f.properties, herkunft: "heute" },
 					geometry: {
 						type: "LineString",
 						// auf etwa 1 m runden, die Linien gehen in die Vorberechnung

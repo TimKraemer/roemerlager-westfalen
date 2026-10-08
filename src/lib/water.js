@@ -120,7 +120,13 @@ export async function fetchOldWaterways(bbox) {
 			([lon, lat]) =>
 				lon >= west && lon <= east && lat >= south && lat <= north,
 		)
-		if (inside) lines.push({ name: p.name ?? "", kind: p.kind, coords })
+		if (inside)
+			lines.push({
+				name: p.name ?? "",
+				kind: p.kind,
+				herkunft: p.herkunft,
+				coords,
+			})
 	}
 	return lines
 }

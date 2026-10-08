@@ -24,8 +24,11 @@ des Scans:
    die Punkte auf die Strommitte, der Lauf ist dann eine Spline ohne
    Einrasten.
 4. pruefe markiert Abschnitte, die glatt wie ein Weg verlaufen. Bei Bächen
-   ohne "geprueft": true fallen sie im Ergebnis weg. Durchgesehene Flüsse
-   mit Doppellinie (Bastau, Große Aue) tragen "geprueft".
+   ohne "geprueft": true gelten sie nicht als nachgezeichnet. Durchgesehene
+   Flüsse mit Doppellinie (Bastau, Große Aue) tragen "geprueft".
+5. geojson baut daraus ein Netz ohne Lücken (build_network): der heutige
+   Lauf jedes benannten Gewässers, darin die nachgezeichneten Stücke, jede
+   Teilstrecke mit ihrer Herkunft.
 
 Die Lage kommt aus der Entzerrung in scripts/altkarten/gcp/<karte>.json
 (Feinpasspunkte gegen die Uraufnahme, siehe feinpass.py). maske stellt die
@@ -746,16 +749,27 @@ def cmd_bogen(args):
 # --- Ergebnis -----------------------------------------------------------------
 
 
-# Netz bilden: Stücke eines Gewässers bis JOIN_SAME_M zusammenfügen (Brücken,
-# Schrift), freie Enden bis zum nächsten anderen Gewässer verlängern
-# (Mündungen), danach Reste unter MIN_LINE_M weglassen
-JOIN_SAME_M = 150
+# --- Netz: ein Lauf je Gewässer ------------------------------------------------
+
+# Gerüst ist der heutige Lauf jedes benannten Gewässers (OSM, wie leit). Die
+# nachgezeichneten Stücke ersetzen ihn dort, wo es sie gibt; wo die
+# Kreiskarte nichts hergibt, bleibt der heutige Lauf. So hat das Netz keine
+# Lücken, und jede Teilstrecke trägt ihre Herkunft ("kreiskarte" oder
+# "heute").
+#
+# Ein Stück gehört zu einem Lauf, wenn es im Median höchstens MATCH_MEDIAN_M
+# und an beiden Enden höchstens MATCH_END_M von ihm entfernt liegt.
+MATCH_MEDIAN_M = 250
+MATCH_END_M = 450
+# Freie Enden bis zum nächsten anderen Lauf verlängern (Mündungen)
 MOUTH_M = {"river": 500, "stream": 300}
-MIN_LINE_M = 500
+# Kürzere Läufe zeigt die Karte nicht
+MIN_LINE_M = 300
 
 
-def network(lines):
-    """lines: [(name, kind, karte, [[lon, lat], …])] → gleiche Form, verbunden."""
+def build_network(traced):
+    """traced: {name: [[[lon, lat], …], …]} nachgezeichnete Stücke.
+    Ergebnis: [(name, kind, [[lon, lat], …], [herkunft je Punkt])]."""
     from shapely.geometry import LineString, Point
     from shapely.ops import nearest_points
 
@@ -763,103 +777,206 @@ def network(lines):
     to_m = lambda c: [(x * k, y * 111320) for x, y in c]  # noqa: E731
     to_ll = lambda c: [[x / k, y / 111320] for x, y in c]  # noqa: E731
 
-    # 1. je Name zusammenfügen
-    by = {}
-    for name, kind, karte, c in lines:
-        by.setdefault(name, {"kind": kind, "karte": karte, "lines": []})["lines"].append(
-            LineString(to_m(c))
+    guides = {n: v for n, v in leit().items() if not SKIP.search(n)}
+    out = []  # [name, kind, [(x, y)], [herkunft]]
+    used = 0
+
+    def fits(T, G):
+        c = list(T.coords)
+        d = sorted(G.distance(Point(q)) for q in c[:: max(1, len(c) // 30)])
+        return (
+            d[len(d) // 2] <= MATCH_MEDIAN_M
+            and G.distance(Point(c[0])) <= MATCH_END_M
+            and G.distance(Point(c[-1])) <= MATCH_END_M
         )
-    merged = []
-    for name, v in by.items():
-        ls = [list(l.coords) for l in v["lines"]]
-        changed = True
-        while changed:
-            changed = False
-            best = None
-            for i in range(len(ls)):
-                for j in range(len(ls)):
-                    if i == j:
-                        continue
-                    for ri in (False, True):
-                        for rj in (False, True):
-                            A = ls[i][::-1] if ri else ls[i]
-                            B = ls[j][::-1] if rj else ls[j]
-                            g = math.dist(A[-1], B[0])
-                            if g < JOIN_SAME_M and (best is None or g < best[0]):
-                                best = (g, i, j, A, B)
-            if best:
-                g, i, j, A, B = best
-                ls = [l for n, l in enumerate(ls) if n not in (i, j)] + [A + B]
-                changed = True
-        merged += [[name, v["kind"], v["karte"], LineString(l)] for l in ls if len(l) > 1]
 
-    # 2. Mündungen: freies Ende an das nächste andere Gewässer
-    joined = hooks = 0
-    for item in merged:
-        name, kind, _, line = item
-        others = [o[3] for o in merged if o[0] != name]
-        coords = list(line.coords)
-        for end in (0, -1):
-            p = Point(coords[end])
-            near = [(o.distance(p), o) for o in others]
-            if not near:
+    for name, g in guides.items():
+        pieces = [LineString(to_m(c)) for c in traced.get(name, [])]
+        glines = [LineString(to_m(gc)) for gc in g["lines"] if len(gc) > 1]
+        # Stücke, die über mehrere heutige Linien reichen (Weser mit
+        # Seitenarmen): dort den heutigen Lauf herausschneiden, das Stück
+        # gilt als Ganzes
+        whole = [T for T in pieces if not any(fits(T, G) for G in glines)]
+        for T in whole:
+            zone = T.buffer(MATCH_MEDIAN_M)
+            rest = []
+            for G in glines:
+                r = G.difference(zone)
+                rest += [x for x in getattr(r, "geoms", [r]) if x.geom_type == "LineString" and x.length > 50]
+            glines = rest
+            out.append([name, g["kind"], list(T.coords), ["kreiskarte"] * len(T.coords)])
+            used += 1
+        pieces = [T for T in pieces if not any(T is W for W in whole)]
+        for G in glines:
+            if G.length < 1:
                 continue
-            dist, o = min(near, key=lambda t: t[0])
-            if 1 < dist < MOUTH_M.get(kind, 300):
-                q = nearest_points(o, p)[0]
-                # nur in Fortsetzung des Laufs, sonst entsteht ein Haken
-                # (etwa wenn die Quelle eines Bachs neben einem anderen liegt)
-                inner = coords[min(5, len(coords) - 1)] if end == 0 else coords[max(-6, -len(coords))]
-                run = (p.x - inner[0], p.y - inner[1])
-                step = (q.x - p.x, q.y - p.y)
-                if run[0] * step[0] + run[1] * step[1] <= 0:
-                    hooks += 1
+            # passende Stücke mit ihrer Lage auf dem Lauf
+            spans = []
+            for T in pieces:
+                if not fits(T, G):
                     continue
-                joined += 1
-                if end == 0:
-                    coords.insert(0, (q.x, q.y))
-                else:
-                    coords.append((q.x, q.y))
-        item[3] = LineString(coords)
+                c = list(T.coords)
+                m0, m1 = G.project(Point(c[0])), G.project(Point(c[-1]))
+                if m0 > m1:
+                    m0, m1, c = m1, m0, c[::-1]
+                if m1 - m0 < 50:
+                    continue
+                spans.append((m0, m1, c))
+            # Überlappungen: das längere Stück gewinnt
+            spans.sort(key=lambda s: -(s[1] - s[0]))
+            chosen = []
+            for s in spans:
+                if all(s[1] <= o[0] or s[0] >= o[1] for o in chosen):
+                    chosen.append(s)
+            chosen.sort()
+            used += len(chosen)
+            pts, her = [], []
+            pos = 0.0
+            for m0, m1, c in chosen:
+                for q in _substring(G, pos, m0):
+                    pts.append(q)
+                    her.append("heute")
+                for q in c:
+                    pts.append(q)
+                    her.append("kreiskarte")
+                pos = m1
+            for q in _substring(G, pos, G.length):
+                pts.append(q)
+                her.append("heute")
+            pts, her = _dedupe(pts, her)
+            if len(pts) > 1:
+                out.append([name, g["kind"], pts, her])
 
-    print(f"{joined} Mündungen angeschlossen, {hooks} Haken vermieden")
-    return [
-        (name, kind, karte, to_ll(line.coords))
-        for name, kind, karte, line in merged
-        if line.length >= MIN_LINE_M
+    # 2. Mündungen: freies Ende an den nächsten anderen Lauf, nur vorwärts
+    lines = [LineString(o[2]) for o in out]
+    joined = 0
+    for i, o in enumerate(out):
+        for end in (0, -1):
+            pts = o[2]
+            p = Point(pts[end])
+            best = None
+            for j, L in enumerate(lines):
+                if j == i or out[j][0] == o[0]:
+                    continue
+                d = L.distance(p)
+                if best is None or d < best[0]:
+                    best = (d, L)
+            if not best or not (1 < best[0] < MOUTH_M.get(o[1], 300)):
+                continue
+            q = nearest_points(best[1], p)[0]
+            inner = pts[min(5, len(pts) - 1)] if end == 0 else pts[max(-6, -len(pts))]
+            if (p.x - inner[0]) * (q.x - p.x) + (p.y - inner[1]) * (q.y - p.y) <= 0:
+                continue
+            if end == 0:
+                o[2].insert(0, (q.x, q.y))
+                o[3].insert(0, o[3][0])
+            else:
+                o[2].append((q.x, q.y))
+                o[3].append(o[3][-1])
+            joined += 1
+        lines[i] = LineString(o[2])
+
+    # 3. Nur was zum Netz gehört: Läufe, die über andere Läufe mit einem
+    # Fluss verbunden sind oder den Kreis verlassen (dort geht es mit den
+    # heutigen Flüssen weiter). Einzelne Striche ohne Anschluss fallen weg.
+    from shapely.geometry import Polygon
+
+    ring = json.loads(KREIS.read_text())["features"][0]["geometry"]["coordinates"][0]
+    kreis = Polygon(to_m(ring))
+    n = len(out)
+    nb = [[j for j in range(n) if j != i and lines[j].distance(lines[i]) < 5] for i in range(n)]
+    anchor = [
+        o[1] == "river"
+        or not kreis.contains(Point(o[2][0]))
+        or not kreis.contains(Point(o[2][-1]))
+        for o in out
     ]
+    seen = [False] * n
+    keep = []
+    for i in range(n):
+        if seen[i]:
+            continue
+        comp, stack = [], [i]
+        seen[i] = True
+        while stack:
+            u = stack.pop()
+            comp.append(u)
+            for v in nb[u]:
+                if not seen[v]:
+                    seen[v] = True
+                    stack.append(v)
+        if not any(anchor[u] for u in comp):
+            continue
+        for u in comp:
+            if lines[u].length >= MIN_LINE_M:
+                keep.append((out[u][0], out[u][1], to_ll(out[u][2]), out[u][3]))
+    n_alt = sum(len(v) for v in traced.values())
+    print(f"{len(guides)} Läufe, {used} von {n_alt} nachgezeichneten Stücken eingesetzt, {joined} Mündungen angeschlossen, {len(keep)} Läufe bleiben")
+    return keep
+
+
+def _substring(G, a, b):
+    from shapely.ops import substring
+
+    if b - a < 1:
+        return []
+    return list(substring(G, a, b).coords)
+
+
+def _dedupe(pts, her):
+    out_p, out_h = [], []
+    for p, h in zip(pts, her):
+        if out_p and math.dist(out_p[-1], p) < 0.5:
+            continue
+        out_p.append(p)
+        out_h.append(h)
+    return out_p, out_h
+
+
+def runs(coords, her):
+    """Teilstrecken gleicher Herkunft, die sich den Randpunkt teilen."""
+    out = []
+    s = 0
+    for i in range(1, len(coords) + 1):
+        if i == len(coords) or her[i] != her[s]:
+            seg = coords[max(0, s - 1) : i]
+            if len(seg) > 1:
+                out.append((her[s], seg))
+            s = i
+    return out
 
 
 def cmd_geojson(_args):
-    lines = []
+    traced = {}
     for map_id in MAPS:
         pts = load_points(map_id)
         if not pts:
             continue
         karte = Karte(map_id)
         for name, entry in pts.items():
+            # Teilstücke mit eigener Datei tragen den Namen im Eintrag
+            name = entry.get("name", name)
             for ln in kept(karte, entry):
-                ll = karte.to_lonlat(simplify(ln, 0.8))
-                # Teilstücke mit eigener Datei tragen den Namen im Eintrag
-                lines.append((entry.get("name", name), entry.get("kind", "stream"), map_id, ll.tolist()))
+                traced.setdefault(name, []).append(karte.to_lonlat(simplify(ln, 0.8)).tolist())
         print(f"{map_id}: {len(pts)} Gewässer")
-    n0 = len(lines)
-    lines = network(lines)
-    feats = [
-        {
-            "type": "Feature",
-            "properties": {"name": name, "kind": kind, "karte": karte},
-            "geometry": {
-                "type": "LineString",
-                "coordinates": [[round(a, 5), round(b, 5)] for a, b in c],
-            },
-        }
-        for name, kind, karte, c in lines
-    ]
+    feats = []
+    for name, kind, coords, her in build_network(traced):
+        for herkunft, seg in runs(coords, her):
+            feats.append(
+                {
+                    "type": "Feature",
+                    "properties": {"name": name, "kind": kind, "herkunft": herkunft},
+                    "geometry": {
+                        "type": "LineString",
+                        "coordinates": [[round(a, 5), round(b, 5)] for a, b in seg],
+                    },
+                }
+            )
     OUT.write_text(
         json.dumps({"type": "FeatureCollection", "features": feats}, ensure_ascii=False, separators=(",", ":"))
     )
-    print(f"{n0} Stücke zu {len(feats)} Linien verbunden → {OUT}")
+    share = sum(f["properties"]["herkunft"] == "kreiskarte" for f in feats)
+    print(f"{len(feats)} Teilstrecken, davon {share} nach der Kreiskarte → {OUT}")
 
 
 def cmd_maske(args):

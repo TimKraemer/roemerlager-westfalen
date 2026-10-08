@@ -81,7 +81,7 @@
     "score": 0.499,
     "percentile": 0.659,
     "best2km": 0.589,
-    "percentileBest": 0.881,
+    "percentileBest": 0.882,
     "nearestCandidateKm": 11.4,
     "nearestCandidateRank": 49
    },
@@ -94,7 +94,7 @@
     "score": 0.529,
     "percentile": 0.74,
     "best2km": 0.588,
-    "percentileBest": 0.878,
+    "percentileBest": 0.879,
     "nearestCandidateKm": 8.4,
     "nearestCandidateRank": 24
    },
@@ -144,7 +144,7 @@
      "Hannover-Wilkenburg"
     ],
     "score": 0.56,
-    "percentile": 0.833,
+    "percentile": 0.834,
     "best2km": 0.641,
     "percentileBest": 0.954,
     "nearestCandidateKm": 20.8,
@@ -168,13 +168,13 @@
   "summary": {
    "tests": 12,
    "highBest": 11,
-   "medianPercentile": 0.833,
+   "medianPercentile": 0.834,
    "medianPercentileBest": 0.972
   },
   "baseline": {
    "points": 300,
-   "medianPercentile": 0.5053573954453298,
-   "medianPercentileBest": 0.871670045735301,
+   "medianPercentile": 0.5037425149700598,
+   "medianPercentileBest": 0.871864538639257,
    "shareHighBest": 0.6033333333333334
   },
   "weights": {
@@ -186,7 +186,7 @@
    "route": 2,
    "corridor": 1
   },
-  "generatedAt": "2026-10-08T12:09:44.531Z"
+  "generatedAt": "2026-10-08T12:46:27.918Z"
  },
  "ohne-routen": {
   "rows": [
@@ -480,6 +480,6 @@
     "defaults": 0.376
    }
   ],
-  "generatedAt": "2026-10-08T12:29:25.386Z"
+  "generatedAt": "2026-10-08T12:48:25.042Z"
  }
 }

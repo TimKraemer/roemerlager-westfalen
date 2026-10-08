@@ -206,9 +206,19 @@ export function oldRiverCourses() {
 
 /** Alte Läufe als Linien für die Gewässer-Darstellung der Analyse. */
 export function oldRiverFeatures() {
-	return Object.entries(rivers).map(([name, v]) => ({
-		type: "Feature",
-		properties: { kind: "river", name },
-		geometry: { type: "LineString", coordinates: coordsOf(v) },
-	}))
+	// je Teilstück mit Herkunft: "heute" wo der heutige Lauf gilt, sonst alt
+	return Object.entries(rivers).flatMap(([name, v]) =>
+		(v.parts ?? [[0, coordsOf(v).length - 1, "osm"]]).map(([a, b, kind]) => ({
+			type: "Feature",
+			properties: {
+				kind: "river",
+				name,
+				herkunft: kind === "osm" ? "heute" : "alt",
+			},
+			geometry: {
+				type: "LineString",
+				coordinates: coordsOf(v).slice(a, b + 1),
+			},
+		})),
+	)
 }

@@ -16,6 +16,9 @@ const GEOBASIS_NRW = "© Geobasis NRW (dl-de/zero-2-0)"
 const LGLN = "© LGLN (CC BY 4.0)"
 const BKG = "© BKG (CC BY 4.0)"
 const OSM = "© OpenStreetMap-Mitwirkende"
+// Gewässer: dunkel der alte, belegte Lauf, hell der heutige
+export const ALT_BLUE = "#0b3d91"
+export const HEUTE_BLUE = "#5fa8e8"
 const KREISKARTEN =
 	"Kreiskarten Minden 1843 und Lübbecke 1844, Landesarchiv NRW Abt. Westfalen, über das LWL-Portal Westfälische Geschichte"
 
@@ -396,8 +399,8 @@ export const OVERLAYS = [
 		kind: "timewater",
 		group: HISTORIC_GROUP,
 		label: "Flüsse und Bäche der Kreiskarten 1843/44",
-		note: "Von den Kreiskarten Minden (1843) und Lübbecke (1844) nachgezeichnet, entlang der heutigen benannten Bäche gesucht. Wo die Karte dort nur einen Weg zeigt, fehlt der Bach. Lage etwa 20 bis 30 m genau. Ersetzt im Kreis Minden-Lübbecke die aus der Uraufnahme gelesenen Bäche.",
-		attribution: KREISKARTEN,
+		note: "Jedes benannte Gewässer im Kreis als ein Lauf: dunkelblau, wo er von den Kreiskarten Minden (1843) und Lübbecke (1844) nachgezeichnet ist (etwa 20 bis 30 m genau), hellblau der heutige Lauf, wo die Karte nichts Sicheres hergibt. Ersetzt im Kreis Minden-Lübbecke die aus der Uraufnahme gelesenen Bäche.",
+		attribution: `${KREISKARTEN}, ${OSM}`,
 		opacity: 0.95,
 	},
 	{
@@ -927,12 +930,13 @@ function timeWaterStyle(layer) {
 				filter,
 				layout,
 				paint: {
+					// dunkel nach der Kreiskarte, hell der heutige Lauf
 					"line-color": [
 						"match",
-						["get", "kind"],
-						"graben",
-						"#4f8fd6",
-						"#0b3d91",
+						["get", "herkunft"],
+						"heute",
+						HEUTE_BLUE,
+						ALT_BLUE,
 					],
 					"line-opacity": layer.opacity,
 					"line-width": kindWidth([2, 4.5], [1.2, 3], [0.6, 1.6]),
