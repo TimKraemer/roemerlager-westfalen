@@ -244,12 +244,17 @@ den gezeichneten Ufern. Bei Bächen, die nicht einzeln durchgesehen sind
 verlaufen. Dort gilt lieber der heutige Lauf, als dass der Bach auf einem
 Weg liegt.
 
-Aus den nachgezeichneten Stücken wird ein Netz ohne Lücken: Gerüst ist der
-heutige Lauf jedes benannten Gewässers, die Stücke der Kreiskarten
-ersetzen ihn dort, wo es sie gibt. Wo die Karte nichts Sicheres hergibt,
-bleibt der heutige Lauf, in der Karte hellblau statt dunkelblau. Freie
-Enden münden in den nächsten Lauf, und es bleiben nur Läufe, die mit einem
-Fluss verbunden sind oder den Kreis verlassen. Bäche ohne heutigen Lauf
+Aus den nachgezeichneten Stücken wird ein Gewässernetz für die ganze
+Region der Analyse (`fluesse-kreiskarten.geojson`). Gerüst ist der heutige
+Lauf aus OSM: im Kreis jedes benannte Gewässer, ganz bis zu seiner
+Mündung, außerhalb die Läufe, die OSM überwiegend als Fluss führt. Lücken
+eines Flusses bis 300 m (Durchlässe, Namenswechsel) werden überbrückt, und
+ein Bach außerhalb des Kreises kommt dazu, wenn er zwei Läufe verbindet.
+Die Stücke der Kreiskarten ersetzen den heutigen Lauf dort, wo es sie gibt.
+Wo die Karte nichts Sicheres hergibt, bleibt der heutige Lauf, in der Karte
+hellblau statt dunkelblau. Freie Enden münden in den nächsten Lauf, und es
+bleiben nur Läufe, die mit dem großen Netz verbunden sind (einem Lauf am
+Rand der Region oder einem Fluss ab 15 km). Bäche ohne heutigen Lauf
 findet das Verfahren nicht.
 
 Die Karten des 17. und 18. Jahrhunderts liegen örtlich 0,3–1 km neben der
@@ -287,20 +292,18 @@ Prüfbilder (`--debug --bbox w s e n`) liegen in `scripts/altkarten/.cache`.
 ### Bäche und Moore im Potenzialmodell
 
 Das Kriterium „Wasser“ misst den Abstand zum nächsten Bach. Standard ist
-die Wasserquelle „Aus Karten“: Im Kreis Minden-Lübbecke gelten die Bäche
-im Lauf der Kreiskarten 1843/44 (`fluesse-kreiskarten.geojson`). Heutige
-Bäche aus OpenStreetMap zählen dort, wo in 400 m kein Lauf der Kreiskarten
-liegt, außerhalb des Kreises also überall. Große Flüsse ab 150 km²
+die Wasserquelle „Aus Karten“: Es gilt das Gewässernetz der Region
+(`fluesse-kreiskarten.geojson`, im Kreis im Lauf der Kreiskarten 1843/44).
+Heutige Bäche aus OpenStreetMap zählen dort, wo in 400 m kein Lauf des
+Netzes liegt. Große Flüsse ab 150 km²
 Einzugsgebiet kommen weiter aus dem Höhenmodell, Lippe, Weser und Ems im
 alten Lauf.
 
-Die Ebene „Bäche und Flüsse vor der Begradigung“ zeigt davon nur
-gezeichnete Läufe, dunkelblau der alte, hellblau der heutige: im Kreis das
-Netz der Kreiskarten, in der Region die heutigen Flüsse aus OSM, je Name
-zusammengefügt (OSM führt einen Fluss abschnittsweise als Bach) und ab 1 km
-Länge, dazu die alten Läufe der großen Flüsse. Kleine heutige Bäche und die
-aus dem Höhenmodell abgeleiteten Flüsse zählen im Modell, erscheinen aber
-nicht, weil ihre Rasterlinien neben den echten Läufen lägen.
+Die Ebene „Bäche und Flüsse vor der Begradigung“ zeigt davon nur das
+Gewässernetz der Region und die alten Läufe der großen Flüsse, dunkelblau
+der alte, hellblau der heutige Lauf. Kleine heutige Bäche und die aus dem
+Höhenmodell abgeleiteten Flüsse zählen im Modell, erscheinen aber nicht,
+weil ihre Rasterlinien neben den echten Läufen lägen.
 
 Das aus dem Höhenmodell abgeleitete Netz bleibt als Wahl „Aus
 Höhenmodell“. Ein Abgleich im Kreis (Oktober 2026) zeigt, warum es nicht

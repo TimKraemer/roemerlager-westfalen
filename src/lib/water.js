@@ -101,13 +101,13 @@ export async function fetchWaterways(bbox, onProgress) {
 	return { type: "FeatureCollection", features }
 }
 
-// Flüsse und Bäche der Kreiskarten Minden 1843 und Lübbecke 1844
-// (scripts/altkarten/nachzeichnen.py), nur im Kreis Minden-Lübbecke
+// Gewässernetz der Region Minden-Lübbecke (scripts/altkarten/nachzeichnen.py),
+// im Kreis nach den Kreiskarten Minden 1843 und Lübbecke 1844
 const OLD_WATER_FILE = "precomputed/fluesse-kreiskarten.geojson"
 
 /**
- * Bäche und Flüsse der Kreiskarten im Ausschnitt als Linien [[lon, lat], …].
- * Leer außerhalb des Kreises.
+ * Bäche und Flüsse des Gewässernetzes im Ausschnitt als Linien
+ * [[lon, lat], …]. Leer außerhalb der Region.
  */
 export async function fetchOldWaterways(bbox) {
 	const [west, south, east, north] = bbox

@@ -173,8 +173,8 @@
   },
   "baseline": {
    "points": 300,
-   "medianPercentile": 0.5037425149700598,
-   "medianPercentileBest": 0.871864538639257,
+   "medianPercentile": 0.5037601961431468,
+   "medianPercentileBest": 0.8718468574661701,
    "shareHighBest": 0.6033333333333334
   },
   "weights": {
@@ -186,7 +186,7 @@
    "route": 2,
    "corridor": 1
   },
-  "generatedAt": "2026-10-08T12:46:27.918Z"
+  "generatedAt": "2026-10-08T13:02:51.377Z"
  },
  "ohne-routen": {
   "rows": [
@@ -480,6 +480,6 @@
     "defaults": 0.376
    }
   ],
-  "generatedAt": "2026-10-08T12:48:25.042Z"
+  "generatedAt": "2026-10-08T13:04:37.631Z"
  }
 }

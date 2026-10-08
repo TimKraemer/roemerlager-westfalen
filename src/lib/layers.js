@@ -399,7 +399,7 @@ export const OVERLAYS = [
 		kind: "timewater",
 		group: HISTORIC_GROUP,
 		label: "Flüsse und Bäche der Kreiskarten 1843/44",
-		note: "Jedes benannte Gewässer im Kreis als ein Lauf: dunkelblau, wo er von den Kreiskarten Minden (1843) und Lübbecke (1844) nachgezeichnet ist (etwa 20 bis 30 m genau), hellblau der heutige Lauf, wo die Karte nichts Sicheres hergibt. Ersetzt im Kreis Minden-Lübbecke die aus der Uraufnahme gelesenen Bäche.",
+		note: "Ein Lauf je Gewässer: im Kreis jedes benannte Gewässer, dunkelblau wo von den Kreiskarten Minden (1843) und Lübbecke (1844) nachgezeichnet (etwa 20 bis 30 m genau), hellblau der heutige Lauf, wo die Karte nichts Sicheres hergibt. Rund um den Kreis die heutigen Flüsse. Ersetzt im Kreis die aus der Uraufnahme gelesenen Bäche.",
 		attribution: `${KREISKARTEN}, ${OSM}`,
 		opacity: 0.95,
 	},

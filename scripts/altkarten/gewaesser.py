@@ -271,6 +271,11 @@ def natural(props):
 
 def guide_lines(bbox):
     """Heutige Flüsse und Bäche je Name als verbundene Linien (lon, lat)."""
+    return merge_pieces(guide_pieces(bbox))
+
+
+def guide_pieces(bbox):
+    """Heutige Flüsse und Bäche als Kachelstücke (name, klasse, punkte)."""
     z = 13
     w, s, e, n = bbox
     x0, y0 = lonlat_to_px(w, n, z)
@@ -322,7 +327,11 @@ def guide_lines(bbox):
         for tx in range(int(x0 // 256), int(x1 // 256) + 1)
     ]
     with ThreadPoolExecutor(8) as ex:
-        parts = [p for t in ex.map(lambda j: tile(*j), jobs) for p in t]
+        return [p for t in ex.map(lambda j: tile(*j), jobs) for p in t]
+
+
+def merge_pieces(parts):
+    """Kachelstücke je Name zu verbundenen Linien."""
     by = {}
     for name, cls, pts in parts:
         # Auf etwa 1 m runden, damit sich die Stücke an den Kachelkanten treffen

@@ -250,6 +250,61 @@ def leit():
     return by
 
 
+# Ausschnitt der Analyse (src/lib/regions.js, Kreis Minden-Lübbecke)
+REGION = [8.3, 51.93, 9.25, 52.56]
+# Lücken innerhalb eines Flusses (Durchlässe, Namenswechsel in OSM) bis
+# etwa 300 m überbrücken, bei Bächen nur Kachelkanten
+GAP_RIVER = 0.004
+GAP_STREAM = 3e-4
+# Linie gilt als Fluss, wenn OSM sie zu diesem Anteil als river führt
+RIVER_SHARE = 0.3
+
+
+def leit_region():
+    """Leitlinien für das Netz der ganzen Region: im Kreis alle benannten
+    Gewässer (ganz, auch über die Kreisgrenze bis zur Mündung), außerhalb
+    nur Flüsse. Je Linie die Art nach dem Anteil, den OSM als river führt."""
+    f = CACHE / "leit-region.json"
+    if f.exists():
+        return json.loads(f.read_text())
+    from gewaesser import guide_pieces, merge_pieces
+    from shapely.geometry import LineString, box, shape
+    from shapely.ops import unary_union
+
+    kreis = shape(json.loads(KREIS.read_text())["features"][0]["geometry"]).buffer(0.005)
+    area = box(*REGION)
+    pieces = [p for p in guide_pieces(REGION) if p[0] and not SKIP.search(p[0])]
+    by = {}
+    for name, cls, pts in pieces:
+        by.setdefault(name, []).append((name, cls, pts))
+    out = {}
+    for name, ps in by.items():
+        rivers = [LineString(p[2]) for p in ps if p[1] == "river" and len(p[2]) > 1]
+        river_zone = unary_union(rivers).buffer(3e-5) if rivers else None
+        merged = merge_pieces(ps)
+        lines = chain([m["coords"] for m in merged], GAP_RIVER if rivers else GAP_STREAM)
+        for c in lines:
+            L = LineString(c)
+            share = L.intersection(river_zone).length / L.length if river_zone and L.length else 0
+            kind = "river" if share >= RIVER_SHARE else "stream"
+            # Bäche außerhalb des Kreises nur als mögliche Verbindung
+            # zwischen zwei Läufen (build_network)
+            role = "lines" if kind == "river" or L.intersects(kreis) else "bridges"
+            g = L.intersection(area)
+            for gg in getattr(g, "geoms", [g]):
+                if gg.geom_type == "LineString" and len(gg.coords) > 1:
+                    e = out.setdefault(name, {"kind": "stream", "lines": [], "bridges": []})
+                    e[role].append([list(x) for x in gg.coords])
+                    if kind == "river":
+                        e["kind"] = "river"
+    f.write_text(json.dumps(out))
+    print(
+        f"Region: {len(out)} Gewässer, {sum(len(v['lines']) for v in out.values())} Linien, "
+        f"{sum(len(v['bridges']) for v in out.values())} mögliche Verbindungen"
+    )
+    return out
+
+
 def chain(lines, tol):
     """Stücke zu langen Linien verbinden, wenn sich Enden fast berühren
     (Kachelkanten, Kreisgrenze). Doppelte kurze Stücke fallen weg."""
@@ -765,6 +820,10 @@ MATCH_END_M = 450
 MOUTH_M = {"river": 500, "stream": 300}
 # Kürzere Läufe zeigt die Karte nicht
 MIN_LINE_M = 300
+# Ein Fluss ab dieser Länge trägt das Netz, auch ohne Anschluss
+ANCHOR_RIVER_M = 15000
+# Verbindungsbach: beide Enden höchstens so weit von einem Lauf
+BRIDGE_M = 200
 
 
 def build_network(traced):
@@ -777,7 +836,7 @@ def build_network(traced):
     to_m = lambda c: [(x * k, y * 111320) for x, y in c]  # noqa: E731
     to_ll = lambda c: [[x / k, y / 111320] for x, y in c]  # noqa: E731
 
-    guides = {n: v for n, v in leit().items() if not SKIP.search(n)}
+    guides = leit_region()
     out = []  # [name, kind, [(x, y)], [herkunft]]
     used = 0
 
@@ -876,20 +935,46 @@ def build_network(traced):
             joined += 1
         lines[i] = LineString(o[2])
 
-    # 3. Nur was zum Netz gehört: Läufe, die über andere Läufe mit einem
-    # Fluss verbunden sind oder den Kreis verlassen (dort geht es mit den
-    # heutigen Flüssen weiter). Einzelne Striche ohne Anschluss fallen weg.
-    from shapely.geometry import Polygon
+    # 2b. Verbindungsbäche: ein Bach außerhalb des Kreises kommt dazu, wenn
+    # er an beiden Enden einen anderen Lauf trifft (etwa der Johannisbach
+    # zwischen Windwehe und Aa, den OSM nicht als Fluss führt)
+    bridged = 0
+    for name, g in guides.items():
+        for bc in g.get("bridges", []):
+            B = LineString(to_m(bc))
+            if B.length < 1:
+                continue
+            ends = [Point(B.coords[0]), Point(B.coords[-1])]
+            hits = []
+            for e in ends:
+                d = [(L.distance(e), j) for j, L in enumerate(lines) if out[j][0] != name]
+                hits.append(min(d) if d else (1e9, -1))
+            if all(h[0] < BRIDGE_M for h in hits) and hits[0][1] != hits[1][1]:
+                pts = list(B.coords)
+                for end, (_, j) in zip((0, -1), hits):
+                    q = nearest_points(lines[j], Point(pts[end]))[0]
+                    if end == 0:
+                        pts.insert(0, (q.x, q.y))
+                    else:
+                        pts.append((q.x, q.y))
+                out.append([name, "stream", pts, ["heute"] * len(pts)])
+                lines.append(LineString(pts))
+                bridged += 1
+    print(f"{bridged} Verbindungsbäche")
 
-    ring = json.loads(KREIS.read_text())["features"][0]["geometry"]["coordinates"][0]
-    kreis = Polygon(to_m(ring))
+    # 3. Nur was zum Netz gehört: Läufe, die über andere Läufe mit einem
+    # längeren Fluss verbunden sind oder am Rand der Region weiterlaufen.
+    # Einzelne Striche ohne Anschluss fallen weg.
     n = len(out)
     nb = [[j for j in range(n) if j != i and lines[j].distance(lines[i]) < 5] for i in range(n)]
+    x0, y0 = REGION[0] * k, REGION[1] * 111320
+    x1, y1 = REGION[2] * k, REGION[3] * 111320
+    at_edge = lambda q: min(q[0] - x0, x1 - q[0], q[1] - y0, y1 - q[1]) < 1000  # noqa: E731
     anchor = [
-        o[1] == "river"
-        or not kreis.contains(Point(o[2][0]))
-        or not kreis.contains(Point(o[2][-1]))
-        for o in out
+        (o[1] == "river" and lines[i].length >= ANCHOR_RIVER_M)
+        or at_edge(o[2][0])
+        or at_edge(o[2][-1])
+        for i, o in enumerate(out)
     ]
     seen = [False] * n
     keep = []
