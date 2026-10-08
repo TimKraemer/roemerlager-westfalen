@@ -100,6 +100,24 @@ def load_spec(map_id):
     return spec
 
 
+def save_spec(map_id, spec):
+    """Wie von Hand gepflegt: Kopf mit Tabs, ein Passpunkt je Zeile."""
+
+    def one(v):
+        return json.dumps(v, ensure_ascii=False, separators=(", ", ": "))
+
+    head = {k: v for k, v in spec.items() if k not in ("mask", "gcps")}
+    lines = [f"\t{one(k)}: {one(v)}" for k, v in head.items()]
+    if "mask" in spec:
+        pts = ",\n".join(f"\t\t{one(p)}" for p in spec["mask"])
+        lines.append(f'\t"mask": [\n{pts}\n\t]')
+    gcps = ",\n".join(
+        "\t\t{ " + one(g)[1:-1] + " }" for g in spec["gcps"]
+    )
+    lines.append(f'\t"gcps": [\n{gcps}\n\t]')
+    (GCP_DIR / f"{map_id}.json").write_text("{\n" + ",\n".join(lines) + "\n}\n")
+
+
 _TRANSFORMERS = {}
 
 
@@ -390,6 +408,12 @@ def cmd_tiles(args):
     poly = mask_polygon(spec, src.size)
     alpha = Image.new("L", src.size, 0)
     ImageDraw.Draw(alpha).polygon(poly, fill=255)
+    # Freigestellt: Maske des Kreisgebiets (nachzeichnen.py maske)
+    if spec.get("freistellen"):
+        m = Image.open(CACHE / f"maske-{spec['id']}.png").convert("L")
+        m = m.resize(src.size, Image.BILINEAR)
+        alpha = Image.fromarray(np.minimum(np.asarray(alpha), np.asarray(m)))
+        del m
     rgba = src.copy()
     rgba.putalpha(alpha)
     del src, alpha

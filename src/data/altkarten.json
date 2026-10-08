@@ -1,18 +1,37 @@
 [
 	{
+		"id": "1843-kreis-minden",
+		"year": 1843,
+		"title": "Karte vom Königlich Preussischen Regierungs-Bezirk Minden, [Blatt 2]: Karte vom Kreise Minden im Regierungs-Bezirk Minden",
+		"short": "Kreis Minden",
+		"author": "Entwurf J. J. Vorlaender, Königlich Preuss. Steuer-Rath, gez. durch E. Jansen, 1:80 000, herausgegeben durch Vorlaender & Schmeltzer 1843, Berlin Geo-lithograph. Anst. v. H. Mahlmann",
+		"provenance": "Landesarchiv NRW Abt. Westfalen, KSA 11782 (Altsignatur B 61,7)",
+		"accuracy": "100 Feinpasspunkte aus dem Abgleich der Linien mit der Uraufnahme (feinpass.py), Median-LOO etwa 28 m; Ortsmitten nur zum Einstieg",
+		"showFrom": 8,
+		"bounds": [
+			8.6672,
+			52.15037,
+			9.16004,
+			52.51569
+		],
+		"minzoom": 8,
+		"maxzoom": 13,
+		"tileSize": 512
+	},
+	{
 		"id": "1844-kreis-luebbecke",
 		"year": 1844,
 		"title": "Karte vom Königlich Preussischen Regierungs-Bezirk Minden, [Blatt 1]: Karte vom Kreise Lübbecke im Regierungs-Bezirk Minden",
 		"short": "Kreis Lübbecke",
 		"author": "Nach den Kataster-Karten bearbeitet, 1:80 000. Gez. durch H. Dodt, herausgegeben durch Vorländer & Schmeltzer 1844, Berlin Geo-lithograph. Anst. v. H. Mahlmann",
 		"provenance": "Stempel „Staatsarchiv Münster – Bücherei“, handschriftlich „B 61 L 6“",
-		"accuracy": "38 Ortsmitten (Kirchdörfer und Bauerschaften), Median-LOO etwa 210 m",
+		"accuracy": "83 Feinpasspunkte aus dem Abgleich der Linien mit der Uraufnahme (feinpass.py), Median-LOO etwa 20 m; Ortsmitten nur zum Einstieg",
 		"showFrom": 8,
 		"bounds": [
-			8.2637,
-			52.21548,
-			8.75675,
-			52.54504
+			8.2685,
+			52.21638,
+			8.75866,
+			52.54652
 		],
 		"minzoom": 8,
 		"maxzoom": 13,
