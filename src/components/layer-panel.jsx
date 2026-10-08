@@ -141,7 +141,7 @@ export default function LayerPanel({ onFlyTo }) {
 				field="showWaterways"
 				id="waterways"
 				label="Bäche und Flüsse vor der Begradigung"
-				note="Die Gewässer, mit denen das Modell rechnet, ohne Kanäle. Große Flüsse im Lauf der Uraufnahme um 1840, bei Haltern und Xanten im römerzeitlichen Lauf. Woher die Bäche stammen, steht im Reiter Analyse unter Experteneinstellungen."
+				note="Die Gewässer, mit denen das Modell rechnet, ohne Kanäle. Große Flüsse im Lauf der Uraufnahme um 1840, im Kreis Minden-Lübbecke wie auf den Kreiskarten 1843/44, bei Haltern und Xanten im römerzeitlichen Lauf. Woher die Bäche stammen, steht im Reiter Analyse unter Experteneinstellungen."
 			/>
 			{main.map((layer) => (
 				<OverlayItem key={layer.id} layer={layer} onFlyTo={onFlyTo} />

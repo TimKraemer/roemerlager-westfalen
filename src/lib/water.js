@@ -101,13 +101,13 @@ export async function fetchWaterways(bbox, onProgress) {
 	return { type: "FeatureCollection", features }
 }
 
-// Bachläufe der Uraufnahme um 1840 (scripts/altkarten/gewaesser.py), nur im
-// Kreis Minden-Lübbecke. Zeitschnitt "ura" der Ebene „Gewässer aus den Karten“.
-const OLD_WATER_FILE = "precomputed/gewaesser-zeit.geojson"
+// Flüsse und Bäche der Kreiskarten Minden 1843 und Lübbecke 1844
+// (scripts/altkarten/nachzeichnen.py), nur im Kreis Minden-Lübbecke
+const OLD_WATER_FILE = "precomputed/fluesse-kreiskarten.geojson"
 
 /**
- * Bäche und Flüsse der Uraufnahme im Ausschnitt als Linien [[lon, lat], …].
- * Gräben ohne heutigen Bach bleiben außen vor. Leer außerhalb des Kreises.
+ * Bäche und Flüsse der Kreiskarten im Ausschnitt als Linien [[lon, lat], …].
+ * Leer außerhalb des Kreises.
  */
 export async function fetchOldWaterways(bbox) {
 	const [west, south, east, north] = bbox
@@ -115,7 +115,6 @@ export async function fetchOldWaterways(bbox) {
 	const lines = []
 	for (const f of data.features) {
 		const p = f.properties
-		if (p.slice !== "ura" || p.kind === "graben") continue
 		const coords = f.geometry.coordinates
 		const inside = coords.some(
 			([lon, lat]) =>

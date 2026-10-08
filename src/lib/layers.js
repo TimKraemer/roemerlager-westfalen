@@ -16,13 +16,17 @@ const GEOBASIS_NRW = "© Geobasis NRW (dl-de/zero-2-0)"
 const LGLN = "© LGLN (CC BY 4.0)"
 const BKG = "© BKG (CC BY 4.0)"
 const OSM = "© OpenStreetMap-Mitwirkende"
+const KREISKARTEN =
+	"Kreiskarten Minden 1843 und Lübbecke 1844, Landesarchiv NRW Abt. Westfalen, über das LWL-Portal Westfälische Geschichte"
 
 export const DEM_TILES = TILES.dem
 const VECTOR_TILES = TILES.vector
 
 // Gewässer, Moore, Wald und Hauptwege aus den historischen Karten, alle im
 // Stand um 1840. Die Stände um 1900 und heute stecken in der Git-Historie.
-export const TIME_WATER_LAYER = "gewaesser-zeit"
+// Die Gewässer sind von den Kreiskarten Minden (1843) und Lübbecke (1844)
+// nachgezeichnet (scripts/altkarten/nachzeichnen.py).
+export const TIME_WATER_LAYER = "fluesse-kreiskarten"
 export const MOOR_LAYER = "moor-zeit"
 export const WALD_LAYER = "wald-zeit"
 export const WEGE_LAYER = "wege-zeit"
@@ -202,7 +206,7 @@ export const OVERLAYS = [
 		kind: "oldrivers",
 		group: "Gewässer",
 		label: "Alte Flussläufe",
-		note: "Dunkelblau Rhein, Lippe, Ems und Weser in NRW wie in der Uraufnahme um 1840, rot gestrichelt der römerzeitliche Lauf bei Haltern und Xanten, hellblau der heutige, wo die Uraufnahme nichts hergibt oder außerhalb NRW.",
+		note: "Dunkelblau Rhein, Lippe, Ems und Weser in NRW wie in der Uraufnahme um 1840, im Kreis Minden-Lübbecke die Weser wie auf der Kreiskarte Minden 1843, rot gestrichelt der römerzeitliche Lauf bei Haltern und Xanten, hellblau der heutige, wo die Uraufnahme nichts hergibt oder außerhalb NRW.",
 		attribution: `${GEOBASIS_NRW}, ${OSM}`,
 		opacity: 0.9,
 	},
@@ -386,15 +390,14 @@ export const OVERLAYS = [
 		attribution: altkarteAttribution(m),
 		opacity: 0.85,
 	})),
-	// Über den Karten: Gewässer, die scripts/altkarten/gewaesser.py aus
-	// ihnen gelesen hat, Stand um 1840
+	// Über den Karten: Flüsse und Bäche, von den Kreiskarten nachgezeichnet
 	{
 		id: TIME_WATER_LAYER,
 		kind: "timewater",
 		group: HISTORIC_GROUP,
-		label: "Gewässer um 1840 (Kreis Minden-Lübbecke)",
-		note: "Aus der Preußischen Uraufnahme entlang der heutigen Bäche gelesen. Gräben ohne heutigen Bach und verschwundene Bäche fehlen.",
-		attribution: `${GEOBASIS_NRW}, ${OSM}`,
+		label: "Flüsse und Bäche der Kreiskarten 1843/44",
+		note: "Von den Kreiskarten Minden (1843) und Lübbecke (1844) nachgezeichnet, entlang der heutigen benannten Bäche gesucht. Wo die Karte dort nur einen Weg zeigt, fehlt der Bach. Lage etwa 20 bis 30 m genau. Ersetzt im Kreis Minden-Lübbecke die aus der Uraufnahme gelesenen Bäche.",
+		attribution: KREISKARTEN,
 		opacity: 0.95,
 	},
 	{
@@ -429,7 +432,7 @@ export const OVERLAYS = [
 function altkarteAttribution(m) {
 	const scans = (ALTKARTEN_QUELLEN[m.id] ?? []).map(
 		(q) =>
-			`<a href="${q.url}" target="_blank" rel="noopener">${q.label.split(",")[0]}</a> (${q.license})`,
+			`<a href="${q.url}" target="_blank" rel="noopener">${q.label.split(",")[0]}</a>${q.license ? ` (${q.license})` : ""}`,
 	)
 	const head = `Altkarte ${m.year}${m.author ? `, ${m.author}` : ""}`
 	return [head, ...new Set(scans)].join(", ")
@@ -681,7 +684,7 @@ export function styleFor(layer) {
 	}
 }
 
-export const TIME_WATER_FILE = "precomputed/gewaesser-zeit.geojson"
+export const TIME_WATER_FILE = "precomputed/fluesse-kreiskarten.geojson"
 export const MOOR_FILE = "precomputed/moor-zeit.geojson"
 export const MOOR_1844_FILE = "precomputed/moor-1844.geojson"
 export const WALD_FILE = "precomputed/wald-zeit.geojson"
@@ -863,8 +866,8 @@ function timeMoorStyle(layer) {
 }
 
 /**
- * Gewässer aus den historischen Karten (public/precomputed/gewaesser-zeit.geojson),
- * gezeigt wird der Stand um 1840 aus der Uraufnahme.
+ * Flüsse und Bäche der Kreiskarten 1843/44
+ * (public/precomputed/fluesse-kreiskarten.geojson).
  */
 function timeWaterStyle(layer) {
 	const width = (lo, hi) => ["interpolate", ["linear"], ["zoom"], 9, lo, 15, hi]
@@ -889,7 +892,7 @@ function timeWaterStyle(layer) {
 				stream[1],
 			],
 		)
-	const filter = ["==", ["get", "slice"], "ura"]
+	const filter = ["has", "name"]
 	const layout = {
 		visibility: "none",
 		"line-cap": "round",
@@ -897,7 +900,7 @@ function timeWaterStyle(layer) {
 	}
 	return {
 		sources: {
-			// 2 MB, die Karte lädt sie erst beim Einschalten (map-view.jsx)
+			// Die Karte lädt die Datei erst beim Einschalten (map-view.jsx)
 			[layer.id]: {
 				type: "geojson",
 				data: { type: "FeatureCollection", features: [] },
@@ -996,6 +999,8 @@ function oldRiverStyle(layer) {
 						"match",
 						["get", "kind"],
 						"uraufnahme",
+						"#0d47a1",
+						"kreiskarte",
 						"#0d47a1",
 						"#7b9acc",
 					],

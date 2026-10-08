@@ -10,6 +10,11 @@ import { Heap } from "./heap"
 
 // Linienende so nah an einem anderen Fluss ist eine Mündung
 const JOIN_M = 2000
+// So nah kommen sich zwei Läufe nur, wo sie ineinander übergehen, etwa
+// Lippe und Rhein dort, wo der römerzeitliche Rhein abzweigt (380 m)
+const CROSS_M = 400
+// Rasterweite für die Suche nach nahen Punkten, in Grad (größer als CROSS_M)
+const CROSS_CELL = 0.007
 // Lager weiter als das vom Fluss haben keinen Schiffsweg
 const MAX_SNAP_M = 5000
 // Der Weg vom Lager zum Ufer zählt bei der Wahl des Flusses mehrfach, damit
@@ -58,6 +63,37 @@ export function riverGraph(lines, joinMeters = JOIN_M) {
 			}
 			if (best >= 0) link(end, best, bestD)
 		}
+	}
+	// Wo sich zwei Läufe sehr nahe kommen, sind sie verbunden, auch abseits
+	// der Linienenden. Sonst fährt ein Schiff etwa an der Lippemündung erst
+	// zum Ende der Lippe und auf ihr zurück, obwohl der Rhein daneben liegt.
+	const cell = (p) =>
+		`${Math.floor(p[0] / CROSS_CELL)}|${Math.floor(p[1] / CROSS_CELL)}`
+	const lineOf = new Int32Array(coords.length)
+	const grid = new Map()
+	for (let l = 0; l < lines.length; l++) {
+		for (let i = lineStart[l]; i < lineStart[l + 1]; i++) {
+			lineOf[i] = l
+			const k = cell(coords[i])
+			if (!grid.has(k)) grid.set(k, [])
+			grid.get(k).push(i)
+		}
+	}
+	for (let i = 0; i < coords.length; i++) {
+		const [x, y] = coords[i]
+		const cx = Math.floor(x / CROSS_CELL)
+		const cy = Math.floor(y / CROSS_CELL)
+		// je anderer Linie nur der nächste Punkt
+		const best = new Map()
+		for (let dy = -1; dy <= 1; dy++)
+			for (let dx = -1; dx <= 1; dx++)
+				for (const j of grid.get(`${cx + dx}|${cy + dy}`) ?? []) {
+					if (lineOf[j] <= lineOf[i]) continue
+					const d = haversine(x, y, coords[j][0], coords[j][1])
+					if (d < CROSS_M && d < (best.get(lineOf[j])?.[1] ?? Infinity))
+						best.set(lineOf[j], [j, d])
+				}
+		for (const [j, d] of best.values()) link(i, j, d)
 	}
 	return { coords, adj, lineStart }
 }

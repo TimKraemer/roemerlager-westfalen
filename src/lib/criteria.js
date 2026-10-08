@@ -187,7 +187,7 @@ export function explain(data, params) {
 		{
 			osm: "heutigen Bach oder Fluss (OSM)",
 			karten:
-				"Bach oder Fluss, im Kreis Minden-Lübbecke im Lauf der Uraufnahme um 1840, sonst nach OpenStreetMap",
+				"Bach oder Fluss, im Kreis Minden-Lübbecke im Lauf der Kreiskarten 1843/44, sonst nach OpenStreetMap",
 		}[data.waterSource] ??
 		"Bach im natürlichen Gewässernetz aus dem Höhenmodell"
 	return [

@@ -134,9 +134,13 @@ SOURCES["moor-zeit"] = {
 	own: "Moore und nasse Flächen um 1840, Kreis Minden-Lübbecke",
 	refs: ["gd-bk50", "lbeg-gum50", "nrw-uesg"],
 }
-SOURCES["gewaesser-zeit"] = {
-	own: "Gewässer um 1840 aus der Uraufnahme, Kreis Minden-Lübbecke",
-	refs: ["geobasis-uraufnahme", "osm"],
+SOURCES["fluesse-kreiskarten"] = {
+	own: "Flüsse und Bäche der Kreiskarten 1843/44, Kreis Minden-Lübbecke",
+	extra: () =>
+		ALTKARTEN.filter((m) => /kreis-(minden|luebbecke)$/.test(m.id)).map(
+			altkarteCsl,
+		),
+	refs: ["osm"],
 }
 
 export function hasLayerSources(id) {

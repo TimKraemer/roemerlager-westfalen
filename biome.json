@@ -15,6 +15,7 @@
 			"!!src/data/roemerstrassen.json",
 			"!!src/data/altkarten.json",
 			"!!scripts/altkarten/gcp",
+			"!!scripts/altkarten/fluesse",
 			"!!src/lib/maplibre-version.json"
 		],
 		"ignoreUnknown": true

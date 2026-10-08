@@ -1,8 +1,10 @@
 #!/usr/bin/env python3
 """
 Gewässer aus Altkarten auslesen, je Karte ein Zeitschnitt, für den Kreis
-Minden-Lübbecke. Ergebnis: public/precomputed/gewaesser-zeit.geojson für die
-Ebene „Gewässer aus den Karten“ und den Zeitstrahl.
+Minden-Lübbecke. Ergebnis: public/precomputed/gewaesser-zeit.geojson.
+
+Abgelöst durch nachzeichnen.py (Kreiskarten 1843/44), die App liest die
+Datei nicht mehr. Die Leitlinien (guide_lines) nutzt nachzeichnen.py weiter.
 
 Vorgehen je Karte:
 

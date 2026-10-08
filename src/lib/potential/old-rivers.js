@@ -4,7 +4,8 @@ import { distanceToMask } from "./model"
 
 /**
  * Alte Flussläufe (scripts/build-rivers.mjs) im Potenzialmodell: Uraufnahme
- * um 1840, an Vetera und Haltern der römerzeitliche Lauf, sonst der heutige.
+ * um 1840, die Weser im Kreis Minden-Lübbecke nach der Kreiskarte 1843, an
+ * Vetera und Haltern der römerzeitliche Lauf, sonst der heutige.
  * Sie ersetzen den heutigen bzw. aus dem Höhenmodell abgeleiteten Lauf
  * derselben Flüsse beim Abstand zu Fluss und Bach.
  */
@@ -13,6 +14,10 @@ export const OLD_RIVER_NAMES = Object.keys(rivers)
 
 // Abgeleitete Flusspixel so nah an einem alten Lauf gehören zum selben Fluss
 const SAME_RIVER_M = 1500
+const SAME_SHARE = 0.3
+// Mündung in einen weggefallenen, grob gerechneten Lauf: so weit darf der
+// Anschluss an den alten Lauf reichen
+const FAR_MOUTH_M = 8000
 
 const coordsOf = (v) => (Array.isArray(v) ? v : v.coords)
 
@@ -133,15 +138,65 @@ function nearOld([lon, lat], meters) {
 	return false
 }
 
-/** Abgeleitete Flussabschnitte ohne die, die einem alten Lauf folgen. */
+/** Nächster Punkt eines alten Laufs bis meters entfernt, sonst null. */
+function nearestOld([lon, lat], meters) {
+	const kx = 111320 * Math.cos((lat * Math.PI) / 180)
+	const cx = Math.floor(lon / CELL)
+	const cy = Math.floor(lat / CELL)
+	const r = Math.ceil(meters / 111320 / CELL)
+	const map = oldCells()
+	let best = null
+	let bestD = meters
+	for (let dy = -r; dy <= r; dy++)
+		for (let dx = -r; dx <= r; dx++)
+			for (const q of map.get(`${cx + dx}|${cy + dy}`) ?? []) {
+				const d = Math.hypot((q[0] - lon) * kx, (q[1] - lat) * 111320)
+				if (d < bestD) {
+					best = q
+					bestD = d
+				}
+			}
+	return best
+}
+
+/**
+ * Abgeleitete Flussabschnitte ohne die, die einem alten Lauf folgen. Liegt
+ * ein Abschnitt zu einem guten Teil (SAME_SHARE) neben einem alten Lauf, ist
+ * er derselbe Fluss und fällt ganz weg, auch wo er grob abweicht. Die
+ * übrigen bleiben ganz. Endet einer nahe an einem alten Lauf (ein
+ * Nebenfluss vor der Mündung), führt das Ende bis an den alten Lauf.
+ */
 export function withoutOldRivers(features) {
-	return features.filter((f) => {
-		if (f.properties.kind !== "river") return true
+	const same = (f) => {
 		const pts = f.geometry.coordinates
 		let near = 0
 		for (const p of pts) if (nearOld(p, SAME_RIVER_M)) near++
-		return near < pts.length / 2
-	})
+		return near >= pts.length * SAME_SHARE
+	}
+	const rivers = features.filter((f) => f.properties.kind === "river")
+	const dropped = new Set(rivers.filter(same))
+	// Punkte weggefallener Abschnitte: Wer dort mündet, mündet in den alten
+	// Lauf, auch wenn der grob gerechnete Lauf weit daneben lag
+	const droppedPts = new Set(
+		[...dropped].flatMap((f) => f.geometry.coordinates.map((p) => `${p}`)),
+	)
+	const mouth = (p) =>
+		nearestOld(p, droppedPts.has(`${p}`) ? FAR_MOUTH_M : SAME_RIVER_M)
+	const out = features.filter((f) => f.properties.kind !== "river")
+	for (const f of rivers) {
+		if (dropped.has(f)) continue
+		const pts = f.geometry.coordinates
+		const head = mouth(pts[0])
+		const tail = mouth(pts[pts.length - 1])
+		out.push({
+			...f,
+			geometry: {
+				type: "LineString",
+				coordinates: [...(head ? [head] : []), ...pts, ...(tail ? [tail] : [])],
+			},
+		})
+	}
+	return out
 }
 
 /** Alle alten Läufe als Linien [[lon, lat], …], etwa für Schiffswege. */

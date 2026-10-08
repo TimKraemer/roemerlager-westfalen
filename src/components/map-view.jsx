@@ -8,7 +8,7 @@ import { assetUrl, BASE_PATH } from "@/config"
 import roads from "@/data/roemerstrassen.json"
 import { throughGates } from "@/lib/camp-gates"
 import { SHORT_CREDIT } from "@/lib/citation"
-import { circlePolygon } from "@/lib/geo"
+import { circlePolygon, splitLines } from "@/lib/geo"
 import {
 	BASE_LAYERS,
 	FONT,
@@ -66,6 +66,9 @@ function initialView() {
 	}
 }
 const EMPTY = { type: "FeatureCollection", features: [] }
+// Bis zu dieser Zoomstufe zeigt die Karte das grobe Flussnetz aus dem
+// Höhenmodell (Westfalen-Netz), darüber nur gezeichnete Läufe
+const COARSE_MAX_ZOOM = 10
 const EMPTY_IMAGE =
 	"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAQAAAC1HAwCAAAAC0lEQVR42mNkYAAAAAYAAjCB0C8AAAAASUVORK5CYII="
 const HALO = {
@@ -119,10 +122,17 @@ function addAnalysisLayers(map) {
 		["match", ["get", "kind"], "river", river[1], stream[1]],
 	]
 	map.addSource("waterways", { type: "geojson", data: EMPTY })
+	// Grobes Netz aus dem Höhenmodell nur in der Übersicht
+	const notCoarse = [
+		"any",
+		["!", ["has", "grob"]],
+		["<", ["zoom"], COARSE_MAX_ZOOM],
+	]
 	map.addLayer({
 		id: "waterways-casing",
 		type: "line",
 		source: "waterways",
+		filter: notCoarse,
 		layout: { visibility: "none", "line-cap": "round", "line-join": "round" },
 		paint: {
 			"line-color": "#fff",
@@ -134,6 +144,7 @@ function addAnalysisLayers(map) {
 		id: "waterways",
 		type: "line",
 		source: "waterways",
+		filter: notCoarse,
 		layout: { visibility: "none", "line-cap": "round", "line-join": "round" },
 		paint: {
 			"line-color": "#1565c0",
@@ -997,10 +1008,26 @@ export default function MapView({ onMapReady }) {
 		if (!alive(map)) return
 		const dem = waterSource !== "osm"
 		// Natürliche Flussläufe: große Flüsse aus dem Netz, Bäche im Kreis.
-		// Lippe, Weser usw. im alten Lauf statt grob aus dem Höhenmodell.
+		// Lippe, Weser usw. im alten Lauf statt grob aus dem Höhenmodell. In
+		// der Region hat die Analyse genauere Linien, das grobe Netz fällt dort
+		// weg, sonst läge derselbe Fluss zwei- oder dreimal da.
+		const regionLines = dem && derivedWaterways
+		const [nw, , se] = (regionLines && result?.grid?.corners) || [
+			[0, 0],
+			0,
+			[0, 0],
+		]
+		const [w, n, e, s] = [nw[0], nw[1], se[0], se[1]]
+		const outsideRegion = ([lon, lat]) =>
+			lon < w || lon > e || lat < s || lat > n
+		// Das grobe Netz nur in der Übersicht (COARSE_MAX_ZOOM), näher heran
+		// fallen seine Rasterstufen auf
 		const derived = [
-			...(network?.rivers.features ?? []),
-			...(dem && derivedWaterways ? derivedWaterways.features : []),
+			...splitLines(network?.rivers.features ?? [], outsideRegion).map((f) => ({
+				...f,
+				properties: { ...f.properties, grob: true },
+			})),
+			...(regionLines ? derivedWaterways.features : []),
 		]
 		const features = oldRivers
 			? [...withoutOldRivers(derived), ...oldRiverFeatures()]
@@ -1018,6 +1045,7 @@ export default function MapView({ onMapReady }) {
 	}, [
 		derivedWaterways,
 		network,
+		result?.grid,
 		showWaterways,
 		waterSource,
 		oldRivers,

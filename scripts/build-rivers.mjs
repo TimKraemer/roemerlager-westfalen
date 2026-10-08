@@ -977,6 +977,43 @@ const ROMAN = [
 ]
 
 /** Abschnitt zwischen den nächsten Punkten zu Anfang und Ende ersetzen. */
+/**
+ * Rekonstruktionen aus der Literatur sind teils nur alle 1–2 km belegt. Eine
+ * Catmull-Rom-Spline durch die Punkte, alle ROUND_M ein Zwischenpunkt, macht
+ * daraus einen Lauf ohne Knicke. Die belegten Punkte bleiben erhalten.
+ */
+const ROUND_M = 150
+function rounded(coords) {
+	const k = Math.cos((coords[0][1] * Math.PI) / 180)
+	const out = []
+	const p = [coords[0], ...coords, coords.at(-1)]
+	for (let i = 1; i < p.length - 2; i++) {
+		const [p0, p1, p2, p3] = [p[i - 1], p[i], p[i + 1], p[i + 2]]
+		const m = Math.hypot((p2[0] - p1[0]) * k, p2[1] - p1[1]) * 111320
+		const n = Math.max(1, Math.round(m / ROUND_M))
+		for (let s = 0; s < n; s++) {
+			const t = s / n
+			const t2 = t * t
+			const t3 = t2 * t
+			out.push(
+				[0, 1].map((c) =>
+					Number(
+						(
+							0.5 *
+							(2 * p1[c] +
+								(p2[c] - p0[c]) * t +
+								(2 * p0[c] - 5 * p1[c] + 4 * p2[c] - p3[c]) * t2 +
+								(3 * p1[c] - p0[c] - 3 * p2[c] + p3[c]) * t3)
+						).toFixed(5),
+					),
+				),
+			)
+		}
+	}
+	out.push(coords.at(-1))
+	return out
+}
+
 function splice(river, coords, kind) {
 	const kinds = []
 	for (const [from, to, k] of river.parts)
@@ -1040,6 +1077,6 @@ for (const [name, g] of Object.entries(guide)) {
 }
 for (const { river, coords } of ROMAN) {
 	if (result[river]?.parts)
-		result[river] = splice(result[river], coords, "roemisch")
+		result[river] = splice(result[river], rounded(coords), "roemisch")
 }
 if (!process.env.DRY) writeFileSync(target, `${JSON.stringify(result)}\n`)

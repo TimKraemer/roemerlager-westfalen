@@ -118,15 +118,16 @@ citation-js selbst mit.
 | Datei | Skript | Herkunft | Lizenz |
 |-------|--------|----------|--------|
 | `src/data/roemerstrassen.json` | `scripts/build-roads.mjs` | Itiner-e (Zenodo, DOI 10.5281/zenodo.17122148), Hellwege nach der heutigen B 65 aus OpenStreetMap | CC BY 4.0 (Itiner-e), ODbL 1.0 (OSM-Anteile) |
-| `src/data/fluesse.json` | `scripts/build-rivers.mjs` | Preußische Uraufnahme (Geobasis NRW), OpenStreetMap, Literatur für römerzeitliche Abschnitte | ODbL 1.0 |
+| `src/data/fluesse.json` | `scripts/build-rivers.mjs`, Weser im Kreis Minden-Lübbecke aus `scripts/altkarten/nachzeichnen.sh weser` | Preußische Uraufnahme (Geobasis NRW), OpenStreetMap, Literatur für römerzeitliche Abschnitte, Kreiskarte Minden 1843 (Weser) | ODbL 1.0 |
 | `src/data/kreis-minden-luebbecke.json` | einmalig über Nominatim | OpenStreetMap | ODbL 1.0 |
 | `src/data/altkarten.json` | `scripts/altkarten/alt.sh index` | Verzeichnis der entzerrten Altkarten | CC BY 4.0 |
 | `src/data/altkarten-quellen.json` | von Hand | Bestandsnachweise der Scans (SLUB, Landesarchiv NRW) | CC BY 4.0 |
-| `scripts/altkarten/gcp/*.json` | von Hand und `alt.sh fit` | Passpunkte je Altkarte | CC BY 4.0 |
-| `public/precomputed/minden-luebbecke.*`, `westfalen-netz.json` | `bun run precompute` | Mapzen Terrain Tiles (SRTM, EU-DEM), OpenStreetMap, Preußische Uraufnahme (Bäche), BK50 NRW, GUM50 NI, Kreiskarte Lübbecke 1844 (Moore) | CC BY 4.0, enthält Ableitungen aus ODbL-Daten und aus der Kreiskarte 1844 (CC BY-SA 4.0) |
+| `scripts/altkarten/gcp/*.json` | von Hand, `alt.sh fit` und `feinpass.sh` | Passpunkte je Altkarte | CC BY 4.0 |
+| `scripts/altkarten/fluesse/**/*.json` | `nachzeichnen.sh vorschlag`, von Hand korrigiert | Stützpunkte der nachgezeichneten Gewässer in Pixeln der Scans, Kreisgebiet je Karte | CC BY 4.0 |
+| `public/precomputed/minden-luebbecke.*`, `westfalen-netz.json` | `bun run precompute` | Mapzen Terrain Tiles (SRTM, EU-DEM), OpenStreetMap, Kreiskarten Minden 1843 und Lübbecke 1844 (Bäche, Weser), BK50 NRW, GUM50 NI, Kreiskarte Lübbecke 1844 (Moore) | CC BY 4.0, enthält Ableitungen aus ODbL-Daten und aus den Kreiskarten (CC BY-SA 4.0, Blatt Minden ungeprüft) |
 | `public/precomputed/lineaments*.json`, `lrm/*.jpg` | `bun run precompute`, `scripts/validate-lineaments.mjs` | DGM1 NRW (Geobasis NRW, dl-de/zero-2-0), OpenStreetMap | CC BY 4.0 |
 | `public/precomputed/validation.json` | `scripts/validate-model.mjs`, `scripts/optimize-weights.mjs` | Gegenprobe des Modells | CC BY 4.0 |
-| `public/precomputed/gewaesser-zeit.geojson` | `scripts/altkarten/gewaesser.sh` | Preußische Uraufnahme (Geobasis NRW), Karte des Deutschen Reiches 1904 (SLUB, Public Domain Mark), OpenStreetMap als Leitlinien | ODbL 1.0 |
+| `public/precomputed/fluesse-kreiskarten.geojson` | `scripts/altkarten/nachzeichnen.sh geojson` | Kreiskarten Minden 1843 (Landesarchiv NRW, KSA 11782) und Lübbecke 1844 (W 051 Nr. 11781), OpenStreetMap als Leitlinien | ODbL 1.0, Ableitung aus den Kreiskarten |
 | `public/precomputed/moor-1844.geojson` | `scripts/altkarten/moor1844.py` aus den Umrissen in `scripts/altkarten/moor/1844-kreis-luebbecke.json` | Kreiskarte Lübbecke 1844 (Landesarchiv NRW, W 051 Nr. 11781) | CC BY-SA 4.0 |
 | `public/precomputed/moor-zeit.geojson` | `scripts/altkarten/moor.sh` | BK50 NRW (GD NRW, dl-de/by-2-0), GUM50 (LBEG Niedersachsen), Überschwemmungsgebiete nach der preußischen Aufnahme (Land NRW, Dienst uesg) | Lizenzen der Landesämter |
 | `public/precomputed/wald-zeit.geojson` | `scripts/altkarten/wald.sh` | Waldflächen in NRW während der Preußischen Uraufnahme (LANUK NRW, Open Data), auf den Kreis zugeschnitten | Lizenz des LANUK, noch zu prüfen |
@@ -151,7 +152,7 @@ Netz (Kacheldienste in `src/config.js`).
 | `bun scripts/validate-lineaments.mjs` | kurz | Prüfung der Linienerkennung an bekannten Lagern |
 | `bun scripts/build-roads.mjs` | kurz | Römerstraßen, lädt Itiner-e von Zenodo |
 | `bun scripts/build-rivers.mjs [Fluss …] [--roemisch]` | beim ersten Mal etwa 1 h | Alte Flussläufe |
-| `scripts/altkarten/gewaesser.sh [--quelle ura,kdr1904]` | Uraufnahme beim ersten Mal etwa 20 min, danach wenige Minuten | Gewässer um 1840 und um 1900 (die Karte zeigt um 1840) |
+| `scripts/altkarten/nachzeichnen.sh geojson` | wenige Minuten | Flüsse und Bäche der Kreiskarten 1843/44 |
 | `bun scripts/build-places.mjs` | einige Minuten | Ortsverzeichnis der Suche |
 | `bun scripts/build-areas.mjs` | je nach Overpass-Last | Höhenzüge und Verwaltungsgebiete der Suche |
 
@@ -169,7 +170,7 @@ Uraufnahme landen in `node_modules/.cache/uraufnahme`.
 
 ### Altkarten
 
-Die Altkarten (Kreiskarte Lübbecke 1844, Karte des Deutschen Reiches 1904)
+Die Altkarten (Kreiskarten Minden 1843 und Lübbecke 1844, Karte des Deutschen Reiches 1904)
 sind entzerrte Scans historischer Karten. Das Projekt führt nur Karten, aus
 denen das Modell Moore oder Gewässer liest. Dreizehn weitere Karten von 1650
 bis 1898 und die Ebene TK25 1936–1945 stehen im Git-Tag `vor-trennung`. Weder die Scans noch die daraus gerechneten Kacheln
@@ -182,7 +183,10 @@ Bestandsnachweis und Rechteangabe je Scan stehen in
 Karte. Die Karte von 1904 stammt aus der Deutschen Fotothek der SLUB
 Dresden (Public Domain Mark 1.0), die Kreiskarte 1844 aus dem Landesarchiv
 NRW, Abteilung Westfalen, Bestand W 051 (CC BY-SA 4.0, Scan über das
-LWL-Portal „Westfälische Geschichte“). Die Angaben wurden über die API der
+LWL-Portal „Westfälische Geschichte“). Die Kreiskarte Minden 1843 (KSA 11782,
+Altsignatur B 61,7) kommt aus demselben Bestand über dasselbe Portal
+(kar570). Ihre Lizenz ist noch nicht geprüft, die Attribution nennt
+deshalb keine. Die Angaben wurden über die API der
 Deutschen Digitalen Bibliothek ermittelt, die Rechtehinweise auf den Seiten der Archive selbst sind noch von Hand zu
 prüfen. Die gerechneten Kacheln übernehmen die Lizenz des jeweiligen Scans.
 
@@ -193,32 +197,52 @@ scipy, Pillow und pyproj):
 export ALTKARTEN_DIR="$HOME/Downloads/Historische Landkarten"   # Ordner mit den Scans
 bun scripts/altkarten/orte.mjs                  # Ortsverzeichnis für Passpunkte, einmalig
 scripts/altkarten/alt.sh fit 1844-kreis-luebbecke
+scripts/altkarten/feinpass.sh 1844-kreis-luebbecke --runden 3 --nur-auto
+scripts/altkarten/nachzeichnen.sh maske 1844-kreis-luebbecke   # freistellen
 scripts/altkarten/alt.sh tiles 1844-kreis-luebbecke
 scripts/altkarten/alt.sh index                  # schreibt src/data/altkarten.json
 ```
 
+Die Kreiskarten sind nach den Katasterkarten gezeichnet. Über Ortsmitten
+allein lagen sie nur auf etwa 210 m genau, weil Ortsmitten auf der Karte
+und im heutigen Ortsverzeichnis selten dieselbe Stelle meinen.
+`feinpass.sh` schiebt die vorläufig entzerrte Karte deshalb in Fenstern von
+gut einem Kilometer gegen die Uraufnahme, bis Wege, Bäche und Waldränder
+übereinanderliegen, und nimmt jedes eindeutige Fenster als Passpunkt. Mit
+`--nur-auto` zählen danach nur noch diese Punkte. Lübbecke liegt so im
+Median auf 20 m, Minden auf 28 m (Leave-one-out). Die Ortsmitten bleiben
+abgeschaltet als Kontrolle in der Datei.
+
+`nachzeichnen.sh maske` stellt die Karten frei: Gezeichnetes innerhalb des
+Kreisgebiets (`scripts/altkarten/fluesse/kreisgebiet.json`) bleibt, Titel,
+Legende und das leere Nachbarland werden durchsichtig. Die Spezifikation
+schaltet das mit `"freistellen": true` ein.
+
 ### Gewässer, Moore, Wald und Wege aus den Karten
 
 Die Karte zeigt Gewässer, Moore, Wald und Hauptwege im Stand um 1840.
-Die Gewässer um 1900 liegen weiter in den Daten, werden aber nicht
-gezeigt. Die Umschaltung auf um 1900 und heute steckt in der Git-Historie.
 
-`scripts/altkarten/gewaesser.sh` liest für den Kreis Minden-Lübbecke die
-Gewässer aus zwei Karten:
+Flüsse und Bäche im Kreis Minden-Lübbecke sind von den Kreiskarten Minden
+1843 und Lübbecke 1844 nachgezeichnet (`scripts/altkarten/nachzeichnen.sh`,
+Ebene „Flüsse und Bäche der Kreiskarten 1843/44“). Sie ersetzen dort die
+früher aus der Uraufnahme gelesenen Bäche (`gewaesser.sh`) und, für die
+Weser, den Lauf in `src/data/fluesse.json`. So gilt im Kreis eine einzige
+Fassung, in der Karte wie im Modell. Die Uraufnahme taugte dafür schlecht:
+Ihre Bäche sind dünne blaugraue Linien, die sich nicht von Feldgrenzen und
+Wegen trennen lassen, und die Suche legte Bäche teils auf Straßen.
 
-- Um 1840, Preußische Uraufnahme: Bäche sind dünne blaugraue Linien auf
-  grünblau laviertem Grund und lassen sich nicht von jeder Feldgrenze
-  trennen. Das Skript sucht deshalb entlang jedes heutigen Bachs (OSM,
-  ohne Kanäle; benannte Bäche, die OSM als Graben führt, zählen mit, außer
-  der Name sagt Graben, Kanal oder Ähnliches) in einem Korridor von 150 m,
-  bei Flüssen 400 m, den günstigsten Weg über bläuliche, dunkle Linien und
-  übernimmt nur
-  Abschnitte, auf denen der Weg deutlich mehr Wasser trifft als der Grund
-  daneben. Gräben ohne heutigen Bach und verschwundene Bäche fehlen.
-- Um 1900, Karte des Deutschen Reiches 1904, Blatt Lübbecke: Gewässer sind
-  kräftig blau. Das Skript nimmt alle blauen Linien, schließt Lücken des
-  Drucks in Linienrichtung und dünnt auf Mittellinien aus. Linien nahe
-  einem heutigen Bach tragen dessen Namen, die übrigen gelten als Graben.
+Auf den Kreiskarten sind Bäche laut Zeichenerklärung fein geschlängelte
+schwarze Linien, Flüsse Doppellinien, Wege glatte Linien. Für jeden
+heutigen benannten Bach (OSM, ohne Kanäle, Entlaster und Gräben) setzt das
+Skript alle 70 Kartenpixel einen Stützpunkt auf die nächste schwarze Linie.
+Zwischen den Stützpunkten rastet der Lauf in einem Band von etwa 75 m auf
+die Linie ein. Die Prüfbilder (`kacheln`, `bogen`) wurden durchgesehen und
+falsche Punkte von Hand gesetzt, etwa die heute abgeschnittene
+Werreschleife bei Werste. Weser und Werre laufen als Mittellinie zwischen
+den gezeichneten Ufern. Bei Bächen, die nicht einzeln durchgesehen sind
+(ohne `"geprueft": true`), fallen Abschnitte weg, die glatt wie ein Weg
+verlaufen. Dort fehlt der Bach lieber, als dass er auf einem Weg liegt.
+Bäche ohne heutigen Lauf findet das Verfahren nicht.
 
 Die Karten des 17. und 18. Jahrhunderts liegen örtlich 0,3–1 km neben der
 heutigen Lage, aus ihnen werden keine Linien gelesen.
@@ -256,11 +280,19 @@ Prüfbilder (`--debug --bbox w s e n`) liegen in `scripts/altkarten/.cache`.
 
 Das Kriterium „Wasser“ misst den Abstand zum nächsten Bach. Standard ist
 die Wasserquelle „Aus Karten“: Im Kreis Minden-Lübbecke gelten die Bäche
-im Lauf der Uraufnahme um 1840 (Zeitschnitt `ura` aus
-`gewaesser-zeit.geojson`, ohne Gräben). Heutige Bäche aus OpenStreetMap
-zählen dort, wo in 400 m kein Lauf der Uraufnahme liegt, außerhalb des
-Kreises also überall. Große Flüsse ab 150 km² Einzugsgebiet kommen weiter
-aus dem Höhenmodell, Lippe, Weser und Ems im alten Lauf.
+im Lauf der Kreiskarten 1843/44 (`fluesse-kreiskarten.geojson`). Heutige
+Bäche aus OpenStreetMap zählen dort, wo in 400 m kein Lauf der Kreiskarten
+liegt, außerhalb des Kreises also überall. Große Flüsse ab 150 km²
+Einzugsgebiet kommen weiter aus dem Höhenmodell, Lippe, Weser und Ems im
+alten Lauf.
+
+Die Ebene „Bäche und Flüsse vor der Begradigung“ zeigt davon nur die
+gezeichneten Läufe: im Kreis die Kreiskarten, in der Region die heutigen
+Flüsse aus OSM, je Name zusammengefügt (OSM führt einen Fluss abschnittsweise
+als Bach) und ab 1 km Länge, sonst die alten Läufe der großen Flüsse. Kleine
+heutige Bäche und die aus dem Höhenmodell abgeleiteten Flüsse zählen im
+Modell, erscheinen aber nicht, das grobe Westfalen-Netz nur unterhalb
+Zoomstufe 10.
 
 Das aus dem Höhenmodell abgeleitete Netz bleibt als Wahl „Aus
 Höhenmodell“. Ein Abgleich im Kreis (Oktober 2026) zeigt, warum es nicht

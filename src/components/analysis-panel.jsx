@@ -281,7 +281,7 @@ export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
 					{
 						{
 							karten:
-								"Bäche im Kreis Minden-Lübbecke im Lauf der Uraufnahme um 1840, sonst heutige Bäche aus OpenStreetMap, ohne Kanäle und Gräben. Große Flüsse aus dem Höhenmodell.",
+								"Bäche im Kreis Minden-Lübbecke im Lauf der Kreiskarten 1843/44, sonst heutige Bäche aus OpenStreetMap, ohne Kanäle und Gräben. Große Flüsse aus dem Höhenmodell.",
 							dem: "Gewässernetz aus den Talzügen berechnet, ohne Kanäle und Begradigungen. Liegt im Flachland oft einige hundert Meter neben den echten Bächen.",
 							osm: "Heutige Bäche und Flüsse aus den OpenStreetMap-Vektorkacheln, ohne Kanäle und Gräben.",
 						}[params.waterSource]
@@ -301,7 +301,8 @@ export default function AnalysisPanel({ onAnalyze, onFlyTo }) {
 					component="p"
 					sx={{ mt: 0, mb: 1 }}
 				>
-					Rhein, Lippe, Ems und Weser in NRW im Lauf der Uraufnahme um 1840, bei
+					Rhein, Lippe, Ems und Weser in NRW im Lauf der Uraufnahme um 1840, die
+					Weser im Kreis Minden-Lübbecke wie auf der Kreiskarte 1843, bei
 					Haltern und Xanten im römerzeitlichen Lauf. Ersetzt den aus dem
 					Gelände abgeleiteten Lauf dieser Flüsse.
 				</Typography>

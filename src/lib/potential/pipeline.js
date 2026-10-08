@@ -1,4 +1,11 @@
-import { lonLatToPixel, metersPerPixel, pixelToLonLat } from "../geo"
+import {
+	lineLength,
+	lonLatToPixel,
+	metersPerPixel,
+	pixelToLonLat,
+	riverNetwork,
+	splitLines,
+} from "../geo"
 import { moorCover } from "../moor"
 import { loadElevationSampler } from "../terrain"
 import { fetchOldWaterways, fetchWaterways, forestCover } from "../water"
@@ -171,14 +178,19 @@ function demWater(state, params) {
 	return waterFromMasks(state, streams, rivers, lines)
 }
 
-// Heutiger Bach so nah an einem Lauf der Uraufnahme ist derselbe Bach,
+// Heutiger Bach so nah an einem Lauf der Kreiskarten ist derselbe Bach,
 // nur begradigt oder verlegt
 const SAME_BROOK_M = 400
+// Heutiger Fluss endet so nah an einem alten Lauf: Anschluss zeichnen
+const CONNECT_M = 600
+// Kürzere heutige Flüsse und Reststücke zeigt die Karte nicht
+const MIN_RIVER_M = 1000
+const MIN_CUT_M = 500
 // Abgeleitete Flüsse zählen als Wasser nur fern aller kartierten Gewässer
 const DERIVED_RIVER_M = 1000
 
 /**
- * Gewässerabstände aus Karten: Bäche der Uraufnahme um 1840, wo es sie gibt,
+ * Gewässerabstände aus Karten: Bäche der Kreiskarten 1843/44, wo es sie gibt,
  * sonst heutige Bäche und Flüsse aus OSM (ohne Kanäle und Gräben). Das aus
  * dem Höhenmodell abgeleitete Netz liegt im Flachland oft Hunderte Meter
  * neben den echten Bächen und dient hier nur noch für die großen Flüsse.
@@ -222,6 +234,29 @@ function mappedWater(state, params) {
 		const r = Math.floor((py - raster.y0) / raster.step)
 		return c >= 0 && r >= 0 && c < width && r < height ? r * width + c : -1
 	}
+	// Heutige Flüsse vollständig und zusammengefügt. Abgeleitete Flüsse
+	// zählen im Modell (oben), die Karte zeigt sie nicht: Ihre Rasterlinien
+	// liegen grob neben den echten Läufen und zerfallen in Fetzen.
+	const osmRivers = riverNetwork(mapped.osm.features, MIN_RIVER_M)
+	// Nächster Punkt eines alten Laufs bis CONNECT_M entfernt, sonst null
+	const oldPoints = mapped.old.flatMap((l) => l.coords)
+	const nearestOldPoint = ([lon, lat]) => {
+		const kx = 111320 * Math.cos((lat * Math.PI) / 180)
+		let best = null
+		let bestD = CONNECT_M
+		for (const q of oldPoints) {
+			const d = Math.hypot((q[0] - lon) * kx, (q[1] - lat) * 111320)
+			if (d > 1 && d < bestD) {
+				best = q
+				bestD = d
+			}
+		}
+		return best
+	}
+	const farFromOld = (p) => {
+		const i = toPixel(p)
+		return i >= 0 && dOld[i] > SAME_BROOK_M
+	}
 	const nearOld = (f) => {
 		const pts = f.geometry.coordinates
 		let near = 0
@@ -231,13 +266,6 @@ function mappedWater(state, params) {
 		}
 		return near > pts.length / 2
 	}
-	const derivedRivers = streamLines(
-		flow,
-		params.riverKm2,
-		params.riverKm2,
-		rasterLonLat(raster, grid.zoom),
-		width,
-	)
 	const lines = {
 		type: "FeatureCollection",
 		features: [
@@ -246,20 +274,36 @@ function mappedWater(state, params) {
 				properties: { kind: l.kind, name: l.name, source: "1840" },
 				geometry: { type: "LineString", coordinates: l.coords },
 			})),
-			...mapped.osm.features
-				.filter((f) => !nearOld(f))
-				.map((f) => ({
+			// Heutige Flüsse ohne alten Lauf, etwa jenseits des Kreisrands. Wo
+			// sie in einen alten Lauf übergehen, schließt das Ende an ihn an.
+			// Heutige kleine Bäche und Gräben zählen im Modell, die Karte
+			// zeigt sie nicht: zu kleinteilig neben den alten Läufen.
+			...[
+				...osmRivers.filter((f) => !nearOld(f)),
+				...splitLines(osmRivers.filter(nearOld), farFromOld)
+					.filter((f) => lineLength(f.geometry.coordinates) >= MIN_CUT_M)
+					.map((f) => ({ ...f, cut: true })),
+			].map(({ cut, ...f }) => {
+				const c = f.geometry.coordinates
+				const ends = cut
+					? [nearestOldPoint(c[0]), nearestOldPoint(c[c.length - 1])]
+					: []
+				return {
 					...f,
 					geometry: {
 						type: "LineString",
 						// auf etwa 1 m runden, die Linien gehen in die Vorberechnung
-						coordinates: f.geometry.coordinates.map(([lon, lat]) => [
+						coordinates: [
+							...(ends[0] ? [ends[0]] : []),
+							...c,
+							...(ends[1] ? [ends[1]] : []),
+						].map(([lon, lat]) => [
 							Number(lon.toFixed(5)),
 							Number(lat.toFixed(5)),
 						]),
 					},
-				})),
-			...derivedRivers.features,
+				}
+			}),
 		],
 	}
 	return waterFromMasks(state, streams, rivers, lines)
@@ -312,7 +356,7 @@ async function waterFor(state, params, isStale) {
 					fetchWaterways(bbox, (v) =>
 						state.onProgress("Bäche aus Karten laden", v),
 					),
-				// Uraufnahme nur im Kreis Minden-Lübbecke, sonst bleibt es bei OSM
+				// Kreiskarten nur im Kreis Minden-Lübbecke, sonst bleibt es bei OSM
 				fetchOldWaterways(bbox).catch(() => []),
 			])
 			if (isStale()) return null
