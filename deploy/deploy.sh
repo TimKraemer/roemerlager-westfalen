@@ -22,6 +22,8 @@ elif [[ -z ${DEPLOY_TARGET:-} ]]; then
 fi
 : "${DEPLOY_TARGET:?DEPLOY_TARGET fehlt, z. B. user@host:/var/www/roemer}"
 export BASE_PATH=${BASE_PATH:-}
+# Git Bash unter Windows macht aus "/roemer" sonst "C:/Program Files/Git/roemer"
+export MSYS2_ENV_CONV_EXCL=BASE_PATH
 
 # Die Altkarten-Kacheln sind nicht eingecheckt (README, Abschnitt
 # Altkarten). Fehlen sie lokal, würde rsync --delete sie auf dem Server

@@ -12,8 +12,9 @@ import { execFileSync } from "node:child_process"
 import { createHash } from "node:crypto"
 import { existsSync, mkdirSync, readFileSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
+import { fileURLToPath } from "node:url"
 
-const ROOT = new URL("..", import.meta.url).pathname
+const ROOT = fileURLToPath(new URL("..", import.meta.url))
 const OUT = join(ROOT, "public/audio/erzaehlung")
 const config = JSON.parse(
 	readFileSync(join(ROOT, "src/data/vertonung.json"), "utf8"),

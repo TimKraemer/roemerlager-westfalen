@@ -7,9 +7,10 @@
  */
 import { readdirSync, readFileSync, statSync, writeFileSync } from "node:fs"
 import { join } from "node:path"
+import { fileURLToPath } from "node:url"
 import { constants, gzipSync } from "node:zlib"
 
-const OUT = new URL("../out/", import.meta.url).pathname
+const OUT = fileURLToPath(new URL("../out/", import.meta.url))
 const TYPES = /\.(js|mjs|css|json|geojson|bin|csl|svg|wasm)$/
 // Altkarten sind WebP, Laserscan-Fenster JPEG, beides schon gepackt
 const SKIP = /^(altkarten|precomputed\/lrm)\//
